@@ -1,0 +1,108 @@
+.vertical-center{
+	position: relative;
+}
+.vertical-center-child,.vertical-center>div{
+	position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+
+/*=================tree=================*/
+.tree-item{
+	letter-spacing: 0.05em;
+	font-size: 1.1em;
+
+}
+
+/*=================search box=================*/
+
+.btn-search{
+	background-color: #42b883;
+	color: #fff;
+	padding: 1.02rem 1rem !important;
+	letter-spacing: 0.05em;
+	transition: border-radius ease-in-out .2s;
+}
+
+.btn-search:hover{
+	color: #fff;
+	border-radius: 10px;
+	transition: all ease-in-out .2s;
+}
+
+.search-container{
+	background-color: white;
+	padding: 0.7%;
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.44);
+-moz-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.44);
+box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.44);
+
+/*-webkit-box-shadow: 0px 0px 26px 6px rgba(41,182,246,0.4);
+-moz-box-shadow: 0px 0px 26px 6px rgba(41,182,246,0.4);
+box-shadow: 0px 0px 26px 6px rgba(41,182,246,0.4);*/
+}
+
+.search-form,.search-form:active,.search-form:focus{
+	border: 0;
+    box-shadow: none;
+}
+
+#inlineFormInput{
+	font-size: 1.3em;
+	border-radius: 0;
+	border-right: 1px solid #EEE;
+}
+
+/*=================navigation=================*/
+
+.navbar{
+	background-color: #53C5F7;
+	font-size: 1.2em;
+	-webkit-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.20);
+	-moz-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.20);
+	box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.20);
+	z-index: 10;
+}
+
+.nav-link{
+	position: relative;
+	color:#111 !important;
+	letter-spacing: 0.03em;
+}
+
+.nav-link:hover{
+	color:#ECF9FF !important;
+}
+
+.nav-link::after{
+  content: '';
+  position: absolute;
+  width: 0px;
+  height: 2px;
+  left: 50%;
+  bottom: 10%;
+
+  background-color: #ECF9FF;
+  transition: all ease-in-out .2s;
+}
+.nav-link:hover::after{
+  width: 90%;
+  left: 5%;
+}
+
+/*=================post=================*/
+.post{
+	padding: 2rem;
+	background-color: white;
+	-webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.05);
+	-moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.05);
+	box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.05);
+
+
+}
+
+.post-description{
+	padding: 1rem;
+}
