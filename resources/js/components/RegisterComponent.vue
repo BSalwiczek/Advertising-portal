@@ -8,7 +8,7 @@
             <transition leave-active-class="animated fadeOut fast" v-on:after-leave="after_user_types_leave">
                 <div class="col-lg-5 col-md-6" v-if="show_user_types">
                     <div class="reg-option" @click="usertype_checked(0)">
-                        Masażysta lub fizjoterapeuta <i class="fas fa-spa ml-4"></i>
+                        Masażysta <i class="fas fa-spa ml-4"></i>
                     </div>
                 </div>
             </transition>
@@ -21,22 +21,89 @@
             </transition>
 
             <transition enter-active-class="animated fadeIn">
-                <div class="col-sm-12 text-center" v-if="show_registration">
+                <div class="col-sm-12 text-center mt-4" v-if="show_registration">
                     <div v-if="user_type==0">
-                        <h1>Rejestracja masażysty lub fizjoterapeuty</h1>
-                        <form>
-                            <div class="form-group row">
-                                <div class="col-sm-6">
-                                   <label for="name" class="col-form-label">Imię</label>
-                                    <input type="text" name="name" class="form-control">
+                        <h1 class="pb-4">Rejestracja masażysty</h1>
+                        <hr>
+                        <form @submit.prevent="submit" method="post">
+                            <input type="hidden" name="_token" v-bind:value="csrf">
+                            <div class="form-group mt-4 align-items-center" style="font-size: 1.1em">
+                                <div class="row" style="margin-top: 3rem;">
+                                    <div class="col-sm-2 offset-lg-3 offset-md-1">
+                                        <label for="name" class="col-form-label">Imię</label>
+                                    </div>
+                                    <div class="col-lg-4 col-md-8">
+                                        <input required type="text" id="name" v-validate="'required'" v-model="user_fields.name" name="name" :class="{'wrong': errors.has('name')}" class="form-control">
+                                    </div>
+                                    <div clas="col-sm-3">
+                                        <span class="error">{{ errors.first('name') }}</span>
+                                    </div>
                                 </div>
-                                    <div class="col-sm-6">
-                                    <label for="surname" class="col-form-label">Nazwisko</label>
-                                    <input type="text" name="surname" class="form-control">
+                                
+                                <div class="row mt-4">
+                                    <div class="col-sm-2 offset-lg-3 offset-md-1">
+                                        <label for="surname" class="col-form-label">Nazwisko</label>
+                                    </div>
+                                    <div class="col-lg-4 col-md-8">
+                                        <input v-validate required type="text" name="surname" :class="{'wrong': errors.has('surname')}" class="form-control" id="surname" v-model="user_fields.surname">
+                                    </div>
+                                    <div clas="col-sm-3">
+                                        <span class="error">{{ errors.first('surname') }}</span>
+                                    </div>
                                 </div>
+
+                                <div class="row mt-4">
+                                    <div class="col-sm-2 offset-lg-3 offset-md-1">
+                                        <label for="email" class="col-form-label">Email</label>
+                                    </div>
+                                    <div class="col-lg-4 col-md-8">
+                                        <input v-validate="'email'" required type="text" id="email" name="email" v-model="user_fields.email" :class="{'wrong': errors.has('email')}" class="form-control">
+                                    </div>
+                                    <div clas="col-sm-3">
+                                        <span class="error">{{ errors.first('email') }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-4">
+                                    <div class="col-sm-2 offset-lg-3 offset-md-1">
+                                        <label for="password" class="col-form-label">Hasło</label>
+                                    </div>
+                                    <div class="col-lg-4 col-md-8">
+                                        <input v-validate="'min:8'" required type="password" id="password" v-model="user_fields.password" name="password" :class="{'wrong': errors.has('password')}" class="form-control">
+                                    </div>
+                                    <div clas="col-sm-3">
+                                        <span class="error">{{ errors.first('password') }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-4">
+                                    <div class="col-sm-2 offset-lg-3 offset-md-1">
+                                        <label for="password-repeat" class="col-form-label">Powtórz hasło</label>
+                                    </div>
+                                    <div class="col-lg-4 col-md-8">
+                                        <input v-validate="{is: user_fields.password}" required type="password" id="password2" v-model="user_fields.password2" name="password2" :class="{'wrong': errors.has('password2')}" class="form-control">
+                                    </div>
+                                    <div clas="col-sm-3">
+                                        <span class="error">{{ errors.first('password2') }}</span>
+                                    </div>
+                                </div>
+                                <div class="form-check mt-4">
+                                    <input v-validate required v-model="user_fields.accept_terms" type="checkbox" class="form-check-input" name="accept_terms" id="accept_terms">
+                                    <label class="form-check-label" for="accept_terms">Akceptuję <a href="#">regulamin</a></label>
+                                </div>
+                                <span class="error">{{ errors.first('accept_terms') }}</span>
+                                <div class="align-items-center" style="margin-top: 3rem;">
+                                    <button @click="submit" class="button_slide slide_right ml-5" style="width: 30%;font-size: 1.4em">
+                                        Zarejestruj się!
+                                    </button>
+                                </div>
+
                             </div>
+                            
                         </form>
                     </div>
+
+
                     <div v-if="user_type==1">
                         <h1>Rejestracja klienta</h1>
                         <form>
@@ -86,6 +153,34 @@
     transition: font-size ease-in-out .3s;
 
 }
+
+.form-control{
+    border-radius: 2px;
+    border-width: 1px;
+    border-color: #ddd;
+}
+
+.form-control:focus{
+    -webkit-box-shadow: 0px 0px 8px 4px rgba(124,212,250,0.3);
+    -moz-box-shadow: 0px 0px 8px 4px rgba(124,212,250,0.3);
+    box-shadow: 0px 0px 8px 4px rgba(124,212,250,0.3);
+    border-color: #7cd4fa;
+}
+
+.wrong{
+    border-color: red;
+}
+
+.error{
+    font-size: 0.8em;
+    color: red;
+}
+
+
+/*========checkbox======*/
+/* The container */
+
+
 </style>
 
 <script>
@@ -95,8 +190,12 @@
                 show_user_types: true,
                 show_registration: false,
                 user_type: 0,
+                serverside_errors: '',
+                user_fields: {},
+
             }
         },
+        props:['csrf'],
         methods: {
             usertype_checked: function(option){
                 this.user_type = option;
@@ -104,6 +203,24 @@
             },
             after_user_types_leave: function(el){
                 this.show_registration = true;
+            },
+            submit(el) {
+              this.$validator.validateAll().then((result) => {
+                if (result) {
+                    console.log(this.user_fields);
+                    axios.post('/user/create', this.user_fields).then(response => {
+                        alert('Registered user!');
+
+
+                    }).catch(error => {
+                        if (error.response.status === 422) {
+                          this.serverside_errors = error.response.data.errors || {};
+                        }
+                    });
+                } else{
+                    el.preventDefault();
+                }
+              });
             }
         }
     }

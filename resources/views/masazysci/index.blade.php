@@ -20,7 +20,7 @@ Rozsądne ceny. Na wszelkie pytania odpowiadam telefonicznie. Masażysta z duży
 				</div>
 				<div class="row">
 					<div class="col-sm-3 offset-9">
-						<button class="btn btn-search p-3">Dowiedz się więcej</button>
+						<button class="btn button_slide slide_right p-3">Dowiedz się więcej</button>
 					</div>
 				</div>
 			</div>

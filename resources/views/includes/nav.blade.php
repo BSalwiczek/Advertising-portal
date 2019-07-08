@@ -16,7 +16,7 @@
             <ul class="navbar-nav">
                 {{-- <li class="nav-item"><img width="40" height="40" src="storage/logo.png"></li> --}}
                 <li class="nav-item">
-                    <a class="nav-link mr-4" href="/masazysci">Ogłoszenia masażystów i fizjoterapeutów</a>
+                    <a class="nav-link mr-4" href="/masazysci">Ogłoszenia masażystów</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link mr-4" href="#">Ogłoszenia klientów</a>

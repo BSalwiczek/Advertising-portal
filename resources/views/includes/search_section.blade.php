@@ -14,13 +14,12 @@
 				    <div class="col-auto">
 				      <select class="custom-select custom-select-lg mr-sm-2 search-form" id="inlineFormCustomSelect">
 				        <option selected value="1">Masażysta</option>
-				        <option value="2">Fizjoterapeuta</option>
 				        <option value="3">Klient</option>
 				        <option value="4">Firma</option>
 				      </select>
 				    </div>
 				    <div class="col-auto">
-				    	<button class="btn btn-search mr-3 p-2 pr-3 pl-3" type="submit">Szukaj</button>
+				    	<button class="btn search-button mr-3 p-2 pr-3 pl-3" type="submit">Szukaj</button>
 				    </div>
 				</div>
 			</form>

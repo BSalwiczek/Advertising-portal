@@ -22,3 +22,5 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/masazysci',function(){
 	return view('masazysci.index');
 });
+
+Route::post('user/create','UserController@create');

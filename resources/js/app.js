@@ -8,6 +8,39 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+
+import VeeValidate, { Validator } from 'vee-validate';
+
+const dict = {
+	custom:{
+		email:{
+			required: 'Adres email jest wymagany',
+			email: 'Podaj poprawny adres email',
+		},
+		name:{
+			required: 'Imie jest wymagane'
+		},
+		surname:{
+			required: 'Nazwisko jest wymagane'
+		},
+		password2:{
+			is: 'Hasła muszą być identyczne',
+			required: 'Potwierdzenie hasła jest wymagane'
+		},
+		password:{
+			required: 'Hasło jest wymagane',
+			min: 'Hasło musi się składać z co najmniej 8 znaków'
+		},
+		accept_terms:{
+			required: 'Należy zaakceptować regulamin'
+		}
+	}
+};
+
+Validator.localize('en', dict);
+
+Vue.use(VeeValidate);
+
 // *
 //  * The following block of code may be used to automatically register your
 //  * Vue components. It will recursively scan this directory for the Vue
