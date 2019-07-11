@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+{{-- <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -67,6 +67,44 @@
                     </form>
                 </div>
             </div>
+        </div>
+    </div>
+</div> --}}
+<div class="container auth-container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-sm-12 text-center mt-1">
+            <h1 class="pb-3">Logowanie</h1>
+            <hr>
+            <form method="POST" action="{{ route('login') }}">
+            @csrf
+                <div class="form-group mt-4 align-items-center" style="font-size: 1.1em">
+                    <div class="d-flex justify-content-center" style="margin-top: 3rem;">
+                        <div class="mr-5">
+                            <label for="email" class="col-form-label">Email</label>
+                        </div>
+                        <div style="min-width: 40%">
+                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center" style="margin-top: 2rem;">
+                        <div class="mr-5">
+                            <label for="email" class="col-form-label">Hasło</label>
+                        </div>
+                        <div style="min-width: 40%">
+                            <input id="password" type="password" class="form-control @error('email') is-invalid @enderror" name="password" required autocomplete="current-password">
+                        </div>
+                    </div>
+                    @error('email')
+                    <br>
+                        <span class="error">Logowanie nie powiodło się! Sprawdz czy dobrze wpisałeś email i hasło.</span>
+                    @enderror
+                    <div class="align-items-center" style="margin-top: 3rem;">
+                        <button class="button_slide slide_right ml-5" style="width: 30%;font-size: 1.4em">
+                            Zaloguj się!
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>

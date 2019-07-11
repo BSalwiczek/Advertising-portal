@@ -1993,36 +1993,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2030,7 +2000,9 @@ __webpack_require__.r(__webpack_exports__);
       show_registration: false,
       user_type: 0,
       serverside_errors: '',
-      user_fields: {}
+      user_fields: {},
+      registered: false,
+      send_again: false
     };
   },
   props: ['csrf'],
@@ -2047,17 +2019,28 @@ __webpack_require__.r(__webpack_exports__);
 
       this.$validator.validateAll().then(function (result) {
         if (result) {
-          console.log(_this.user_fields);
-          axios.post('/user/create', _this.user_fields).then(function (response) {
-            alert('Registered user!');
+          axios.post('/register', _this.user_fields).then(function (response) {
+            _this.show_registration = false;
           })["catch"](function (error) {
-            if (error.response.status === 422) {
-              _this.serverside_errors = error.response.data.errors || {};
-            }
+            console.log(error); // if (error.response.status === 422) {
+            //   this.serverside_errors = error.response.data.errors || {};
+            // }
           });
         } else {
           el.preventDefault();
         }
+      });
+    },
+    after_registration_leave: function after_registration_leave(el) {
+      this.registered = true;
+    },
+    resend: function resend(el) {
+      var _this2 = this;
+
+      axios.post('/email/resend', this.user_fields).then(function (response) {
+        _this2.send_again = true;
+      })["catch"](function (error) {
+        console.log(error);
       });
     }
   }
@@ -6541,7 +6524,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/*=================register=================*/\n.fadeOutLeft[data-v-51f045bf],.fadeOutRight[data-v-51f045bf]{\n    -webkit-transition-duration: 5s !important;\n            transition-duration: 5s !important;\n}\n.reg-container[data-v-51f045bf]{\n    padding-top: 3rem;\n    padding-bottom: 3rem;\n    background-color: white;\n    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.05);\n}\n.reg-option[data-v-51f045bf]{\n    background-color: #42b883;\n    min-height: 200px;\n    border-radius: 20px;\n    text-align: center;\n    display : -webkit-box;\n    display : flex;\n    -webkit-box-align : center;\n            align-items : center;\n    -webkit-box-pack: center;\n            justify-content: center;\n    font-size: 1.5em;\n    color: #FFF;\n    cursor: pointer;\n    -webkit-transition: font-size ease-in-out .3s;\n    transition: font-size ease-in-out .3s;\n}\n.reg-option[data-v-51f045bf]:hover{\n    font-size: 1.7em;\n    -webkit-transition: font-size ease-in-out .3s;\n    transition: font-size ease-in-out .3s;\n}\n.form-control[data-v-51f045bf]{\n    border-radius: 2px;\n    border-width: 1px;\n    border-color: #ddd;\n}\n.form-control[data-v-51f045bf]:focus{\n    box-shadow: 0px 0px 8px 4px rgba(124,212,250,0.3);\n    border-color: #7cd4fa;\n}\n.wrong[data-v-51f045bf]{\n    border-color: red;\n}\n.error[data-v-51f045bf]{\n    font-size: 0.8em;\n    color: red;\n}\n\n\n/*========checkbox======*/\n/* The container */\n\n\n", ""]);
+exports.push([module.i, "\n.send-again[data-v-51f045bf]{\n    color:#7cd4fa;\n}\n.send-again[data-v-51f045bf]:hover{\n    text-decoration: underline;\n    cursor: pointer;\n}\n\n\n/*========checkbox======*/\n/* The container */\n\n\n", ""]);
 
 // exports
 
@@ -49159,7 +49142,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container reg-container mt-5" }, [
+  return _c("div", { staticClass: "container auth-container mt-5" }, [
     _c(
       "div",
       { staticClass: "row justify-content-center" },
@@ -49225,7 +49208,13 @@ var render = function() {
         _vm._v(" "),
         _c(
           "transition",
-          { attrs: { "enter-active-class": "animated fadeIn" } },
+          {
+            attrs: {
+              "enter-active-class": "animated fadeIn",
+              "leave-active-class": "animated fadeOut fast"
+            },
+            on: { "after-leave": _vm.after_registration_leave }
+          },
           [
             _vm.show_registration
               ? _c("div", { staticClass: "col-sm-12 text-center mt-4" }, [
@@ -49749,8 +49738,7 @@ var render = function() {
                                         staticStyle: {
                                           width: "30%",
                                           "font-size": "1.4em"
-                                        },
-                                        on: { click: _vm.submit }
+                                        }
                                       },
                                       [
                                         _vm._v(
@@ -49784,6 +49772,85 @@ var render = function() {
                       ])
                     : _vm._e()
                 ])
+              : _vm._e()
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "transition",
+          {
+            attrs: {
+              "enter-active-class": "animated fadeIn",
+              "leave-active-class": "animated fadeOut fast"
+            }
+          },
+          [
+            _vm.registered
+              ? _c(
+                  "div",
+                  { staticClass: "justify-content-center text-center" },
+                  [
+                    _c("h1", [_vm._v("Rejestracja przebiegła pomyślnie!")]),
+                    _vm._v(" "),
+                    _c("h5", { staticClass: "mt-4 pl-5 pr-5" }, [
+                      _vm._v("Na twój email "),
+                      _c("b", [
+                        _vm._v("(" + _vm._s(_vm.user_fields.email) + ")")
+                      ]),
+                      _vm._v(" wysłaliśmy link z potwierdzeniem rejestracji.")
+                    ]),
+                    _vm._v(" "),
+                    _c("h5", { staticClass: "mt-2 pl-5 pr-5" }, [
+                      _vm._v(
+                        "Po potwierdzeniu będziesz mógł w pełni korzystać z naszego serwisu!"
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "transition",
+                      {
+                        attrs: { "leave-active-class": "animated fadeOut fast" }
+                      },
+                      [
+                        _vm.send_again == false
+                          ? _c("div", [
+                              _c(
+                                "form",
+                                {
+                                  attrs: { method: "post" },
+                                  on: {
+                                    submit: function($event) {
+                                      $event.preventDefault()
+                                      return _vm.resend($event)
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("input", {
+                                    attrs: { type: "hidden", name: "_token" },
+                                    domProps: { value: _vm.csrf }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("h6", { staticClass: "mt-4" }, [
+                                    _vm._v("Nie otrzymałeś maila? "),
+                                    _c(
+                                      "span",
+                                      {
+                                        staticClass: "send-again",
+                                        on: { click: _vm.resend }
+                                      },
+                                      [_vm._v(" Wyślemy go jeszcze raz.")]
+                                    )
+                                  ])
+                                ]
+                              )
+                            ])
+                          : _vm._e()
+                      ]
+                    )
+                  ],
+                  1
+                )
               : _vm._e()
           ]
         )

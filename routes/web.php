@@ -15,7 +15,20 @@ Route::get('/', function () {
     return view('home');
 });
 
-Auth::routes();
+Auth::routes(['verify'=>true]);
+
+
+// Route::post('login', 'UsersApiController@login');
+Route::post('register', 'UsersApiController@register');
+
+
+
+Route::group(['middleware' => 'auth:api'], function(){
+	Route::post('details', 'UsersApiController@details')->middleware('verified');
+}); // will work only when user has verified the email
+
+Route::get('email/verify/{id}', 'VerificationApiController@verify')->name('verificationapi.verify');
+Route::post('email/resend', 'VerificationApiController@resend')->name('verificationapi.resend');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
@@ -23,4 +36,3 @@ Route::get('/masazysci',function(){
 	return view('masazysci.index');
 });
 
-Route::post('user/create','UserController@create');

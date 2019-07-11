@@ -57,7 +57,7 @@
                         <a href="/" class="nav-link">{{ Auth::user()->name }}</a>
                     </li>
                     <li class="nav-item pl-1">
-                        <img class="rounded-circle avatar" width="50" height="50" src="/storage/avatars/Vladimir_Putin_(2017-07-08).jpg">
+                        <img class="rounded-circle avatar" width="50" height="50" src="storage/avatars/{{ Auth::user()->profile_img }}">
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('logout') }}" onclick="event.preventDefault();

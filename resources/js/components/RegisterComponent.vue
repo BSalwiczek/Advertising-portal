@@ -2,7 +2,7 @@
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css"
 </style>
 <template>
-    <div class="container reg-container mt-5">
+    <div class="container auth-container mt-5">
         <div class="row justify-content-center">
 
             <transition leave-active-class="animated fadeOut fast" v-on:after-leave="after_user_types_leave">
@@ -20,7 +20,7 @@
                 </div>
             </transition>
 
-            <transition enter-active-class="animated fadeIn">
+            <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut fast" v-on:after-leave="after_registration_leave">
                 <div class="col-sm-12 text-center mt-4" v-if="show_registration">
                     <div v-if="user_type==0">
                         <h1 class="pb-4">Rejestracja masażysty</h1>
@@ -93,7 +93,7 @@
                                 </div>
                                 <span class="error">{{ errors.first('accept_terms') }}</span>
                                 <div class="align-items-center" style="margin-top: 3rem;">
-                                    <button @click="submit" class="button_slide slide_right ml-5" style="width: 30%;font-size: 1.4em">
+                                    <button class="button_slide slide_right ml-5" style="width: 30%;font-size: 1.4em">
                                         Zarejestruj się!
                                     </button>
                                 </div>
@@ -113,67 +113,37 @@
                     </div>
                 </div>
             </transition>
+
+
+            <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut fast">
+                <div v-if="registered" class="justify-content-center text-center">
+                    <h1>Rejestracja przebiegła pomyślnie!</h1>
+                    <h5 class="mt-4 pl-5 pr-5">Na twój email <b>({{ user_fields.email }})</b> wysłaliśmy link z potwierdzeniem rejestracji.</h5>
+                    <h5 class="mt-2 pl-5 pr-5">Po potwierdzeniu będziesz mógł w pełni korzystać z naszego serwisu!</h5>
+                    <transition leave-active-class="animated fadeOut fast">
+                        <div v-if="send_again==false">
+                            <form method="post" @submit.prevent="resend"> <!-- action="email/resend" -->
+                                <input type="hidden" name="_token" v-bind:value="csrf">
+                                <h6 class="mt-4">Nie otrzymałeś maila? <span class="send-again" @click="resend"> Wyślemy go jeszcze raz.</span></h6>
+                            </form>
+                        </div>
+                    </transition>
+                    <!-- <h6>Jeśli nie otrzymałeś maila<button class="btn btn-primary" @click="resend">wyślemy go jeszcze raz</button></h6> -->
+
+                </div>
+            </transition>
         </div>
     </div>
 </template>
 
 <style scoped>
-/*=================register=================*/
 
-.fadeOutLeft,.fadeOutRight{
-    transition-duration: 5s !important;
+.send-again{
+    color:#7cd4fa;
 }
-
-.reg-container{
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-    background-color: white;
-    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.05);
-    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.05);
-    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.05);
-}
-
-.reg-option{
-    background-color: #42b883;
-    min-height: 200px;
-    border-radius: 20px;
-    text-align: center;
-    display : flex;
-    align-items : center;
-    justify-content: center;
-    font-size: 1.5em;
-    color: #FFF;
+.send-again:hover{
+    text-decoration: underline;
     cursor: pointer;
-    transition: font-size ease-in-out .3s;
-
-}
-
-.reg-option:hover{
-    font-size: 1.7em;
-    transition: font-size ease-in-out .3s;
-
-}
-
-.form-control{
-    border-radius: 2px;
-    border-width: 1px;
-    border-color: #ddd;
-}
-
-.form-control:focus{
-    -webkit-box-shadow: 0px 0px 8px 4px rgba(124,212,250,0.3);
-    -moz-box-shadow: 0px 0px 8px 4px rgba(124,212,250,0.3);
-    box-shadow: 0px 0px 8px 4px rgba(124,212,250,0.3);
-    border-color: #7cd4fa;
-}
-
-.wrong{
-    border-color: red;
-}
-
-.error{
-    font-size: 0.8em;
-    color: red;
 }
 
 
@@ -192,6 +162,8 @@
                 user_type: 0,
                 serverside_errors: '',
                 user_fields: {},
+                registered:false,
+                send_again:false,
 
             }
         },
@@ -207,20 +179,29 @@
             submit(el) {
               this.$validator.validateAll().then((result) => {
                 if (result) {
-                    console.log(this.user_fields);
-                    axios.post('/user/create', this.user_fields).then(response => {
-                        alert('Registered user!');
-
+                    axios.post('/register', this.user_fields).then(response => {
+                        this.show_registration=false;
 
                     }).catch(error => {
-                        if (error.response.status === 422) {
-                          this.serverside_errors = error.response.data.errors || {};
-                        }
+                        console.log(error);
+                        // if (error.response.status === 422) {
+                        //   this.serverside_errors = error.response.data.errors || {};
+                        // }
                     });
                 } else{
                     el.preventDefault();
                 }
               });
+            },
+            after_registration_leave(el){
+                this.registered=true;
+            },
+            resend(el){
+                axios.post('/email/resend',this.user_fields).then(response => {
+                    this.send_again = true;
+                }).catch(error => {
+                    console.log(error);
+                })
             }
         }
     }
