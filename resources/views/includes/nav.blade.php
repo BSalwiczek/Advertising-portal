@@ -53,14 +53,18 @@
                             </form>
                         </div>
                     </li> --}}
-                    <li class="nav-item">
-                        <a href="/" class="nav-link">{{ Auth::user()->name }}</a>
-                    </li>
                     <li class="nav-item pl-1">
-                        <img class="rounded-circle avatar" width="50" height="50" src="storage/avatars/{{ Auth::user()->profile_img }}">
+                        <img class="rounded-circle avatar" width="50" height="50" src="/storage/avatars/{{ Auth::user()->profile_img }}">
+                    </li>
+                    <li class="nav-item ml-2">
+                        @if (Auth::user()->role==0)
+                            <a href="/masazysta/profil" class="nav-link">{{ Auth::user()->name }}</a>
+                        @elseif(Auth::user()->role==1)
+                            <a href="/klient/profil" class="nav-link">{{ Auth::user()->name }}</a>
+                        @endif
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('logout') }}" onclick="event.preventDefault();
+                        <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault();
                                              document.getElementById('logout-form').submit();">Wyloguj</a>
                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                 @csrf

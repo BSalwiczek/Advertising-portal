@@ -17,10 +17,7 @@ Route::get('/', function () {
 
 Auth::routes(['verify'=>true]);
 
-
-// Route::post('login', 'UsersApiController@login');
 Route::post('register', 'UsersApiController@register');
-
 
 
 Route::group(['middleware' => 'auth:api'], function(){
@@ -32,7 +29,12 @@ Route::post('email/resend', 'VerificationApiController@resend')->name('verificat
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('/klient/profil','ClientController@index');
+Route::get('/masazysta/profil','MasseurController@index');
+
 Route::get('/masazysci',function(){
-	return view('masazysci.index');
+	return view('masseurs_ads.index');
 });
+
+Route::get('masazysta/dodaj-nowe-ogloszenie','MasseurNoticeController@create');
 

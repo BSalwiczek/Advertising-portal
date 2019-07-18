@@ -5,7 +5,7 @@
 				@csrf
 				<div class="form-row align-items-center">
 					<div class="col-auto mr-2 ml-3">
-						<img height="30" width="30" src="storage/search_select.png">
+						<img height="30" width="30" src="/storage/search_select.png">
 					</div>
 					<div class="col">
 				      <label class="sr-only" for="inlineFormInput">Name</label>

@@ -20,27 +20,6 @@ class UsersApiController extends Controller
 	use VerifiesEmails;
 	public $successStatus = 200;
 	/**
-	* login api
-	*
-	* @return \Illuminate\Http\Response
-	*/
-	public function login(){
-		if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){
-			$user = Auth::user();
-			if($user->email_verified_at !== NULL){
-					// $success['message'] = "Login successfull";
-					return redirect('/');
-					// return response()->json(['success' => $success], $this-> successStatus);
-				}else{
-					return redirect('auth/verify');
-					// return response()->json(['error'=>'Please Verify Email'], 401);
-			}
-		}
-		else{
-			return response()->json(['error'=>'Unauthorised'], 401);
-		}
-	}
-	/**
 	* Register api
 	*
 	* @return \Illuminate\Http\Response
@@ -52,6 +31,7 @@ class UsersApiController extends Controller
     		'surname'=>'required|string|max:30',
     		'email'=>'required|email|max:50|unique:users',
     		'password'=>'required|min:8|max:30',
+    		'role'=>'required',
     		'accept_terms'=>'accepted',
 			'password2' => 'required|same:password',
 		]);
@@ -63,6 +43,7 @@ class UsersApiController extends Controller
             'name' => $request['name'],
             'surname' => $request['surname'],
             'email' => $request['email'],
+            'role' => $request['role'],
             'profile_img' => 'default.png',
             'password' => Hash::make($request['password']),
         ]);

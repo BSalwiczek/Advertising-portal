@@ -26,7 +26,9 @@
 <body>
     <div id="app">
         @include('includes.nav')
-        @include('includes.search_section')
+        @if(!View::hasSection('no_search'))
+            @include('includes.search_section')
+        @endif
 
         @if(View::hasSection('tree1'))
             @include('includes.tree')

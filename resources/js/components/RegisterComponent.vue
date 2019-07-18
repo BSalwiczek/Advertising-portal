@@ -106,9 +106,82 @@
 
                     <div v-if="user_type==1">
                         <h1>Rejestracja klienta</h1>
-                        <form>
-                            <label for="login" class="col-form-label"></label>
-                            <input type="text" name="login">
+                        <hr>
+                        <form @submit.prevent="submit" method="post">
+                            <input type="hidden" name="_token" v-bind:value="csrf">
+                            <div class="form-group mt-4 align-items-center" style="font-size: 1.1em">
+                                <div class="row" style="margin-top: 3rem;">
+                                    <div class="col-sm-2 offset-lg-3 offset-md-1">
+                                        <label for="name" class="col-form-label">Imię</label>
+                                    </div>
+                                    <div class="col-lg-4 col-md-8">
+                                        <input required type="text" id="name" v-validate="'required'" v-model="user_fields.name" name="name" :class="{'wrong': errors.has('name')}" class="form-control">
+                                    </div>
+                                    <div clas="col-sm-3">
+                                        <span class="error">{{ errors.first('name') }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-4">
+                                    <div class="col-sm-2 offset-lg-3 offset-md-1">
+                                        <label for="surname" class="col-form-label">Nazwisko</label>
+                                    </div>
+                                    <div class="col-lg-4 col-md-8">
+                                        <input v-validate required type="text" name="surname" :class="{'wrong': errors.has('surname')}" class="form-control" id="surname" v-model="user_fields.surname">
+                                    </div>
+                                    <div clas="col-sm-3">
+                                        <span class="error">{{ errors.first('surname') }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-4">
+                                    <div class="col-sm-2 offset-lg-3 offset-md-1">
+                                        <label for="email" class="col-form-label">Email</label>
+                                    </div>
+                                    <div class="col-lg-4 col-md-8">
+                                        <input v-validate="'email'" required type="text" id="email" name="email" v-model="user_fields.email" :class="{'wrong': errors.has('email')}" class="form-control">
+                                    </div>
+                                    <div clas="col-sm-3">
+                                        <span class="error">{{ errors.first('email') }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-4">
+                                    <div class="col-sm-2 offset-lg-3 offset-md-1">
+                                        <label for="password" class="col-form-label">Hasło</label>
+                                    </div>
+                                    <div class="col-lg-4 col-md-8">
+                                        <input v-validate="'min:8'" required type="password" id="password" v-model="user_fields.password" name="password" :class="{'wrong': errors.has('password')}" class="form-control">
+                                    </div>
+                                    <div clas="col-sm-3">
+                                        <span class="error">{{ errors.first('password') }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-4">
+                                    <div class="col-sm-2 offset-lg-3 offset-md-1">
+                                        <label for="password-repeat" class="col-form-label">Powtórz hasło</label>
+                                    </div>
+                                    <div class="col-lg-4 col-md-8">
+                                        <input v-validate="{is: user_fields.password}" required type="password" id="password2" v-model="user_fields.password2" name="password2" :class="{'wrong': errors.has('password2')}" class="form-control">
+                                    </div>
+                                    <div clas="col-sm-3">
+                                        <span class="error">{{ errors.first('password2') }}</span>
+                                    </div>
+                                </div>
+                                <div class="form-check mt-4">
+                                    <input v-validate required v-model="user_fields.accept_terms" type="checkbox" class="form-check-input" name="accept_terms" id="accept_terms">
+                                    <label class="form-check-label" for="accept_terms">Akceptuję <a href="#">regulamin</a></label>
+                                </div>
+                                <span class="error">{{ errors.first('accept_terms') }}</span>
+                                <div class="align-items-center" style="margin-top: 3rem;">
+                                    <button class="button_slide slide_right ml-5" style="width: 30%;font-size: 1.4em">
+                                        Zarejestruj się!
+                                    </button>
+                                </div>
+
+                            </div>
+                            
                         </form>
                     </div>
                 </div>
@@ -147,10 +220,6 @@
 }
 
 
-/*========checkbox======*/
-/* The container */
-
-
 </style>
 
 <script>
@@ -179,6 +248,7 @@
             submit(el) {
               this.$validator.validateAll().then((result) => {
                 if (result) {
+                    this.user_fields.role = this.user_type;
                     axios.post('/register', this.user_fields).then(response => {
                         this.show_registration=false;
 

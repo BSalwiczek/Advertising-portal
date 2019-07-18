@@ -53,6 +53,9 @@ Vue.use(VeeValidate);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
 Vue.component('register-component', require('./components/RegisterComponent.vue').default);
+Vue.component('verify-component', require('./components/VerifyComponent.vue').default);
+Vue.component('client-profile', require('./components/client/Profile.vue').default);
+Vue.component('add-m-ad', require('./components/masseur/AddAdComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
