@@ -26,10 +26,26 @@
 							</div>
 						</div>
 					</div>
-					
-					<div class="post mt-5">
 
+					@foreach ($ads as $ad)
+						<div class="post mt-5">
+						<h1>{{ $ad->title }}</h1>
+						<div class="row">
+							<div class="col-sm-3"><span style="color:#09A2E5">Dodane przez: </span>Tadeusz Matyskiel</div>
+							<div class="col-sm-3"><i class="far fa-clock" style="margin-right: 3%;color:#09A2E5"></i>{{ $ad->created_at }}</div>
+							<div class="col-sm-3"><i class="fas fa-map-marker-alt" style="margin-right: 3%;color:#09A2E5"></i>{{ $ad->area }}</span></div>
+							<p class="post-description">
+								{{ $ad->description }}
+							</p>
+						</div>
+						<div class="row">
+							<div class="col-sm-3 offset-9">
+								<button class="btn button_slide slide_right p-3">Dowiedz się więcej</button>
+							</div>
+						</div>
 					</div>
+					@endforeach
+					
 				</div>
 				<div class="col-lg-2">
 					@auth

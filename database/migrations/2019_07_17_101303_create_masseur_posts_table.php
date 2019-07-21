@@ -16,10 +16,14 @@ class CreateMasseurPostsTable extends Migration
         Schema::create('masseur_posts', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('user_id');
-            $table->text('title');
-            $table->longText('description');
-            $table->longText('images')->nullable();
-            $table->integer('price')->unsigned();
+            $table->string('title',110);
+            $table->text('description');
+            $table->boolean('company');
+            $table->text('area')->nullable();
+            $table->text('city')->nullable();
+            $table->text('province')->nullable();
+            $table->text('street')->nullable();
+            $table->integer('number')->nullable();
             $table->timestamps();
         });
     }

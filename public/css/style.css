@@ -108,7 +108,7 @@ box-shadow: 0px 0px 26px 6px rgba(41,182,246,0.4);*/
   background-color: #fff;
   border-radius: 0px;
   padding: 18px 36px;
-  display: inline-block;
+  display: block;
   font-size: 14px;
   letter-spacing: 1px;
   cursor: pointer;
@@ -121,7 +121,7 @@ box-shadow: 0px 0px 26px 6px rgba(41,182,246,0.4);*/
 
 .slide_right:hover {
     color: #fff;
-    box-shadow: inset 600px 0 0 0 #42b883;
+    box-shadow: inset 900px 0 0 0 #42b883;
 }
 
 /*=================Auth=================*/

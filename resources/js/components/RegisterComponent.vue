@@ -93,7 +93,7 @@
                                 </div>
                                 <span class="error">{{ errors.first('accept_terms') }}</span>
                                 <div class="align-items-center" style="margin-top: 3rem;">
-                                    <button class="button_slide slide_right ml-5" style="width: 30%;font-size: 1.4em">
+                                    <button class="button_slide slide_right mx-auto" style="width: 30%;font-size: 1.4em">
                                         Zarejestruj się!
                                     </button>
                                 </div>
@@ -174,8 +174,8 @@
                                     <label class="form-check-label" for="accept_terms">Akceptuję <a href="#">regulamin</a></label>
                                 </div>
                                 <span class="error">{{ errors.first('accept_terms') }}</span>
-                                <div class="align-items-center" style="margin-top: 3rem;">
-                                    <button class="button_slide slide_right ml-5" style="width: 30%;font-size: 1.4em">
+                                <div class="align-items-center mx-auto" style="margin-top: 3rem;">
+                                    <button class="button_slide slide_right mx-auto" style="width: 30%;font-size: 1.4em">
                                         Zarejestruj się!
                                     </button>
                                 </div>

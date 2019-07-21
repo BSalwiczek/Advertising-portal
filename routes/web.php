@@ -32,9 +32,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/klient/profil','ClientController@index');
 Route::get('/masazysta/profil','MasseurController@index');
 
-Route::get('/masazysci',function(){
-	return view('masseurs_ads.index');
-});
+Route::get('/masazysci','MasseurNoticeController@index');
 
 Route::get('masazysta/dodaj-nowe-ogloszenie','MasseurNoticeController@create');
+Route::post('masazysta/dodaj-nowe-ogloszenie','MasseurNoticeController@store');
 

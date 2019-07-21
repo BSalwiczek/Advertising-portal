@@ -2485,6 +2485,34 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -2494,15 +2522,29 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       user: {},
-      user_fields: {},
-      to_client: false,
-      to_masseur: false,
+      where: {
+        to_client: {
+          id: 0
+        },
+        to_masseur: {
+          id: 1
+        }
+      },
+      user_fields: {
+        company: "1",
+        where: []
+      },
       mtcCount: 1,
-      types: ['Masaż klasyczny', 'Masaż relaksacyjny', 'Masaż głowy', 'Masaż stóp', 'Masaż tajski'],
+      types: ['Masaż klasyczny', 'Masaż relaksacyjny', 'Masaż głowy', 'Masaż stóp', 'Masaż tajski', 'Inny'],
       selectedType: 'Masaż klasyczny',
       mtc_data: {
         "0": {
-          id: 0
+          idd: 0,
+          name: 'sc',
+          image: {},
+          description: 'sc',
+          price: 'sc',
+          duration: 'sc'
         }
       }
     };
@@ -2516,14 +2558,80 @@ __webpack_require__.r(__webpack_exports__);
     },
     AddNewMTC: function AddNewMTC() {
       Vue.set(this.mtc_data, this.mtcCount, {
-        id: this.mtcCount
+        id: this.mtcCount,
+        name: '',
+        description: '',
+        price: ''
       });
       this.mtcCount += 1;
       console.log(this.mtc_data);
     },
     deleteThisMTC: function deleteThisMTC(ix) {
-      delete this.mtc_data[ix];
-      console.log(this.mtc_data);
+      this.$delete(this.mtc_data, ix); // Vue.delete(this.mtc_data,ix);
+      // delete this.mtc_data[ix];
+    },
+    submit: function submit() {
+      var _this = this;
+
+      this.$validator.validateAll().then(function (value) {
+        if (value) {
+          var formData = new FormData();
+
+          for (var key in _this.user_fields) {
+            formData.append(key, _this.user_fields[key]);
+          }
+
+          var user_data = _this.user_fields;
+          user_data.mtc_data = _this.mtc_data;
+          var json_mtc = JSON.stringify(user_data.mtc_data);
+          formData.append('mtc_data', json_mtc);
+
+          for (var key in user_data.mtc_data) {
+            formData.append("image" + String(key), user_data.mtc_data[key].image);
+          }
+
+          var _iteratorNormalCompletion = true;
+          var _didIteratorError = false;
+          var _iteratorError = undefined;
+
+          try {
+            for (var _iterator = formData.entries()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+              var key = _step.value;
+              console.log(key[0] + ', ' + key[1]);
+            }
+          } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+                _iterator["return"]();
+              }
+            } finally {
+              if (_didIteratorError) {
+                throw _iteratorError;
+              }
+            }
+          }
+
+          axios.post('/masazysta/dodaj-nowe-ogloszenie', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }).then(function (response) {
+            console.log(response);
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        }
+      });
+    },
+    show_options: function show_options(index) {
+      if (index == 0) {
+        if (this.user_fields.where.indexOf(0) == -1) return false;else return true;
+      } else {
+        if (this.user_fields.where.indexOf(1) == -1) return false;else return true;
+      }
     }
   },
   beforeMount: function beforeMount() {
@@ -2613,14 +2721,92 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: {
-    mtype: String
-  },
+  props: ['value'],
   data: function data() {
     return {
-      type: this.mtype
+      selectedFile: null,
+      image: '/storage/massage_types/classic.jpg',
+      file: {}
     };
+  },
+  methods: {
+    updateData: function updateData() {
+      this.$emit('input', {
+        id: this.value.id,
+        name: this.$refs.massageType.value,
+        description: this.$refs.massageDesc.value,
+        price: this.$refs.price.value,
+        duration: this.$refs.duration.value,
+        image: this.file
+      }); // console.log(this.value)
+    },
+    onFileChange: function onFileChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.file = files[0];
+      this.createImage(files[0]);
+    },
+    createImage: function createImage(file) {
+      var _this = this;
+
+      var image = new Image();
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+        _this.image = e.target.result;
+      };
+
+      reader.readAsDataURL(file);
+      this.value.image = this.file;
+      this.updateData();
+    }
   }
 });
 
@@ -7216,7 +7402,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.type[data-v-aac1b4b8]{\n\twidth: 85%;\n\tmargin: 1em auto;\n\tbackground-color: #E7F8FF;\n\tpadding: 0 2em;\n\tpadding-right: 0;\n\tborder-left: 5px solid #53C5F7;\n}\ntextarea[data-v-aac1b4b8],input[data-v-aac1b4b8]{\n\tborder-color:#53C5F7;\n\tbackground-color: #E7F8FF;\n\tborder-width: 2px;\n\tpadding:0.5em;\n\tbox-shadow: none;\n\tfont-size: 1.1em;\n}\n.trash[data-v-aac1b4b8]{\n\tcolor: #333;\n}\n.trash[data-v-aac1b4b8]:hover{\n\tcolor: red;\n\tcursor: pointer;\n\t-webkit-animation: shake-data-v-aac1b4b8 0.2s;\n\t        animation: shake-data-v-aac1b4b8 0.2s;\n}\n@-webkit-keyframes shake-data-v-aac1b4b8 {\n0% { -webkit-transform: translate(1px, 1px) rotate(0deg); transform: translate(1px, 1px) rotate(0deg);\n}\n20% { -webkit-transform: translate(-3px, 0px) rotate(1deg); transform: translate(-3px, 0px) rotate(1deg);\n}\n40% { -webkit-transform: translate(1px, -1px) rotate(1deg); transform: translate(1px, -1px) rotate(1deg);\n}\n60% { -webkit-transform: translate(-3px, 1px) rotate(0deg); transform: translate(-3px, 1px) rotate(0deg);\n}\n80% { -webkit-transform: translate(-1px, -1px) rotate(1deg); transform: translate(-1px, -1px) rotate(1deg);\n}\n100% { -webkit-transform: translate(1px, -2px) rotate(-1deg); transform: translate(1px, -2px) rotate(-1deg);\n}\n}\n@keyframes shake-data-v-aac1b4b8 {\n0% { -webkit-transform: translate(1px, 1px) rotate(0deg); transform: translate(1px, 1px) rotate(0deg);\n}\n20% { -webkit-transform: translate(-3px, 0px) rotate(1deg); transform: translate(-3px, 0px) rotate(1deg);\n}\n40% { -webkit-transform: translate(1px, -1px) rotate(1deg); transform: translate(1px, -1px) rotate(1deg);\n}\n60% { -webkit-transform: translate(-3px, 1px) rotate(0deg); transform: translate(-3px, 1px) rotate(0deg);\n}\n80% { -webkit-transform: translate(-1px, -1px) rotate(1deg); transform: translate(-1px, -1px) rotate(1deg);\n}\n100% { -webkit-transform: translate(1px, -2px) rotate(-1deg); transform: translate(1px, -2px) rotate(-1deg);\n}\n}\n\n", ""]);
+exports.push([module.i, "\n.type[data-v-aac1b4b8]{\r\n\tbackground-color: #F5FCFF;\r\n\tpadding: 2em 0;\r\n\tpadding-top: 0.7em;\r\n\tborder-top: 5px solid #53C5F7;\r\n\tbox-shadow: 0px 0px 5px 0px rgba(0,0,0,0.12);\n}\ntextarea[data-v-aac1b4b8],input[data-v-aac1b4b8]{\r\n\tborder-color: #F5FCFF;\r\n\tbackground-color: #F5FCFF;\r\n\tborder-width: 1px;\r\n\tpadding:0.5em;\r\n\tbox-shadow: none;\r\n\toutline: none;\r\n\tfont-size: 1.1em;\r\n\tresize: none;\r\n\ttext-align: center;\n}\n.trash[data-v-aac1b4b8]{\r\n\tcolor: #333;\n}\n.trash[data-v-aac1b4b8]:hover{\r\n\tcolor: red;\r\n\tcursor: pointer;\r\n\t-webkit-animation: shake-data-v-aac1b4b8 0.2s;\r\n\t        animation: shake-data-v-aac1b4b8 0.2s;\n}\n@-webkit-keyframes shake-data-v-aac1b4b8 {\n0% { -webkit-transform: translate(1px, 1px) rotate(0deg); transform: translate(1px, 1px) rotate(0deg);\n}\n20% { -webkit-transform: translate(-3px, 0px) rotate(1deg); transform: translate(-3px, 0px) rotate(1deg);\n}\n40% { -webkit-transform: translate(1px, -1px) rotate(1deg); transform: translate(1px, -1px) rotate(1deg);\n}\n60% { -webkit-transform: translate(-3px, 1px) rotate(0deg); transform: translate(-3px, 1px) rotate(0deg);\n}\n80% { -webkit-transform: translate(-1px, -1px) rotate(1deg); transform: translate(-1px, -1px) rotate(1deg);\n}\n100% { -webkit-transform: translate(1px, -2px) rotate(-1deg); transform: translate(1px, -2px) rotate(-1deg);\n}\n}\n@keyframes shake-data-v-aac1b4b8 {\n0% { -webkit-transform: translate(1px, 1px) rotate(0deg); transform: translate(1px, 1px) rotate(0deg);\n}\n20% { -webkit-transform: translate(-3px, 0px) rotate(1deg); transform: translate(-3px, 0px) rotate(1deg);\n}\n40% { -webkit-transform: translate(1px, -1px) rotate(1deg); transform: translate(1px, -1px) rotate(1deg);\n}\n60% { -webkit-transform: translate(-3px, 1px) rotate(0deg); transform: translate(-3px, 1px) rotate(0deg);\n}\n80% { -webkit-transform: translate(-1px, -1px) rotate(1deg); transform: translate(-1px, -1px) rotate(1deg);\n}\n100% { -webkit-transform: translate(1px, -2px) rotate(-1deg); transform: translate(1px, -2px) rotate(-1deg);\n}\n}\n.img-container[data-v-aac1b4b8] {\r\n    display: inline-block;\r\n    position: relative;\n}\n.positioning[data-v-aac1b4b8]{\r\n  \tposition: absolute;\r\n  \tfont-size: 1.5em;\r\n\ttop: 50%;\r\n  \tleft: 50%;\r\n  \t-webkit-transform: translate(-50%, -50%);\r\n  \t        transform: translate(-50%, -50%);\r\n  \tbackground-color: #ddd;\r\n  \topacity: 0.4;\r\n  \t-webkit-transition: all 0.2s;\r\n  \ttransition: all 0.2s;\r\n  \twidth: 100%;\r\n  \theight: 100%;\r\n  \ttext-align: center;\n}\n.positioning[data-v-aac1b4b8]:hover{\r\n\topacity: 0.6;\r\n\tcursor: pointer;\r\n\tfont-size: 1.9em;\r\n\t-webkit-transition: all 0.2s;\r\n\ttransition: all 0.2s;\n}\n.upload[data-v-aac1b4b8]{\r\n  \tposition: absolute;\r\n\ttop: 50%;\r\n  \tleft: 50%;\r\n  \t-webkit-transform: translate(-50%, -50%);\r\n  \t        transform: translate(-50%, -50%);\n}\r\n\r\n\r\n", ""]);
 
 // exports
 
@@ -50606,7 +50792,7 @@ var render = function() {
                                       "button",
                                       {
                                         staticClass:
-                                          "button_slide slide_right ml-5",
+                                          "button_slide slide_right mx-auto",
                                         staticStyle: {
                                           width: "30%",
                                           "font-size": "1.4em"
@@ -51133,7 +51319,7 @@ var render = function() {
                                 _c(
                                   "div",
                                   {
-                                    staticClass: "align-items-center",
+                                    staticClass: "align-items-center mx-auto",
                                     staticStyle: { "margin-top": "3rem" }
                                   },
                                   [
@@ -51141,7 +51327,7 @@ var render = function() {
                                       "button",
                                       {
                                         staticClass:
-                                          "button_slide slide_right ml-5",
+                                          "button_slide slide_right mx-auto",
                                         staticStyle: {
                                           width: "30%",
                                           "font-size": "1.4em"
@@ -51526,7 +51712,7 @@ var render = function() {
               on: {
                 submit: function($event) {
                   $event.preventDefault()
-                  return _vm.onSubmit($event)
+                  return _vm.submit($event)
                 }
               }
             },
@@ -51558,8 +51744,8 @@ var render = function() {
                             {
                               name: "validate",
                               rawName: "v-validate",
-                              value: "required",
-                              expression: "'required'"
+                              value: "required|max:100",
+                              expression: "'required|max:100'"
                             },
                             {
                               name: "model",
@@ -51589,10 +51775,8 @@ var render = function() {
                               )
                             }
                           }
-                        })
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { attrs: { clas: "col-sm-3" } }, [
+                        }),
+                        _vm._v(" "),
                         _c("span", { staticClass: "error" }, [
                           _vm._v(_vm._s(_vm.errors.first("title")))
                         ])
@@ -51645,10 +51829,8 @@ var render = function() {
                               )
                             }
                           }
-                        })
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { attrs: { clas: "col-sm-3" } }, [
+                        }),
+                        _vm._v(" "),
                         _c("span", { staticClass: "error" }, [
                           _vm._v(_vm._s(_vm.errors.first("description")))
                         ])
@@ -51656,9 +51838,110 @@ var render = function() {
                     ]
                   ),
                   _vm._v(" "),
-                  _vm._m(2),
+                  _c(
+                    "div",
+                    {
+                      staticClass: "row",
+                      staticStyle: { "margin-top": "2rem" }
+                    },
+                    [
+                      _c("div", { staticClass: "offset-3 col-lg-8 col-md-8" }, [
+                        _c("div", { staticClass: "form-check" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.user_fields.company,
+                                expression: "user_fields.company"
+                              }
+                            ],
+                            staticClass: "form-check-input",
+                            attrs: {
+                              type: "radio",
+                              name: "company",
+                              id: "noComp",
+                              value: "1",
+                              checked: ""
+                            },
+                            domProps: {
+                              checked: _vm._q(_vm.user_fields.company, "1")
+                            },
+                            on: {
+                              change: function($event) {
+                                return _vm.$set(_vm.user_fields, "company", "1")
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "label",
+                            {
+                              staticClass: "form-check-label",
+                              attrs: { for: "noComp" }
+                            },
+                            [
+                              _vm._v(
+                                "\n\t\t\t\t\t\t\t\t    Nie posiadam firmy\n\t\t\t\t\t\t\t\t  \t"
+                              )
+                            ]
+                          )
+                        ])
+                      ])
+                    ]
+                  ),
                   _vm._v(" "),
-                  _vm._m(3),
+                  _c(
+                    "div",
+                    {
+                      staticClass: "row",
+                      staticStyle: { "margin-top": "0.5rem" }
+                    },
+                    [
+                      _c("div", { staticClass: "offset-3 col-lg-8 col-md-8" }, [
+                        _c("div", { staticClass: "form-check" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.user_fields.company,
+                                expression: "user_fields.company"
+                              }
+                            ],
+                            staticClass: "form-check-input",
+                            attrs: {
+                              type: "radio",
+                              name: "company",
+                              id: "Comp",
+                              value: "2"
+                            },
+                            domProps: {
+                              checked: _vm._q(_vm.user_fields.company, "2")
+                            },
+                            on: {
+                              change: function($event) {
+                                return _vm.$set(_vm.user_fields, "company", "2")
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "label",
+                            {
+                              staticClass: "form-check-label",
+                              attrs: { for: "Comp" }
+                            },
+                            [
+                              _vm._v(
+                                "\n\t\t\t\t\t\t\t\t    Posiadam firmę\n\t\t\t\t\t\t\t\t  "
+                              )
+                            ]
+                          )
+                        ])
+                      ])
+                    ]
+                  ),
                   _vm._v(" "),
                   _c("hr", { staticClass: "mt-5 mb-5" }),
                   _vm._v(" "),
@@ -51675,59 +51958,76 @@ var render = function() {
                     [
                       _c("div", { staticClass: "offset-3 col-lg-8 col-md-8" }, [
                         _c("div", { staticClass: "form-check" }, [
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.to_client,
-                                expression: "to_client"
-                              }
-                            ],
-                            staticClass: "form-check-input",
-                            attrs: {
-                              type: "checkbox",
-                              value: "",
-                              id: "defaultCheck1"
-                            },
-                            domProps: {
-                              checked: Array.isArray(_vm.to_client)
-                                ? _vm._i(_vm.to_client, "") > -1
-                                : _vm.to_client
-                            },
-                            on: {
-                              change: function($event) {
-                                var $$a = _vm.to_client,
-                                  $$el = $event.target,
-                                  $$c = $$el.checked ? true : false
-                                if (Array.isArray($$a)) {
-                                  var $$v = "",
-                                    $$i = _vm._i($$a, $$v)
-                                  if ($$el.checked) {
-                                    $$i < 0 &&
-                                      (_vm.to_client = $$a.concat([$$v]))
-                                  } else {
-                                    $$i > -1 &&
-                                      (_vm.to_client = $$a
-                                        .slice(0, $$i)
-                                        .concat($$a.slice($$i + 1)))
-                                  }
-                                } else {
-                                  _vm.to_client = $$c
-                                }
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
                           _c(
                             "label",
                             {
                               staticClass: "form-check-label",
-                              attrs: { for: "defaultCheck1" }
+                              attrs: { for: "to_client" }
                             },
                             [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.user_fields.where,
+                                    expression: "user_fields.where"
+                                  },
+                                  {
+                                    name: "validate",
+                                    rawName: "v-validate",
+                                    value: "required",
+                                    expression: "'required'"
+                                  }
+                                ],
+                                staticClass: "form-check-input",
+                                attrs: {
+                                  type: "checkbox",
+                                  id: "to_client",
+                                  name: "where"
+                                },
+                                domProps: {
+                                  value: _vm.where.to_client.id,
+                                  checked: Array.isArray(_vm.user_fields.where)
+                                    ? _vm._i(
+                                        _vm.user_fields.where,
+                                        _vm.where.to_client.id
+                                      ) > -1
+                                    : _vm.user_fields.where
+                                },
+                                on: {
+                                  change: function($event) {
+                                    var $$a = _vm.user_fields.where,
+                                      $$el = $event.target,
+                                      $$c = $$el.checked ? true : false
+                                    if (Array.isArray($$a)) {
+                                      var $$v = _vm.where.to_client.id,
+                                        $$i = _vm._i($$a, $$v)
+                                      if ($$el.checked) {
+                                        $$i < 0 &&
+                                          _vm.$set(
+                                            _vm.user_fields,
+                                            "where",
+                                            $$a.concat([$$v])
+                                          )
+                                      } else {
+                                        $$i > -1 &&
+                                          _vm.$set(
+                                            _vm.user_fields,
+                                            "where",
+                                            $$a
+                                              .slice(0, $$i)
+                                              .concat($$a.slice($$i + 1))
+                                          )
+                                      }
+                                    } else {
+                                      _vm.$set(_vm.user_fields, "where", $$c)
+                                    }
+                                  }
+                                }
+                              }),
                               _vm._v(
-                                "\n\t\t\t\t\t\t\t\t    U klienta\n\t\t\t\t\t\t\t\t  "
+                                "\n\t\t\t\t\t\t\t\t\t  \n\t\t\t\t\t\t\t\t\t    U klienta\n\t\t\t\t\t\t\t\t\t"
                               )
                             ]
                           )
@@ -51745,7 +52045,7 @@ var render = function() {
                       }
                     },
                     [
-                      _vm.to_client
+                      _vm.show_options(0)
                         ? _c(
                             "div",
                             {
@@ -51764,7 +52064,7 @@ var render = function() {
                                     "label",
                                     {
                                       staticClass: "col-form-label",
-                                      attrs: { for: "loc" }
+                                      attrs: { for: "area" }
                                     },
                                     [_vm._v("Obsługiwany obszar")]
                                   )
@@ -51783,21 +52083,21 @@ var render = function() {
                                     {
                                       name: "model",
                                       rawName: "v-model",
-                                      value: _vm.user_fields.loc,
-                                      expression: "user_fields.loc"
+                                      value: _vm.user_fields.area,
+                                      expression: "user_fields.area"
                                     }
                                   ],
                                   staticClass: "form-control",
-                                  class: { wrong: _vm.errors.has("loc") },
+                                  class: { wrong: _vm.errors.has("area") },
                                   attrs: {
                                     required: "",
                                     type: "text",
-                                    id: "loc",
-                                    name: "loc",
+                                    id: "area",
+                                    name: "area",
                                     placeholder:
                                       "np. Warszawa i okolice do 25km"
                                   },
-                                  domProps: { value: _vm.user_fields.loc },
+                                  domProps: { value: _vm.user_fields.area },
                                   on: {
                                     input: function($event) {
                                       if ($event.target.composing) {
@@ -51805,17 +52105,15 @@ var render = function() {
                                       }
                                       _vm.$set(
                                         _vm.user_fields,
-                                        "loc",
+                                        "area",
                                         $event.target.value
                                       )
                                     }
                                   }
-                                })
-                              ]),
-                              _vm._v(" "),
-                              _c("div", { attrs: { clas: "col-sm-3" } }, [
+                                }),
+                                _vm._v(" "),
                                 _c("span", { staticClass: "error" }, [
-                                  _vm._v(_vm._s(_vm.errors.first("loc")))
+                                  _vm._v(_vm._s(_vm.errors.first("area")))
                                 ])
                               ])
                             ]
@@ -51833,62 +52131,84 @@ var render = function() {
                     [
                       _c("div", { staticClass: "offset-3 col-lg-8 col-md-8" }, [
                         _c("div", { staticClass: "form-check" }, [
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.to_masseur,
-                                expression: "to_masseur"
-                              }
-                            ],
-                            staticClass: "form-check-input",
-                            attrs: {
-                              type: "checkbox",
-                              value: "",
-                              id: "defaultCheck2"
-                            },
-                            domProps: {
-                              checked: Array.isArray(_vm.to_masseur)
-                                ? _vm._i(_vm.to_masseur, "") > -1
-                                : _vm.to_masseur
-                            },
-                            on: {
-                              change: function($event) {
-                                var $$a = _vm.to_masseur,
-                                  $$el = $event.target,
-                                  $$c = $$el.checked ? true : false
-                                if (Array.isArray($$a)) {
-                                  var $$v = "",
-                                    $$i = _vm._i($$a, $$v)
-                                  if ($$el.checked) {
-                                    $$i < 0 &&
-                                      (_vm.to_masseur = $$a.concat([$$v]))
-                                  } else {
-                                    $$i > -1 &&
-                                      (_vm.to_masseur = $$a
-                                        .slice(0, $$i)
-                                        .concat($$a.slice($$i + 1)))
-                                  }
-                                } else {
-                                  _vm.to_masseur = $$c
-                                }
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
                           _c(
                             "label",
                             {
                               staticClass: "form-check-label",
-                              attrs: { for: "defaultCheck2" }
+                              attrs: { for: "to_masseur" }
                             },
                             [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "validate",
+                                    rawName: "v-validate",
+                                    value: "required",
+                                    expression: "'required'"
+                                  },
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.user_fields.where,
+                                    expression: "user_fields.where"
+                                  }
+                                ],
+                                ref: "to_masseur",
+                                staticClass: "form-check-input",
+                                attrs: {
+                                  type: "checkbox",
+                                  name: "where",
+                                  id: "to_masseur"
+                                },
+                                domProps: {
+                                  value: _vm.where.to_masseur.id,
+                                  checked: Array.isArray(_vm.user_fields.where)
+                                    ? _vm._i(
+                                        _vm.user_fields.where,
+                                        _vm.where.to_masseur.id
+                                      ) > -1
+                                    : _vm.user_fields.where
+                                },
+                                on: {
+                                  change: function($event) {
+                                    var $$a = _vm.user_fields.where,
+                                      $$el = $event.target,
+                                      $$c = $$el.checked ? true : false
+                                    if (Array.isArray($$a)) {
+                                      var $$v = _vm.where.to_masseur.id,
+                                        $$i = _vm._i($$a, $$v)
+                                      if ($$el.checked) {
+                                        $$i < 0 &&
+                                          _vm.$set(
+                                            _vm.user_fields,
+                                            "where",
+                                            $$a.concat([$$v])
+                                          )
+                                      } else {
+                                        $$i > -1 &&
+                                          _vm.$set(
+                                            _vm.user_fields,
+                                            "where",
+                                            $$a
+                                              .slice(0, $$i)
+                                              .concat($$a.slice($$i + 1))
+                                          )
+                                      }
+                                    } else {
+                                      _vm.$set(_vm.user_fields, "where", $$c)
+                                    }
+                                  }
+                                }
+                              }),
                               _vm._v(
                                 "\n\t\t\t\t\t\t\t\t\t\tU mnie\n\t\t\t\t\t\t\t\t\t"
                               )
                             ]
                           )
+                        ]),
+                        _vm._v(" "),
+                        _c("span", { staticClass: "error" }, [
+                          _vm._v(_vm._s(_vm.errors.first("where")))
                         ])
                       ])
                     ]
@@ -51903,7 +52223,7 @@ var render = function() {
                       }
                     },
                     [
-                      _vm.to_masseur
+                      _vm.show_options(1)
                         ? _c("div", [
                             _c(
                               "div",
@@ -51970,7 +52290,11 @@ var render = function() {
                                           )
                                         }
                                       }
-                                    })
+                                    }),
+                                    _vm._v(" "),
+                                    _c("span", { staticClass: "error" }, [
+                                      _vm._v(_vm._s(_vm.errors.first("city")))
+                                    ])
                                   ]
                                 )
                               ]
@@ -52045,7 +52369,13 @@ var render = function() {
                                           )
                                         }
                                       }
-                                    })
+                                    }),
+                                    _vm._v(" "),
+                                    _c("span", { staticClass: "error" }, [
+                                      _vm._v(
+                                        _vm._s(_vm.errors.first("province"))
+                                      )
+                                    ])
                                   ]
                                 )
                               ]
@@ -52120,7 +52450,11 @@ var render = function() {
                                           )
                                         }
                                       }
-                                    })
+                                    }),
+                                    _vm._v(" "),
+                                    _c("span", { staticClass: "error" }, [
+                                      _vm._v(_vm._s(_vm.errors.first("street")))
+                                    ])
                                   ]
                                 )
                               ]
@@ -52195,7 +52529,11 @@ var render = function() {
                                           )
                                         }
                                       }
-                                    })
+                                    }),
+                                    _vm._v(" "),
+                                    _c("span", { staticClass: "error" }, [
+                                      _vm._v(_vm._s(_vm.errors.first("number")))
+                                    ])
                                   ]
                                 )
                               ]
@@ -52215,76 +52553,81 @@ var render = function() {
                     "div",
                     {
                       staticClass: "d-flex mt-4 mx-auto",
-                      staticStyle: { width: "40%" }
+                      staticStyle: { width: "60%" }
                     },
                     [
                       _c(
-                        "select",
-                        {
-                          directives: [
+                        "div",
+                        { staticClass: "add-notice ml-5 d-flex mx-auto" },
+                        [
+                          _c("button", {
+                            staticClass: "plus-button my-auto",
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.AddNewMTC($event)
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "span",
                             {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.selectedType,
-                              expression: "selectedType"
-                            }
-                          ],
-                          staticClass: "form-control my-auto",
-                          on: {
-                            change: function($event) {
-                              var $$selectedVal = Array.prototype.filter
-                                .call($event.target.options, function(o) {
-                                  return o.selected
-                                })
-                                .map(function(o) {
-                                  var val = "_value" in o ? o._value : o.value
-                                  return val
-                                })
-                              _vm.selectedType = $event.target.multiple
-                                ? $$selectedVal
-                                : $$selectedVal[0]
-                            }
-                          }
-                        },
-                        _vm._l(_vm.types, function(type, index) {
-                          return _c(
-                            "option",
-                            { key: index, domProps: { value: type } },
-                            [_vm._v(_vm._s(type))]
+                              staticClass: "my-auto ml-2",
+                              on: { click: _vm.AddNewMTC }
+                            },
+                            [_vm._v("Dodaj nowy rodzaj")]
                           )
-                        }),
-                        0
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "add-notice ml-5" }, [
-                        _c("button", {
-                          staticClass: "plus-button my-auto",
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.AddNewMTC($event)
-                            }
-                          }
-                        })
-                      ])
+                        ]
+                      )
                     ]
                   ),
                   _vm._v(" "),
                   _c("div", { staticStyle: { height: "10px" } }),
                   _vm._v(" "),
-                  _vm._l(_vm.mtc_data, function(n) {
-                    return _c("massage-type-component", {
-                      key: _vm.mtc_data.id,
-                      attrs: { mtype: _vm.selectedType },
-                      on: {
-                        "delete-mtc": function($event) {
-                          return _vm.deleteThisMTC(_vm.mtc_data.id)
+                  _c(
+                    "div",
+                    {
+                      staticClass: "row mx-auto",
+                      staticStyle: { width: "97%" }
+                    },
+                    _vm._l(_vm.mtc_data, function(n, index) {
+                      return _c("massage-type-component", {
+                        key: index,
+                        on: {
+                          "delete-mtc": function($event) {
+                            return _vm.deleteThisMTC(index)
+                          }
+                        },
+                        model: {
+                          value: _vm.mtc_data[index],
+                          callback: function($$v) {
+                            _vm.$set(_vm.mtc_data, index, $$v)
+                          },
+                          expression: "mtc_data[index]"
                         }
+                      })
+                    }),
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "button_slide slide_right mx-auto w-50",
+                      staticStyle: {
+                        "font-size": "1.4em",
+                        "margin-top": "6rem"
                       }
-                    })
-                  })
+                    },
+                    [
+                      _vm._v(
+                        "\n                            Dodaj nowe ogłoszenie!\n                        "
+                      )
+                    ]
+                  )
                 ],
-                2
+                1
               )
             ]
           )
@@ -52325,75 +52668,6 @@ var staticRenderFns = [
         )
       ]
     )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "row", staticStyle: { "margin-top": "2rem" } },
-      [
-        _c("div", { staticClass: "offset-3 col-lg-8 col-md-8" }, [
-          _c("div", { staticClass: "form-check" }, [
-            _c("input", {
-              staticClass: "form-check-input",
-              attrs: {
-                type: "radio",
-                name: "exampleRadios",
-                id: "noComp",
-                value: "1",
-                checked: ""
-              }
-            }),
-            _vm._v(" "),
-            _c(
-              "label",
-              { staticClass: "form-check-label", attrs: { for: "noComp" } },
-              [
-                _vm._v(
-                  "\n\t\t\t\t\t\t\t\t    Nie posiadam firmy\n\t\t\t\t\t\t\t\t  "
-                )
-              ]
-            )
-          ])
-        ])
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "row", staticStyle: { "margin-top": "0.5rem" } },
-      [
-        _c("div", { staticClass: "offset-3 col-lg-8 col-md-8" }, [
-          _c("div", { staticClass: "form-check" }, [
-            _c("input", {
-              staticClass: "form-check-input",
-              attrs: {
-                type: "radio",
-                name: "exampleRadios",
-                id: "Comp",
-                value: "2"
-              }
-            }),
-            _vm._v(" "),
-            _c(
-              "label",
-              { staticClass: "form-check-label", attrs: { for: "Comp" } },
-              [
-                _vm._v(
-                  "\n\t\t\t\t\t\t\t\t    Posiadam firmę\n\t\t\t\t\t\t\t\t  "
-                )
-              ]
-            )
-          ])
-        ])
-      ]
-    )
   }
 ]
 render._withStripped = true
@@ -52426,53 +52700,9 @@ var render = function() {
       }
     },
     [
-      _c("div", { staticClass: "type row mt-4" }, [
-        _c("div", { staticClass: "col-lg-3 my-auto" }, [
-          _c("textarea", {
-            staticClass: "form-control",
-            staticStyle: { "font-size": "1.4em" },
-            attrs: { type: "text", name: "" },
-            domProps: { value: _vm.type }
-          })
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-lg-3" }, [
-          _c("img", {
-            staticClass: "img-fluid",
-            attrs: { src: "/storage/massage_types/classic.jpg" }
-          })
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-lg-4 my-auto" }, [
-          _c("textarea", {
-            staticClass: "form-control",
-            attrs: { placeholder: "Tutaj zamieść krótki opis masażu..." }
-          })
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-lg-2 my-auto" }, [
-          _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-md-7 my-auto p-0" }, [
-              _c("input", {
-                staticClass: "form-control",
-                attrs: { type: "text", name: "", placeholder: "cena" }
-              })
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-md-5 my-auto" }, [
-              _vm._v("\n\t\t\t\t\tPLN\n\t\t\t\t")
-            ])
-          ])
-        ]),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            directives: [{ name: "cl", rawName: "v-cl" }],
-            staticClass: "col-lg-1 mt-3 p-0 text-center",
-            staticStyle: { "margin-left": "-8.34%" }
-          },
-          [
+      _c("div", { staticClass: "col-lg-4 col-md-12 mt-5" }, [
+        _c("div", { staticClass: "type" }, [
+          _c("div", { staticClass: "p-0 text-right mr-3" }, [
             _c("i", {
               staticClass: "fas fa-trash-alt trash shake",
               on: {
@@ -52481,8 +52711,109 @@ var render = function() {
                 }
               }
             })
-          ]
-        )
+          ]),
+          _vm._v(" "),
+          _c("textarea", {
+            ref: "massageType",
+            staticClass: "form-control mb-3 mt-2 px-3",
+            staticStyle: { "font-size": "1.4em" },
+            attrs: { type: "text", placeholder: "Nazwa masażu" },
+            domProps: { value: _vm.value.name },
+            on: {
+              input: function($event) {
+                return _vm.updateData()
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("div", [
+            _c("div", { staticClass: "img-container" }, [
+              _c("img", {
+                staticClass: "img-fluid d-flex",
+                attrs: { src: _vm.image }
+              }),
+              _vm._v(" "),
+              _c("input", {
+                ref: "fileInput",
+                staticStyle: { display: "none" },
+                attrs: { type: "file" },
+                on: {
+                  change: function($event) {
+                    return _vm.onFileChange($event)
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "positioning",
+                  on: {
+                    click: function($event) {
+                      return _vm.$refs.fileInput.click()
+                    }
+                  }
+                },
+                [
+                  _c("div", { staticClass: "upload" }, [
+                    _c("i", { staticClass: "fas fa-upload" })
+                  ])
+                ]
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("textarea", {
+            ref: "massageDesc",
+            staticClass: "form-control mt-3 px-3",
+            attrs: { placeholder: "Tutaj zamieść krótki opis masażu..." },
+            domProps: { value: _vm.value.description },
+            on: {
+              input: function($event) {
+                return _vm.updateData()
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "d-flex mt-4 w-75 mx-auto",
+              staticStyle: { "font-size": "1.3em" }
+            },
+            [
+              _c("div", { staticClass: "my-auto" }, [
+                _c("input", {
+                  ref: "price",
+                  staticClass: "form-control",
+                  attrs: { type: "text", name: "", placeholder: "cena" },
+                  domProps: { value: _vm.value.price },
+                  on: {
+                    input: function($event) {
+                      return _vm.updateData()
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "my-auto ml-2" }, [
+                _vm._v("\n\t\t\t\t\tPLN\n\t\t\t\t")
+              ])
+            ]
+          ),
+          _vm._v(" "),
+          _c("input", {
+            ref: "duration",
+            staticClass: "form-control w-50 mx-auto mt-2",
+            attrs: { type: "text", name: "", placeholder: "Czas trwania" },
+            domProps: { value: _vm.value.duration },
+            on: {
+              input: function($event) {
+                return _vm.updateData()
+              }
+            }
+          })
+        ])
       ])
     ]
   )
@@ -64671,6 +65002,15 @@ var dict = {
     },
     accept_terms: {
       required: 'Należy zaakceptować regulamin'
+    },
+    title: {
+      required: 'Należy wpisać tytuł ogłoszenia'
+    },
+    description: {
+      required: 'Należy opisać ogłoszenie'
+    },
+    where: {
+      required: 'Zaznacz co najmniej jedno miejsce'
     }
   }
 };
@@ -65199,15 +65539,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!******************************************************************!*\
   !*** ./resources/js/components/masseur/MassageTypeComponent.vue ***!
   \******************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _MassageTypeComponent_vue_vue_type_template_id_aac1b4b8_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MassageTypeComponent.vue?vue&type=template&id=aac1b4b8&scoped=true& */ "./resources/js/components/masseur/MassageTypeComponent.vue?vue&type=template&id=aac1b4b8&scoped=true&");
 /* harmony import */ var _MassageTypeComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MassageTypeComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/masseur/MassageTypeComponent.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _MassageTypeComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _MassageTypeComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _MassageTypeComponent_vue_vue_type_style_index_0_id_aac1b4b8_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MassageTypeComponent.vue?vue&type=style&index=0&id=aac1b4b8&scoped=true&lang=css& */ "./resources/js/components/masseur/MassageTypeComponent.vue?vue&type=style&index=0&id=aac1b4b8&scoped=true&lang=css&");
+/* empty/unused harmony star reexport *//* harmony import */ var _MassageTypeComponent_vue_vue_type_style_index_0_id_aac1b4b8_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MassageTypeComponent.vue?vue&type=style&index=0&id=aac1b4b8&scoped=true&lang=css& */ "./resources/js/components/masseur/MassageTypeComponent.vue?vue&type=style&index=0&id=aac1b4b8&scoped=true&lang=css&");
 /* harmony import */ var _MassageTypeComponent_vue_vue_type_style_index_1_id_aac1b4b8_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./MassageTypeComponent.vue?vue&type=style&index=1&id=aac1b4b8&scoped=true&lang=css& */ "./resources/js/components/masseur/MassageTypeComponent.vue?vue&type=style&index=1&id=aac1b4b8&scoped=true&lang=css&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
@@ -65241,7 +65580,7 @@ component.options.__file = "resources/js/components/masseur/MassageTypeComponent
 /*!*******************************************************************************************!*\
   !*** ./resources/js/components/masseur/MassageTypeComponent.vue?vue&type=script&lang=js& ***!
   \*******************************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

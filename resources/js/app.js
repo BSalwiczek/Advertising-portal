@@ -33,6 +33,15 @@ const dict = {
 		},
 		accept_terms:{
 			required: 'Należy zaakceptować regulamin'
+		},
+		title:{
+			required: 'Należy wpisać tytuł ogłoszenia'
+		},
+		description:{
+			required: 'Należy opisać ogłoszenie'
+		},
+		where:{
+			required: 'Zaznacz co najmniej jedno miejsce'
 		}
 	}
 };

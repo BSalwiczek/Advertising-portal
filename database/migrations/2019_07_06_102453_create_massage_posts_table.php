@@ -16,9 +16,14 @@ class CreateMassagePostsTable extends Migration
         Schema::create('massage_posts', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('user_id');
-            $table->string('title',100);
-            $table->text('img_names');
+            $table->string('title',110);
             $table->text('description');
+            $table->boolean('company');
+            $table->text('area')->nullable();
+            $table->text('city')->nullable();
+            $table->text('province')->nullable();
+            $table->text('street')->nullable();
+            $table->integer('number')->nullable();
             $table->timestamps();
         });
     }
