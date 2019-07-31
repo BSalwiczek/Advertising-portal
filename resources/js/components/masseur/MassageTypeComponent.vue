@@ -5,37 +5,42 @@
 <template>
 	<transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut fast">
 		<div class="col-lg-4 col-md-12 mt-5">
-		<div class="type">
+		<div class="type text-center">
 				<div class="p-0 text-right mr-3">
 					<i @click="$emit('delete-mtc')" class="fas fa-trash-alt trash shake"></i>
 				</div>
 
-				<textarea type="text" class="form-control mb-3 mt-2 px-3" style="font-size: 1.4em" ref="massageType" placeholder="Nazwa masażu" :value="value.name" @input="updateData()"></textarea>
+				<textarea required v-validate type="text" class="form-control mt-2 px-3" style="font-size: 1.4em" ref="massageType" name="massageType" placeholder="Nazwa masażu" :value="value.name" @input="updateData()"></textarea>
+				<span class="error">{{ errors.first('massageType') }}</span>
 
 				<!-- <img class="img-fluid" src="/storage/massage_types/classic.jpg"> -->
 				<div>
-					<div class="img-container">
+					<div class="img-container mt-3">
 						<img class="img-fluid d-flex" :src="image">
-						<input type="file" style="display: none" ref="fileInput" @change="onFileChange($event)">
+						<input type="file" v-validate="'image'" name="image" style="display: none" ref="fileInput" @change="onFileChange($event)">
 						<div class="positioning" @click="$refs.fileInput.click()"><div class="upload"><i class="fas fa-upload"></i></div></div>
 					</div>
+					<span class="error">{{ errors.first('image') }}</span>
 
 				</div>
 				
 
-				<textarea class="form-control mt-3 px-3" ref="massageDesc" :value="value.description" placeholder="Tutaj zamieść krótki opis masażu..." @input="updateData()"></textarea>
+				<textarea required v-validate class="form-control mt-3 px-3" name="massageDesc" ref="massageDesc" id="massageDesc" :value="value.description" placeholder="Tutaj zamieść krótki opis masażu..." @input="updateData()"></textarea>
+				<span class="error">{{ errors.first('massageDesc') }}</span>
 
 
 				<div class="d-flex mt-4 w-75 mx-auto" style="font-size: 1.3em">
 					<div class="my-auto">
-						<input type="text" ref="price" @input="updateData()" :value="value.price" class="form-control" name="" placeholder="cena">
+						<input required v-validate="'required|numeric'" type="text" ref="price" name="price" @input="updateData()" :value="value.price" class="form-control" placeholder="cena">
+						<span class="error">{{ errors.first('price') }}</span>
 					</div>
 					<div class="my-auto ml-2">
 						PLN
 					</div>
 				</div>
 
-				<input ref="duration" type="text" @input="updateData()" :value="value.duration" class="form-control w-50 mx-auto mt-2" name="" placeholder="Czas trwania">
+				<input required v-validate ref="duration" type="text" @input="updateData()" :value="value.duration" class="form-control w-50 mx-auto mt-2" name="duration" placeholder="Czas trwania">
+				<span class="error">{{ errors.first('duration') }}</span>
 			
 		</div>
 
@@ -123,6 +128,7 @@ textarea,input{
 				selectedFile: null,
 				image: '/storage/massage_types/classic.jpg',
 				file: {},
+				user_fields: {},
 			}
 		},
 		methods: {

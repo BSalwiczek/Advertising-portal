@@ -1,20 +1,24 @@
 @extends('layouts.app')
 
-@section('title','Ogłoszenia masażystów i fizjoterapeutów')
-@section('tree1','Ogłoszenia masażystów i fizjoterapeutów')
+@section('title','Ogłoszenia masażystów')
+@section('tree1','Ogłoszenia masażystów')
 
 @section('content')
 <div class="container" style="padding:1rem;min-width:100%;margin:0">
 	<div class="row">
 		<div class="col-sm-10 offset-sm-1">
+
+			<filter-ads></filter-ads>
+
+
 			<div class="row">
 				<div class="col-lg-10">
-					<div class="post">
+{{-- 					<div class="post">
 						<h1>Masażysta z dojazdem do pacjenta.Woj.podlaskie.</h1>
 						<div class="row">
 							<div class="col-sm-3"><span style="color:#09A2E5">Dodane przez: </span>Tadeusz Matyskiel</div>
 							<div class="col-sm-3"><i class="far fa-clock" style="margin-right: 3%;color:#09A2E5"></i>03.07.2019</div>
-							<div class="col-sm-3"><i class="fas fa-map-marker-alt" style="margin-right: 3%;color:#09A2E5"></i>Województwo Podlaskie</span></div>
+							<div class="col-sm-6"><i class="fas fa-map-marker-alt" style="margin-right: 3%;color:#09A2E5"></i>Województwo Podlaskie</span></div>
 							<p class="post-description">
 								Profesjonalny masaż, skuteczne, najnowsze techniki masażu. 
 		Rozsądne ceny. Na wszelkie pytania odpowiadam telefonicznie. Masażysta z dużym doświadczeniem .Stosujemy najnowsze ,sprawdzone i najważniejsze,skuteczne techniki masażu Pomagamy skutecznie w zespołach bólowych wszystkich odcinków kręgosłupa, barków, kończyn, dłoni, stóp. Przed każdym zabiegiem przeprowadzamy dokładny wywiad z pacjentem oraz badanie w celu dobrania najbardziej skutecznych technik masażu. Wykonujemy również masaż relaksacyjny i bańką chińską całościowy lub poszczególnych partii ciała.
@@ -25,25 +29,40 @@
 								<button class="btn button_slide slide_right p-3">Dowiedz się więcej</button>
 							</div>
 						</div>
-					</div>
+					</div> --}}
 
-					@foreach ($ads as $ad)
-						<div class="post mt-5">
+					@if ($posts_count % (int)strlen(strval($posts_count))<5)
+						<h3>Znaleziono <strong>{{ $posts_count }}</strong> ogłoszenia</h3>
+					@else
+						<h3>Znaleziono <strong>{{ $posts_count }}</strong> ogłoszeń</h3>
+					@endif
+					<hr style="width: 30%" class="ml-0">
+
+					@foreach ($ads as $key => $ad)
+					<show-ad s_ad="{{ $ad }}" s_user="{{ $ad->user }}" offset="{{ $key }}"></show-ad>
+					{{-- <div class="post mt-5">
 						<h1>{{ $ad->title }}</h1>
 						<div class="row">
-							<div class="col-sm-3"><span style="color:#09A2E5">Dodane przez: </span>Tadeusz Matyskiel</div>
+							<div class="col-sm-3"><span style="color:#09A2E5">Dodane przez: </span>{{ $ad->user->name }} {{ $ad->user->surname }}</div>
 							<div class="col-sm-3"><i class="far fa-clock" style="margin-right: 3%;color:#09A2E5"></i>{{ $ad->created_at }}</div>
-							<div class="col-sm-3"><i class="fas fa-map-marker-alt" style="margin-right: 3%;color:#09A2E5"></i>{{ $ad->area }}</span></div>
+							<div class="col-sm-6">
+								<i class="fas fa-map-marker-alt" style="margin-right: 1%;color:#09A2E5"></i>
+								@if ($ad->area !== null)
+									{{ $ad->area}}
+								@else
+									{{ $ad->city }}, ul. {{ $ad->street }}
+								@endif
+							</span></div>
 							<p class="post-description">
 								{{ $ad->description }}
 							</p>
 						</div>
 						<div class="row">
 							<div class="col-sm-3 offset-9">
-								<button class="btn button_slide slide_right p-3">Dowiedz się więcej</button>
+								<a href="/masazysci/{{ $ad->slug }}" class="btn-slide-link"><button class="btn btn-first p-3">Dowiedz się więcej</button></a>
 							</div>
 						</div>
-					</div>
+					</div> --}}
 					@endforeach
 					
 				</div>
@@ -58,9 +77,19 @@
 							</a>
 						@endif
 					@endauth
+					@if(Cookie::get('added_post'))
+						<alert-success></alert-success>
+						{{ Cookie::queue(Cookie::forget('added_post')) }}
+					@endif
 				</div>
 			</div>
-		</div>	
+		</div>
+
 	</div>
+
+	<div class="mx-auto text-center">
+		{!! $ads->links() !!}
+	</div>
+	
 </div>
 @endsection

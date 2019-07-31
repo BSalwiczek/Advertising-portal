@@ -17,6 +17,7 @@ class CreateMasseurPostsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('user_id');
             $table->string('title',110);
+            $table->string('slug');
             $table->text('description');
             $table->boolean('company');
             $table->text('area')->nullable();

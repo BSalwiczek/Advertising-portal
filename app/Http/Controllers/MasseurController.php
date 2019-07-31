@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\MasseurPost;
+use Auth;
 
 class MasseurController extends Controller
 {

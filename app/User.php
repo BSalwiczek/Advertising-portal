@@ -42,4 +42,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $this->notify(new VerifyApiEmail); // my notification
     }
+
+    public function masseurposts()
+    {
+        return $this->hasMany('App\MasseurPost');
+    }
 }

@@ -99,7 +99,7 @@
                         <span class="error">Logowanie nie powiodło się! Sprawdz czy dobrze wpisałeś email i hasło.</span>
                     @enderror
                     <div class="align-items-center" style="margin-top: 3rem;">
-                        <button class="button_slide slide_right mx-auto" style="width: 30%;font-size: 1.4em">
+                        <button class="btn btn-first mx-auto" style="width: 30%;font-size: 1.4em">
                             Zaloguj się!
                         </button>
                     </div>

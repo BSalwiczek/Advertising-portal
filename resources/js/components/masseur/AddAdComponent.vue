@@ -166,7 +166,6 @@
 	                    	</div>
                     	</transition>
 
-
                      	<hr class="mt-5 mb-5">
 
                      	<h3 class="text-center">Oferowane rodzaje masażu</h3>
@@ -192,10 +191,17 @@
 	                     	v-model="mtc_data[index]"
 	                     	></massage-type-component>
 	                    </div>
-  	
-                        <button class="button_slide slide_right mx-auto w-50" style="font-size: 1.4em;margin-top: 6rem;">
+  						
+  						<div class="mx-auto text-center">
+                        <button class="btn btn-first w-50" style="font-size: 1.4em;margin-top: 6rem;">
                             Dodaj nowe ogłoszenie!
                         </button>
+                    </div>
+
+                        <form ref="redform" action="/dodano-nowe-ogloszenie" method="post">
+                        	<input type="hidden" name="_token" v-bind:value="csrf">
+                    	</form>
+
 
 
 
@@ -238,7 +244,7 @@ export default{
 			},
 			user_fields: {
 				company: "1",
-				where: []
+				where: [0]
 				
 			},
 			mtcCount:1,
@@ -246,12 +252,12 @@ export default{
 			selectedType:'Masaż klasyczny',
 			mtc_data:{
 				"0":{
-					idd:0,
-					name:'sc',
+					id:0,
+					name:'',
 					image: {},
-					description: 'sc',
-					price: 'sc',
-					duration: 'sc',
+					description: '',
+					price: '',
+					duration: '',
 				},
 			}
 		}
@@ -266,13 +272,10 @@ export default{
  		AddNewMTC(){
  			Vue.set(this.mtc_data,this.mtcCount,{id:this.mtcCount, name: '',description: '',price: ''});
  			this.mtcCount+=1;
- 			console.log(this.mtc_data);
 	 	},
 	 	deleteThisMTC: function(ix) {
 	 		
 	 		this.$delete(this.mtc_data,ix);
-	 		// Vue.delete(this.mtc_data,ix);
-            // delete this.mtc_data[ix];
            	
         },
 		submit(){
@@ -292,17 +295,21 @@ export default{
 		      var json_mtc = JSON.stringify(user_data.mtc_data);
 		      formData.append('mtc_data',json_mtc);
 
+
 		      for(var key in user_data.mtc_data)
 		      {
 		      	formData.append(("image"+String(key)),user_data.mtc_data[key].image);
 		      }
 
-		      for (var key of formData.entries()) {
-			    console.log(key[0] + ', ' + key[1]);
-			  }
+		   //    for (var key of formData.entries()) {
+			  //   console.log(key[0] + ', ' + key[1]);
+			  // }
 		      
 		      axios.post('/masazysta/dodaj-nowe-ogloszenie', formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {
-                console.log(response);
+		      	console.log(response.data);
+                if(response.data=='success'){
+                	 this.$refs.redform.submit();
+                }
 	          }).catch(error => {
 	            console.log(error);
 	          });

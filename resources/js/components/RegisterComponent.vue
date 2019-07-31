@@ -93,7 +93,7 @@
                                 </div>
                                 <span class="error">{{ errors.first('accept_terms') }}</span>
                                 <div class="align-items-center" style="margin-top: 3rem;">
-                                    <button class="button_slide slide_right mx-auto" style="width: 30%;font-size: 1.4em">
+                                    <button class="btn-first btn mx-auto" style="width: 30%;font-size: 1.4em">
                                         Zarejestruj się!
                                     </button>
                                 </div>
@@ -175,7 +175,7 @@
                                 </div>
                                 <span class="error">{{ errors.first('accept_terms') }}</span>
                                 <div class="align-items-center mx-auto" style="margin-top: 3rem;">
-                                    <button class="button_slide slide_right mx-auto" style="width: 30%;font-size: 1.4em">
+                                    <button class="btn-first btn mx-auto" style="width: 30%;font-size: 1.4em">
                                         Zarejestruj się!
                                     </button>
                                 </div>

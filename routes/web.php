@@ -32,8 +32,14 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/klient/profil','ClientController@index');
 Route::get('/masazysta/profil','MasseurController@index');
 
-Route::get('/masazysci','MasseurNoticeController@index');
+Route::get('/masazysci','MasseurNoticeController@index')->name('masazysci');
+Route::get('/masazysci/{slug}','MasseurNoticeController@show');
 
 Route::get('masazysta/dodaj-nowe-ogloszenie','MasseurNoticeController@create');
 Route::post('masazysta/dodaj-nowe-ogloszenie','MasseurNoticeController@store');
+Route::post('/dodano-nowe-ogloszenie','MasseurNoticeController@gotoads');
+
+// 'MasseurController@gohome'
+
+
 

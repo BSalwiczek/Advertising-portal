@@ -42,6 +42,37 @@ const dict = {
 		},
 		where:{
 			required: 'Zaznacz co najmniej jedno miejsce'
+		},
+		city:{
+			required: 'Miejscowość jest wymagana'
+		},
+		province:{
+			required: 'Województwo jest wymagane'
+		},
+		street:{
+			required: 'Ulica jest wymagana'
+		},
+		area:{
+			required: 'Obszar jest wymagany'
+		},
+		number:{
+			required: 'Numer jest wymagany'
+		},
+		massageType:{
+			required: 'Wpisz nazwę masażu'
+		},
+		massageDesc:{
+			required: 'Wpisz opis masażu'
+		},
+		price:{
+			required: 'Wpisz cenę',
+			numeric: 'Cena musi być liczbą'
+		},
+		duration:{
+			required: 'Podaj czas trwania masażu'
+		},
+		image:{
+			image: 'Wysłany plik musi być zdjęciem'
 		}
 	}
 };
@@ -65,6 +96,13 @@ Vue.component('register-component', require('./components/RegisterComponent.vue'
 Vue.component('verify-component', require('./components/VerifyComponent.vue').default);
 Vue.component('client-profile', require('./components/client/Profile.vue').default);
 Vue.component('add-m-ad', require('./components/masseur/AddAdComponent.vue').default);
+Vue.component('alert-success', require('./components/alerts/AlertSuccessComponent.vue').default);
+Vue.component('massage-types-gallery', require('./components/masseur/MassageTypeGallery.vue').default);
+Vue.component('show-ad', require('./components/masseur/ShowAdComponent.vue').default);
+Vue.component('filter-ads', require('./components/FilterAdsComponent.vue').default);
+
+// import vSelect from 'vue-select';
+// Vue.component('v-select', vSelect);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
