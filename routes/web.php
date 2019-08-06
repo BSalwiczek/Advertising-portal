@@ -39,6 +39,7 @@ Route::get('masazysta/dodaj-nowe-ogloszenie','MasseurNoticeController@create');
 Route::post('masazysta/dodaj-nowe-ogloszenie','MasseurNoticeController@store');
 Route::post('/dodano-nowe-ogloszenie','MasseurNoticeController@gotoads');
 
+Route::post('/getCities','ApiController@getCities');
 // 'MasseurController@gohome'
 
 

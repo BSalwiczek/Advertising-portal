@@ -13,6 +13,7 @@
         "kartik-v/bootstrap-fileinput": "@dev",
         "laravel/framework": "5.8.*",
         "laravel/tinker": "^1.0",
+        "mrcnpdlk/teryt-api": "^0.3.3",
         "snapappointments/bootstrap-select": "^1.13"
     },
     "require-dev": {

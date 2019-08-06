@@ -15,12 +15,9 @@
 
           <span v-else>
             <span v-html="selectedOption.name"></span>
-            <span class="remove-btn" @click="removeChosen()"><i class="far fa-times-circle"></i></span>
+            <button class="remove-btn" @click="removeChosen()"><i class="far fa-times-circle"></i></button>
           </span>
         </li>
-
-        {{ selectedOption }}
-        {{ userInput }}
 
         <ul v-if="showMenu" class="dropdown-men" > <!-- class="dropdown-men"  -->
             <li class="text-center py-1" v-if="optionsEmpty()" v-closable="{
@@ -35,7 +32,7 @@
                     exclude: ['dropdownbutton'],
                     handler: 'onClose'
                   }">
-                    <span v-html="option.name"></span>
+                  {{ option.name }}, woj. {{ option.province}}
                 </a>
             </li>
         </ul>
@@ -158,11 +155,16 @@
   float: right;
 }
 
-.remove-btn{
+.remove-btn:active,.remove-btn:focus,.remove-btn{
   color: red;
   float:right;
-  transition: all .2s
+  background: transparent;
+  box-shadow: none;
+  border:none;
+  outline: inherit;
+  transition: all .2s;
 }
+
 
 .remove-btn:hover{
   font-size: 1.1em;
@@ -317,19 +319,8 @@ export default {
             userInput: "",
             showMenu: false,
             placeholderText: 'Please select an item',
-            options: [],
-          //   options:[          
-          // {id: 0,name:'Wszystkie'},
-          // {id: 1,name:'Wiecej niż 5'},
-          // {id: 2,name:'Wiecej niż 10'},
-          // {id: 3,name:'Wiecej niż 20'},
-          // {id: 4,name:'Wiecej niż 50'},
-          // {id: 5,name:'Wiecej niż 100'},
-          // {id: 6,name:'Wiecej niż 150'},
-          // {id: 7,name:'Wiecej niż 200'},
-          // {id: 8,name:'Wiecej niż 300'},
-          // {id: 9,name:'Wiecej niż 500'},
-          // {id: 10,name:'Wiecej niż 1000'},]
+            // options: [],
+            options:[]
         }
     },
     props: {
@@ -352,9 +343,9 @@ export default {
             this.$emit('updateOption', this.selectedOption);
         },
 
-        toggleMenu() {
-          this.showMenu = !this.showMenu;
-        },
+        // toggleMenu() {
+        //   this.showMenu = !this.showMenu;
+        // },
 
         onClose(){
           this.showMenu = false;
@@ -379,8 +370,23 @@ export default {
         },
 
         userTyped(){
+          this.showMenu = true;
           if(this.userInput.length > 2){
-            console.log("to już 3 znaki!")
+            console.log("to już 3 znaki!");
+            axios.post('/getCities',{input:this.userInput}).then(response => {
+              if(response.data == 0){
+                console.log('nie ma takiej miejscowosci');
+              }else{
+                this.options = [];
+                console.log(response.data);
+                for(var city in response.data){
+                  this.options.push({'id':city,'name':response.data[city].cityName,'province':response.data[city].provinceName.toLowerCase()});
+                }  
+              }
+              
+            }).catch((error)=>{
+              console.log(error);
+            })
           }
         }
     }

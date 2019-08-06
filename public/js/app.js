@@ -2352,6 +2352,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
  // This variable will hold the reference to
 // document's click handler
 
@@ -2411,19 +2413,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.directive('closable', {
       userInput: "",
       showMenu: false,
       placeholderText: 'Please select an item',
-      options: [] //   options:[          
-      // {id: 0,name:'Wszystkie'},
-      // {id: 1,name:'Wiecej niż 5'},
-      // {id: 2,name:'Wiecej niż 10'},
-      // {id: 3,name:'Wiecej niż 20'},
-      // {id: 4,name:'Wiecej niż 50'},
-      // {id: 5,name:'Wiecej niż 100'},
-      // {id: 6,name:'Wiecej niż 150'},
-      // {id: 7,name:'Wiecej niż 200'},
-      // {id: 8,name:'Wiecej niż 300'},
-      // {id: 9,name:'Wiecej niż 500'},
-      // {id: 10,name:'Wiecej niż 1000'},]
-
+      // options: [],
+      options: []
     };
   },
   props: {
@@ -2442,9 +2433,9 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.directive('closable', {
       this.showMenu = false;
       this.$emit('updateOption', this.selectedOption);
     },
-    toggleMenu: function toggleMenu() {
-      this.showMenu = !this.showMenu;
-    },
+    // toggleMenu() {
+    //   this.showMenu = !this.showMenu;
+    // },
     onClose: function onClose() {
       this.showMenu = false;
     },
@@ -2463,8 +2454,32 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.directive('closable', {
       };
     },
     userTyped: function userTyped() {
+      var _this = this;
+
+      this.showMenu = true;
+
       if (this.userInput.length > 2) {
         console.log("to już 3 znaki!");
+        axios.post('/getCities', {
+          input: this.userInput
+        }).then(function (response) {
+          if (response.data == 0) {
+            console.log('nie ma takiej miejscowosci');
+          } else {
+            _this.options = [];
+            console.log(response.data);
+
+            for (var city in response.data) {
+              _this.options.push({
+                'id': city,
+                'name': response.data[city].cityName,
+                'province': response.data[city].provinceName.toLowerCase()
+              });
+            }
+          }
+        })["catch"](function (error) {
+          console.log(error);
+        });
       }
     }
   }
@@ -8400,7 +8415,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.dropdown-input{\r\n  border:none;\r\n  outline: none;\r\n  box-shadow: none;\n}\n.dropdown-input:hover{\r\n  border:none;\r\n  border:none;\r\n  outline: none;\r\n  box-shadow: none;\n}\n.btn-group {\r\n  min-width: 160px;\r\n  height: 40px;\r\n  position: relative;\r\n  margin: 10px 1px;\r\n  display: inline-block;\r\n  vertical-align: middle;\n}\n.btn-group a:hover {\r\n  text-decoration: none;\n}\n.dropdown-toggle {\r\n  color: #636b6f;\r\n  min-width: 160px;\r\n  padding: 10px;\r\n  text-transform: none;\r\n  font-weight: 300;\r\n  margin-bottom: 7px;\r\n  border: 0;\r\n  background-image: -webkit-gradient(linear, left top, left bottom, from(#009688), to(#009688)), -webkit-gradient(linear, left top, left bottom, from(#D2D2D2), to(#D2D2D2));\r\n  background-image: linear-gradient(#009688, #009688), linear-gradient(#D2D2D2, #D2D2D2);\r\n  background-size: 0 2px, 100% 1px;\r\n  background-repeat: no-repeat;\r\n  background-position: center bottom, center calc(100% - 1px);\r\n  background-color: transparent;\r\n  -webkit-transition: background 0s ease-out;\r\n  transition: background 0s ease-out;\r\n  float: none;\r\n  box-shadow: none;\r\n  border-radius: 0;\n}\n.dropdown-toggle:hover {\r\n  background: #eee;\r\n  cursor: pointer;\n}\n.dropdown-toggle::after{\r\n  border:0;\n}\n.no-outline:hover{  background-image: -webkit-gradient(linear, left top, left bottom, from(#009688), to(#009688)), -webkit-gradient(linear, left top, left bottom, from(#D2D2D2), to(#D2D2D2));  background-image: linear-gradient(#009688, #009688), linear-gradient(#D2D2D2, #D2D2D2);\r\n  background-size: 0 2px, 100% 1px;\r\n  background-repeat: no-repeat;\r\n  background-position: center bottom, center calc(100% - 1px);\r\n  background-color: transparent;\n}\n.dropdown-men {\r\n  position: absolute;\r\n  top: 100%;\r\n  left: 0;\r\n  z-index: 1000;\r\n  float: left;\r\n  min-width: 100%;\r\n  padding: 5px 0;\r\n  margin: 2px 0 0;\r\n  list-style: none;\r\n  font-size: 14px;\r\n  text-align: left;\r\n  background-color: #fff;\r\n  border: 1px solid #ccc;\r\n  border-radius: 4px;\r\n  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);\r\n  background-clip: padding-box;\n}\n.dropdown-men > li > a {\r\n  padding: 10px 30px;\r\n  display: block;\r\n  clear: both;\r\n  font-weight: normal;\r\n  line-height: 1.6;\r\n  color: #333333;\r\n  white-space: nowrap;\r\n  text-decoration: none;\n}\n.dropdown-men > li > a:hover {\r\n  background: #eee;\r\n  color: #53C5F7;\n}\n.dropdown-men > li {\r\n  overflow: hidden;\r\n  width: 100%;\r\n  position: relative;\r\n  margin: 0;\n}\n.caret {\r\n  display: relative;\r\n  width: 0;\r\n  position: relative;\r\n  top: 10px;\r\n  height: 0;\r\n  margin-left: 2px;\r\n  vertical-align: middle;\r\n  border-top: 4px dashed;\r\n  border-top: 4px solid \\9;\r\n  border-right: 4px solid transparent;\r\n  border-left: 4px solid transparent;\r\n  float: right;\n}\n.remove-btn{\r\n  color: red;\r\n  float:right;\r\n  -webkit-transition: all .2s;\r\n  transition: all .2s\n}\n.remove-btn:hover{\r\n  font-size: 1.1em;\r\n  margin-top: -0.05rem;\r\n  margin-right: -0.05rem;\r\n  -webkit-transition: all .2s;\r\n  transition: all .2s\n}\nli {\r\n    list-style: none;\n}\r\n\r\n\r\n/* loading */\n.lds-spinner {\r\n  display: inline-block;\r\n  position: relative;\r\n  width: 32px;\r\n  height: 32px;\r\n  line-height: 100px;\r\n  vertical-align: middle;\n}\n.lds-spinner div {\r\n  -webkit-transform-origin: 16px 16px;\r\n          transform-origin: 16px 16px;\r\n  -webkit-animation: lds-spinner 1.2s linear infinite;\r\n          animation: lds-spinner 1.2s linear infinite;\n}\n.lds-spinner div:after {\r\n  content: \" \";\r\n  display: block;\r\n  position: absolute;\r\n  top: 1px;\r\n  left: 14px;\r\n  width: 2.5px;\r\n  height: 7px;\r\n  border-radius: 20%;\r\n  background: #222;\n}\n.lds-spinner div:nth-child(1) {\r\n  -webkit-transform: rotate(0deg);\r\n          transform: rotate(0deg);\r\n  -webkit-animation-delay: -1.1s;\r\n          animation-delay: -1.1s;\n}\n.lds-spinner div:nth-child(2) {\r\n  -webkit-transform: rotate(30deg);\r\n          transform: rotate(30deg);\r\n  -webkit-animation-delay: -1s;\r\n          animation-delay: -1s;\n}\n.lds-spinner div:nth-child(3) {\r\n  -webkit-transform: rotate(60deg);\r\n          transform: rotate(60deg);\r\n  -webkit-animation-delay: -0.9s;\r\n          animation-delay: -0.9s;\n}\n.lds-spinner div:nth-child(4) {\r\n  -webkit-transform: rotate(90deg);\r\n          transform: rotate(90deg);\r\n  -webkit-animation-delay: -0.8s;\r\n          animation-delay: -0.8s;\n}\n.lds-spinner div:nth-child(5) {\r\n  -webkit-transform: rotate(120deg);\r\n          transform: rotate(120deg);\r\n  -webkit-animation-delay: -0.7s;\r\n          animation-delay: -0.7s;\n}\n.lds-spinner div:nth-child(6) {\r\n  -webkit-transform: rotate(150deg);\r\n          transform: rotate(150deg);\r\n  -webkit-animation-delay: -0.6s;\r\n          animation-delay: -0.6s;\n}\n.lds-spinner div:nth-child(7) {\r\n  -webkit-transform: rotate(180deg);\r\n          transform: rotate(180deg);\r\n  -webkit-animation-delay: -0.5s;\r\n          animation-delay: -0.5s;\n}\n.lds-spinner div:nth-child(8) {\r\n  -webkit-transform: rotate(210deg);\r\n          transform: rotate(210deg);\r\n  -webkit-animation-delay: -0.4s;\r\n          animation-delay: -0.4s;\n}\n.lds-spinner div:nth-child(9) {\r\n  -webkit-transform: rotate(240deg);\r\n          transform: rotate(240deg);\r\n  -webkit-animation-delay: -0.3s;\r\n          animation-delay: -0.3s;\n}\n.lds-spinner div:nth-child(10) {\r\n  -webkit-transform: rotate(270deg);\r\n          transform: rotate(270deg);\r\n  -webkit-animation-delay: -0.2s;\r\n          animation-delay: -0.2s;\n}\n.lds-spinner div:nth-child(11) {\r\n  -webkit-transform: rotate(300deg);\r\n          transform: rotate(300deg);\r\n  -webkit-animation-delay: -0.1s;\r\n          animation-delay: -0.1s;\n}\n.lds-spinner div:nth-child(12) {\r\n  -webkit-transform: rotate(330deg);\r\n          transform: rotate(330deg);\r\n  -webkit-animation-delay: 0s;\r\n          animation-delay: 0s;\n}\n@-webkit-keyframes lds-spinner {\n0% {\r\n    opacity: 1;\n}\n100% {\r\n    opacity: 0;\n}\n}\n@keyframes lds-spinner {\n0% {\r\n    opacity: 1;\n}\n100% {\r\n    opacity: 0;\n}\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.dropdown-input{\r\n  border:none;\r\n  outline: none;\r\n  box-shadow: none;\n}\n.dropdown-input:hover{\r\n  border:none;\r\n  border:none;\r\n  outline: none;\r\n  box-shadow: none;\n}\n.btn-group {\r\n  min-width: 160px;\r\n  height: 40px;\r\n  position: relative;\r\n  margin: 10px 1px;\r\n  display: inline-block;\r\n  vertical-align: middle;\n}\n.btn-group a:hover {\r\n  text-decoration: none;\n}\n.dropdown-toggle {\r\n  color: #636b6f;\r\n  min-width: 160px;\r\n  padding: 10px;\r\n  text-transform: none;\r\n  font-weight: 300;\r\n  margin-bottom: 7px;\r\n  border: 0;\r\n  background-image: -webkit-gradient(linear, left top, left bottom, from(#009688), to(#009688)), -webkit-gradient(linear, left top, left bottom, from(#D2D2D2), to(#D2D2D2));\r\n  background-image: linear-gradient(#009688, #009688), linear-gradient(#D2D2D2, #D2D2D2);\r\n  background-size: 0 2px, 100% 1px;\r\n  background-repeat: no-repeat;\r\n  background-position: center bottom, center calc(100% - 1px);\r\n  background-color: transparent;\r\n  -webkit-transition: background 0s ease-out;\r\n  transition: background 0s ease-out;\r\n  float: none;\r\n  box-shadow: none;\r\n  border-radius: 0;\n}\n.dropdown-toggle:hover {\r\n  background: #eee;\r\n  cursor: pointer;\n}\n.dropdown-toggle::after{\r\n  border:0;\n}\n.no-outline:hover{  background-image: -webkit-gradient(linear, left top, left bottom, from(#009688), to(#009688)), -webkit-gradient(linear, left top, left bottom, from(#D2D2D2), to(#D2D2D2));  background-image: linear-gradient(#009688, #009688), linear-gradient(#D2D2D2, #D2D2D2);\r\n  background-size: 0 2px, 100% 1px;\r\n  background-repeat: no-repeat;\r\n  background-position: center bottom, center calc(100% - 1px);\r\n  background-color: transparent;\n}\n.dropdown-men {\r\n  position: absolute;\r\n  top: 100%;\r\n  left: 0;\r\n  z-index: 1000;\r\n  float: left;\r\n  min-width: 100%;\r\n  padding: 5px 0;\r\n  margin: 2px 0 0;\r\n  list-style: none;\r\n  font-size: 14px;\r\n  text-align: left;\r\n  background-color: #fff;\r\n  border: 1px solid #ccc;\r\n  border-radius: 4px;\r\n  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);\r\n  background-clip: padding-box;\n}\n.dropdown-men > li > a {\r\n  padding: 10px 30px;\r\n  display: block;\r\n  clear: both;\r\n  font-weight: normal;\r\n  line-height: 1.6;\r\n  color: #333333;\r\n  white-space: nowrap;\r\n  text-decoration: none;\n}\n.dropdown-men > li > a:hover {\r\n  background: #eee;\r\n  color: #53C5F7;\n}\n.dropdown-men > li {\r\n  overflow: hidden;\r\n  width: 100%;\r\n  position: relative;\r\n  margin: 0;\n}\n.caret {\r\n  display: relative;\r\n  width: 0;\r\n  position: relative;\r\n  top: 10px;\r\n  height: 0;\r\n  margin-left: 2px;\r\n  vertical-align: middle;\r\n  border-top: 4px dashed;\r\n  border-top: 4px solid \\9;\r\n  border-right: 4px solid transparent;\r\n  border-left: 4px solid transparent;\r\n  float: right;\n}\n.remove-btn:active,.remove-btn:focus,.remove-btn{\r\n  color: red;\r\n  float:right;\r\n  background: transparent;\r\n  box-shadow: none;\r\n  border:none;\r\n  outline: inherit;\r\n  -webkit-transition: all .2s;\r\n  transition: all .2s;\n}\n.remove-btn:hover{\r\n  font-size: 1.1em;\r\n  margin-top: -0.05rem;\r\n  margin-right: -0.05rem;\r\n  -webkit-transition: all .2s;\r\n  transition: all .2s\n}\nli {\r\n    list-style: none;\n}\r\n\r\n\r\n/* loading */\n.lds-spinner {\r\n  display: inline-block;\r\n  position: relative;\r\n  width: 32px;\r\n  height: 32px;\r\n  line-height: 100px;\r\n  vertical-align: middle;\n}\n.lds-spinner div {\r\n  -webkit-transform-origin: 16px 16px;\r\n          transform-origin: 16px 16px;\r\n  -webkit-animation: lds-spinner 1.2s linear infinite;\r\n          animation: lds-spinner 1.2s linear infinite;\n}\n.lds-spinner div:after {\r\n  content: \" \";\r\n  display: block;\r\n  position: absolute;\r\n  top: 1px;\r\n  left: 14px;\r\n  width: 2.5px;\r\n  height: 7px;\r\n  border-radius: 20%;\r\n  background: #222;\n}\n.lds-spinner div:nth-child(1) {\r\n  -webkit-transform: rotate(0deg);\r\n          transform: rotate(0deg);\r\n  -webkit-animation-delay: -1.1s;\r\n          animation-delay: -1.1s;\n}\n.lds-spinner div:nth-child(2) {\r\n  -webkit-transform: rotate(30deg);\r\n          transform: rotate(30deg);\r\n  -webkit-animation-delay: -1s;\r\n          animation-delay: -1s;\n}\n.lds-spinner div:nth-child(3) {\r\n  -webkit-transform: rotate(60deg);\r\n          transform: rotate(60deg);\r\n  -webkit-animation-delay: -0.9s;\r\n          animation-delay: -0.9s;\n}\n.lds-spinner div:nth-child(4) {\r\n  -webkit-transform: rotate(90deg);\r\n          transform: rotate(90deg);\r\n  -webkit-animation-delay: -0.8s;\r\n          animation-delay: -0.8s;\n}\n.lds-spinner div:nth-child(5) {\r\n  -webkit-transform: rotate(120deg);\r\n          transform: rotate(120deg);\r\n  -webkit-animation-delay: -0.7s;\r\n          animation-delay: -0.7s;\n}\n.lds-spinner div:nth-child(6) {\r\n  -webkit-transform: rotate(150deg);\r\n          transform: rotate(150deg);\r\n  -webkit-animation-delay: -0.6s;\r\n          animation-delay: -0.6s;\n}\n.lds-spinner div:nth-child(7) {\r\n  -webkit-transform: rotate(180deg);\r\n          transform: rotate(180deg);\r\n  -webkit-animation-delay: -0.5s;\r\n          animation-delay: -0.5s;\n}\n.lds-spinner div:nth-child(8) {\r\n  -webkit-transform: rotate(210deg);\r\n          transform: rotate(210deg);\r\n  -webkit-animation-delay: -0.4s;\r\n          animation-delay: -0.4s;\n}\n.lds-spinner div:nth-child(9) {\r\n  -webkit-transform: rotate(240deg);\r\n          transform: rotate(240deg);\r\n  -webkit-animation-delay: -0.3s;\r\n          animation-delay: -0.3s;\n}\n.lds-spinner div:nth-child(10) {\r\n  -webkit-transform: rotate(270deg);\r\n          transform: rotate(270deg);\r\n  -webkit-animation-delay: -0.2s;\r\n          animation-delay: -0.2s;\n}\n.lds-spinner div:nth-child(11) {\r\n  -webkit-transform: rotate(300deg);\r\n          transform: rotate(300deg);\r\n  -webkit-animation-delay: -0.1s;\r\n          animation-delay: -0.1s;\n}\n.lds-spinner div:nth-child(12) {\r\n  -webkit-transform: rotate(330deg);\r\n          transform: rotate(330deg);\r\n  -webkit-animation-delay: 0s;\r\n          animation-delay: 0s;\n}\n@-webkit-keyframes lds-spinner {\n0% {\r\n    opacity: 1;\n}\n100% {\r\n    opacity: 0;\n}\n}\n@keyframes lds-spinner {\n0% {\r\n    opacity: 1;\n}\n100% {\r\n    opacity: 0;\n}\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -51820,7 +51835,7 @@ var render = function() {
               }),
               _vm._v(" "),
               _c(
-                "span",
+                "button",
                 {
                   staticClass: "remove-btn",
                   on: {
@@ -51834,13 +51849,7 @@ var render = function() {
             ])
       ]
     ),
-    _vm._v(
-      "\n\n        " +
-        _vm._s(_vm.selectedOption) +
-        "\n        " +
-        _vm._s(_vm.userInput) +
-        "\n\n        "
-    ),
+    _vm._v(" "),
     _vm.showMenu
       ? _c(
           "ul",
@@ -51891,9 +51900,13 @@ var render = function() {
                         }
                       },
                       [
-                        _c("span", {
-                          domProps: { innerHTML: _vm._s(option.name) }
-                        })
+                        _vm._v(
+                          "\n                  " +
+                            _vm._s(option.name) +
+                            ", woj. " +
+                            _vm._s(option.province) +
+                            "\n                "
+                        )
                       ]
                     )
                   ])

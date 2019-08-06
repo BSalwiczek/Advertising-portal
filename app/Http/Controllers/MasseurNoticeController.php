@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Auth;
 use Cookie;
 
+
 class MasseurNoticeController extends Controller
 {
     public function __construct()
@@ -22,6 +23,7 @@ class MasseurNoticeController extends Controller
         ]]);
     }
     public function index(){
+
     	$ads = MasseurPost::orderBy('created_at','desc')->paginate(15);
         $count = count(MasseurPost::all());
     	return view('masseurs_ads.index')->with('ads',$ads)->with('posts_count',$count);
