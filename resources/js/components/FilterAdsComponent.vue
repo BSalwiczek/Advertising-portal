@@ -29,8 +29,7 @@
 						</div>
 						<div class="col-md-2 col-sm-6 mt-xs-3 mt-md-0">
 							<span>Miejscowość</span><br>
-							<dropdown-search :options="filters.masseur_opinions_cout.options" 
-							  :selected="filters.masseur_opinions_cout.options[0]" 
+							<dropdown-search 
 							  v-on:updateOption="changeMasseurNote">
 							</dropdown-search>
 						</div>
@@ -46,8 +45,7 @@
 							<span>U masażysty</span><br>
 						</div>
 					</div>
-				</div>
-				
+				</div>			
 			</form>
 </template>
 

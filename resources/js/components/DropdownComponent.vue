@@ -1,14 +1,16 @@
 <template>
     <div class="btn-group">
-        <li @click="toggleMenu()" ref="dropdownbutton" class="dropdown-toggle" v-if="selectedOption.name !== undefined">
+        <li @click="toggleMenu()" ref="dropdownbutton" class="dropdown-toggle" v-if="selectedOption.name !== undefined" :class="{chosen: isChosen}">
           <span v-html="selectedOption.name"></span>
           <span class="caret"></span>
         </li>
 
-        <li @click="toggleMenu()" ref="dropdownbutton" class="dropdown-toggle" v-if="selectedOption.name === undefined">
+        <li @click="toggleMenu()" ref="dropdownbutton" class="dropdown-toggle" v-if="selectedOption.name === undefined" :class="{chosen: isChosen}">
           {{placeholderText}}
           <span class="caret"></span>
         </li>
+
+
 
         <ul v-if="showMenu" class="dropdown-men" > <!-- class="dropdown-men"  -->
             <li v-for="option in options">
@@ -62,9 +64,9 @@
   cursor: pointer;
 }
 
-.dropdown-toggle::after{
+/*.dropdown-toggle::after{
   border:0;
-}
+}*/
 
 .dropdown-men {
   position: absolute;
@@ -120,6 +122,15 @@
   border-right: 4px solid transparent;
   border-left: 4px solid transparent;
   float: right;
+}
+
+.chosen{
+  background: #E2F6FF !important;
+  border: none !important;
+}
+
+.chosen:hover{
+  background-color: #E2F6FF !important;
 }
 
 li {
@@ -183,6 +194,7 @@ export default {
               name: '',
             },
             showMenu: false,
+            isChosen: false,
             placeholderText: 'Please select an item',
         }
     },
@@ -204,6 +216,11 @@ export default {
 
     methods: {
         updateOption(option) {
+            if(option.id !=0 ){
+              this.isChosen = true;
+            }else{
+              this.isChosen = false;
+            }
             this.selectedOption = option;
             this.showMenu = false;
             this.$emit('updateOption', this.selectedOption);
