@@ -1,17 +1,8 @@
 <template>
     <div class="btn-group">
-<!--         <li @click="toggleMenu()" ref="dropdownbutton" class="dropdown-toggle" v-if="selectedOption.name !== undefined">
-          <span v-html="selectedOption.name"></span>
-          <span class="caret"></span>
-        </li>
+        <li ref="dropdownbutton" class="dropdown-toggle no-outline" :class="{chosen: isChosen}">
 
-        <li @click="toggleMenu()" ref="dropdownbutton" class="dropdown-toggle" v-if="selectedOption.name === undefined">
-          {{placeholderText}}
-          <span class="caret"></span>
-        </li> -->
-        <li @click="toggleMenu()" ref="dropdownbutton" class="dropdown-toggle no-outline">
-
-          <input v-if="selectedOptionEmpty()" @input="userTyped()" class="dropdown-input" v-model="userInput" name="user_input" type="text"/>
+          <input v-if="selectedOptionEmpty()" @input="userTyped()" class="dropdown-input" v-model="userInput" type="text"/>
 
           <span v-else>
             <span v-html="selectedOption.name"></span>
@@ -20,10 +11,16 @@
         </li>
 
         <ul v-if="showMenu" class="dropdown-men" > <!-- class="dropdown-men"  -->
-            <li class="text-center py-1" v-if="optionsEmpty()" v-closable="{
+            <li class="text-center py-1" v-if="optionsEmpty() && !noResult" v-closable="{
                     exclude: ['dropdownbutton'],
                     handler: 'onClose'
                   }"><div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+            </li>
+            <li v-if="noResult" class="text-center py-1" v-closable="{
+                    exclude: ['dropdownbutton'],
+                    handler: 'onClose'
+                  }">
+              Nie ma takiej miejscowości
             </li>
             <li v-else v-for="option in options">
                 <a href="javascript:void(0)" 
@@ -54,7 +51,7 @@
 }
 
 .btn-group {
-  min-width: 160px;
+ /* min-width: 160px;*/
   height: 40px;
   position: relative;
   margin: 10px 1px;
@@ -67,7 +64,7 @@
 
 .dropdown-toggle {
   color: #636b6f;
-  min-width: 160px;
+  /*min-width: 160px;*/
   padding: 10px;
   text-transform: none;
   font-weight: 300;
@@ -167,10 +164,7 @@
 
 
 .remove-btn:hover{
-  font-size: 1.1em;
-  margin-top: -0.05rem;
-  margin-right: -0.05rem;
-  transition: all .2s
+  ;
 }
 
 li {
@@ -259,6 +253,15 @@ li {
   }
 }
 
+.chosen{
+  background: #E2F6FF !important;
+  border: none !important;
+}
+
+.chosen:hover{
+  background-color: #E2F6FF !important;
+}
+
 </style>
 
 
@@ -315,9 +318,12 @@ export default {
             selectedOption: {
               id: -1,
               name: '',
+              cityId: 0,
             },
             userInput: "",
             showMenu: false,
+            isChosen: false,
+            noResult: false,
             placeholderText: 'Please select an item',
             // options: [],
             options:[]
@@ -329,7 +335,8 @@ export default {
     },
 
     mounted() {
-        // this.selectedOption = this.selected;
+        if(this.selected != "")
+          this.selectedOption = {id:0,name:this.selected,cityId:0};
         if (this.placeholder)
         {
             this.placeholderText = this.placeholder;
@@ -352,10 +359,14 @@ export default {
         },
 
         selectedOptionEmpty(){
-          if(this.selectedOption.id == -1)
+          if(this.selectedOption.id == -1){
+            this.isChosen = false;
             return true;
-          else
+          }
+          else{
+            this.isChosen = true;
             return false;
+          }
         },
 
         optionsEmpty(){
@@ -366,27 +377,35 @@ export default {
         },
 
         removeChosen(){
-          this.selectedOption = {id:-1,name:''};
+          this.selectedOption = {id:-1,name:'',cityId:0};
+          let option={
+              id: -1,
+              name: '',
+              cityId: 0,
+            }
+          this.updateOption(option);
         },
 
         userTyped(){
           this.showMenu = true;
           if(this.userInput.length > 2){
-            console.log("to już 3 znaki!");
             axios.post('/getCities',{input:this.userInput}).then(response => {
               if(response.data == 0){
-                console.log('nie ma takiej miejscowosci');
+                this.noResult = true;
               }else{
+                this.noResult = false;
                 this.options = [];
                 console.log(response.data);
                 for(var city in response.data){
-                  this.options.push({'id':city,'name':response.data[city].cityName,'province':response.data[city].provinceName.toLowerCase()});
+                  this.options.push({'id':city,'name':response.data[city].cityName,'province':response.data[city].provinceName.toLowerCase(),'cityId':response.data[city].cityId});
                 }  
               }
               
             }).catch((error)=>{
               console.log(error);
             })
+          }else{
+            this.noResult = false;
           }
         }
     }

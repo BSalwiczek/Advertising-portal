@@ -8,7 +8,7 @@
 	<div class="row">
 		<div class="col-sm-10 offset-sm-1">
 
-			<filter-ads></filter-ads>
+			<filter-ads s_previous_filters={{ $filters }}></filter-ads>
 
 
 			<div class="row">
@@ -39,30 +39,7 @@
 					<hr style="width: 30%" class="ml-0">
 
 					@foreach ($ads as $key => $ad)
-					<show-ad s_ad="{{ $ad }}" s_user="{{ $ad->user }}" offset="{{ $key }}"></show-ad>
-					{{-- <div class="post mt-5">
-						<h1>{{ $ad->title }}</h1>
-						<div class="row">
-							<div class="col-sm-3"><span style="color:#09A2E5">Dodane przez: </span>{{ $ad->user->name }} {{ $ad->user->surname }}</div>
-							<div class="col-sm-3"><i class="far fa-clock" style="margin-right: 3%;color:#09A2E5"></i>{{ $ad->created_at }}</div>
-							<div class="col-sm-6">
-								<i class="fas fa-map-marker-alt" style="margin-right: 1%;color:#09A2E5"></i>
-								@if ($ad->area !== null)
-									{{ $ad->area}}
-								@else
-									{{ $ad->city }}, ul. {{ $ad->street }}
-								@endif
-							</span></div>
-							<p class="post-description">
-								{{ $ad->description }}
-							</p>
-						</div>
-						<div class="row">
-							<div class="col-sm-3 offset-9">
-								<a href="/masazysci/{{ $ad->slug }}" class="btn-slide-link"><button class="btn btn-first p-3">Dowiedz się więcej</button></a>
-							</div>
-						</div>
-					</div> --}}
+						<show-ad s_ad="{{ $ad }}" s_user="{{ $ad->user }}" offset="{{ $key }}" s_massage_prices="{{ $prices }}"></show-ad>
 					@endforeach
 					
 				</div>

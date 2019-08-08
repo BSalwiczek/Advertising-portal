@@ -23,14 +23,18 @@ class ApiController extends Controller
 		//         ->setLoggerInstance($oInstanceLogger);
 		$oNativeApi = NativeApi::create($oClient);
 		$miejscowosci = $oNativeApi->WyszukajMiejscowoscWRejestrze($userInput);
-		if(sizeof($miejscowosci) <= 15){
-			if(sizeof($miejscowosci) > 0)
-				return $miejscowosci;
-			else
-				return 0;
-		}
+		if($miejscowosci == false)
+			return 0;
+		else
+			return array_slice($miejscowosci,0,15,true);
+		// if(sizeof($miejscowosci) <= 15){
+		// 	if(sizeof($miejscowosci) > 0)
+		// 		return $miejscowosci;
+		// 	else
+		// 		return 0;
+		// }
 
-		return 1;
+		// return 1;
 
     }
         // var_dump($oNativeApi->PobierzSlownikCechULIC());

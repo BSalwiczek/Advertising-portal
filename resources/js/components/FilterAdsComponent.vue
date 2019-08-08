@@ -1,51 +1,75 @@
 <template>
 	<form method="get" action="/masazysci">
 
-				<div class="filter-box mt-3 mb-5">
+				<div class="filter-box mt-3 mb-5 dynamic-font">
 					<div class="row">
-						<div class="col-md-2 col-sm-6">
+						<input class="d-none" name="uc" value="0">
+						<div class="col-lg-2 col-md-4 col-sm-6">
 							<span>Typ masażu</span><br>
 						</div>
-						<div class="col-md-2 col-sm-6">
-							<span>Ocena masażsty</span><br>
+						<div class="col-lg-2 col-md-4 col-sm-6">
+							<span>Ocena masażysty</span><br>
+							<input v-if="selected_filters.masseur_note!=0" name="masseur_note" :value="selected_filters.masseur_note" class="d-none">
 							<dropdown :options="filters.masseur_note.options" 
-							  :selected="filters.masseur_note.options[0]" 
+							  :selected="getSelectedMN()" 
 							  v-on:updateOption="changeMasseurNote">
 							</dropdown>
 						</div>
-						<div class="col-md-2 col-sm-6">
+						<div class="col-lg-2 col-md-4 col-sm-6">
 							<span>Ilość ocen</span><br>
-							<dropdown :options="filters.masseur_notes_cout.options" 
-							  :selected="filters.masseur_notes_cout.options[0]" 
-							  v-on:updateOption="changeMasseurNote">
+							<input v-if="selected_filters.masseur_notes_count!=0" name="masseur_notes_count" :value="selected_filters.masseur_notes_count" class="d-none">
+							<dropdown :options="filters.masseur_notes_count.options" 
+							  :selected="getSelectedMNC()" 
+							  v-on:updateOption="changeMasseurNotesCount">
 							</dropdown>
 						</div>
-						<div class="col-md-2 col-sm-6 mt-xs-3 mt-md-0">
+						<div class="col-lg-2 col-md-4 mt-md-5 col-sm-6 mt-xs-3 mt-lg-0">
 							<span>Ilość opinii</span><br>
-							<dropdown :options="filters.masseur_opinions_cout.options" 
-							  :selected="filters.masseur_opinions_cout.options[0]" 
-							  v-on:updateOption="changeMasseurNote">
+							<input v-if="selected_filters.masseur_opinions_count!=0" name="masseur_opinions_count" :value="selected_filters.masseur_opinions_count" class="d-none">
+							<dropdown :options="filters.masseur_opinions_count.options" 
+							  :selected="getSelectedMOC()" 
+							  v-on:updateOption="changeMasseurOpinionsCount">
 							</dropdown>
 						</div>
-						<div class="col-md-2 col-sm-6 mt-xs-3 mt-md-0">
+						<div class="col-lg-2 col-md-4 mt-md-5 col-sm-6 mt-xs-3 mt-lg-0">
+							<input name="city" v-if="selected_filters.city!=''" :value="selected_filters.city" class="d-none">
 							<span>Miejscowość</span><br>
 							<dropdown-search 
-							  v-on:updateOption="changeMasseurNote">
+							  v-on:updateOption="changeCity"
+							  :selected="selected_filters.city">
 							</dropdown-search>
 						</div>
-						<div class="col-md-2 col-sm-6 mt-xs-3 mt-md-0">
+						<div class="col-lg-2 col-md-4 mt-md-5 col-sm-6 mt-xs-3 mt-lg-0">
 							<span>Województwo</span><br>
 						</div>
 					</div>
-					<div class="row mt-3 mb-3">
-						<div class="col-md-2 col-sm-6 mt-xs-3 mt-md-0">
-							<span>Dojazd do klienta</span><br>
+					<div class="row mt-4 mb-3">
+						<div class="col-lg-2 col-sm-6 mt-xs-3 mt-lg-0">
+							<input class="inp-cbx" name="to_client" id="cbx1" v-model="selected_filters.to_client" type="checkbox" style="display: none;"/>
+							<label class="cbx" for="cbx1"><span>
+							    <svg width="12px" height="10px" viewbox="0 0 12 10">
+							      <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+							    </svg></span><span>Dojazd do klienta</span>
+							</label>
 						</div>
-						<div class="col-md-2 col-sm-6 mt-xs-3 mt-md-0">
-							<span>U masażysty</span><br>
+						<div class="col-lg-2 col-sm-6 mt-xs-3 mt-lg-0">
+							<input class="inp-cbx" id="cbx2" name="to_masseur" v-model="selected_filters.to_masseur" type="checkbox" style="display: none;"/>
+							<label class="cbx" for="cbx2"><span>
+							    <svg width="12px" height="10px" viewbox="0 0 12 10">
+							      <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+							    </svg></span><span>U masażysty</span>
+							</label>
 						</div>
 					</div>
-				</div>			
+
+					<!-- {{ selected_filters }} -->
+					<div class="row">
+						<div class="col-md-2 offset-md-10 col-sm-6 offset-sm-3 text-center">
+							<button class="btn btn-first p-3">Filtruj <i class="fas fa-filter"></i></button>
+						</div>
+					</div>
+				</div>
+<!-- 				{{ selected_filters }}	 -->
 			</form>
 </template>
 
@@ -83,6 +107,23 @@
 	outline: none;
 }
 
+.dynamic-font{
+	font-size: 0.9vw;
+}
+@media screen and (max-width: 992px) {
+  .dynamic-font{
+	font-size: 1.4vw;
+}
+}
+@media screen and (max-width: 500px) {
+  .dynamic-font{
+	font-size: 2.48vw;
+}
+}
+
+
+
+
 </style>
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
@@ -98,18 +139,16 @@ data() {
 
 	  	filters:{
 	  		masseur_note: {
-	  			selected: 0,
 	  			options: [
 	  			{id:0,name:'Wszystkie'},
 	  			{id:1,name:'<i class="fas fa-star" style="color: #F9DC5C"></i> i więcej'},
 	  			{id:2,name:'<i class="fas fa-star" style="color: #F9DC5C"></i> <i class="fas fa-star" style="color: #F9DC5C"></i>  i więcej'},
 	  			{id:3,name:'<i class="fas fa-star" style="color: #F9DC5C"></i> <i class="fas fa-star" style="color: #F9DC5C"></i> <i class="fas fa-star" style="color: #F9DC5C"></i>  i więcej'},
 	  			{id:4,name:'<i class="fas fa-star" style="color: #F9DC5C"></i> <i class="fas fa-star" style="color: #F9DC5C"></i> <i class="fas fa-star" style="color: #F9DC5C"></i> <i class="fas fa-star" style="color: #F9DC5C"></i>  i więcej'},
-	  			{id:5,name:'<i class="fas fa-star" style="color: #F9DC5C"></i> <i class="fas fa-star" style="color: #F9DC5C"></i> <i class="fas fa-star" style="color: #F9DC5C"></i> <i class="fas fa-star" style="color: #F9DC5C"></i> <i class="fas fa-star" style="color: #F9DC5C"></i>  i więcej'},
+	  			{id:5,name:'<i class="fas fa-star" style="color: #F9DC5C"></i> <i class="fas fa-star" style="color: #F9DC5C"></i> <i class="fas fa-star" style="color: #F9DC5C"></i> <i class="fas fa-star" style="color: #F9DC5C"></i> <i class="fas fa-star" style="color: #F9DC5C"></i>'},
 	  			]
 	  		},
-	  		masseur_notes_cout:{
-	  			select: 0,
+	  		masseur_notes_count:{
 	  			options: [
 	  			{id: 0,name:'Wszystkie'},
 	  			{id: 1,name:'Wiecej niż 5'},
@@ -124,8 +163,7 @@ data() {
 	  			{id: 10,name:'Wiecej niż 1000'},
 	  			]
 	  		},
-	  		masseur_opinions_cout:{
-	  			select: 0,
+	  		masseur_opinions_count:{
 	  			options: [
 	  			{id: 0,name:'Wszystkie'},
 	  			{id: 1,name:'Wiecej niż 5'},
@@ -139,10 +177,23 @@ data() {
 	  			{id: 9,name:'Wiecej niż 500'},
 	  			{id: 10,name:'Wiecej niż 1000'},
 	  			]
-	  		}
+	  		},
 	  	},
+	  	selected_filters:{
+	  		masseur_note: 0,
+	  		masseur_notes_count: 0,
+	  		masseur_opinions_count: 0,
+	  		city: '',
+	  		to_masseur: false,
+	  		to_client: false,
+
+	  	},
+	  	previous_filters: {}
 	  }
+	  
 	},
+
+	props: ['s_previous_filters'],
 
 	components: {
 	    'dropdown': dropdown,
@@ -151,8 +202,76 @@ data() {
 
 	methods: {
 	  changeMasseurNote(payload) {
-	  		this.filters.masseur_note.selected  = payload.id;
+	  		this.selected_filters.masseur_note  = payload.id;
+	  },
+	  changeMasseurNotesCount(payload) {
+	  		this.selected_filters.masseur_notes_count  = payload.id;
+	  },
+	  changeMasseurOpinionsCount(payload){
+	  	this.selected_filters.masseur_opinions_count = payload.id;
+	  },
+	  changeCity(payload){
+	  	this.selected_filters.city = payload.name;
+	  },
+
+	  getSelectedMOC(){
+	  	let options = this.filters.masseur_opinions_count;
+	  	let selected = this.selected_filters.masseur_opinions_count;
+  		for(var i=0; i<options.options.length;i++){
+  			if(options.options[i].id == selected){
+  				return options.options[i]
+  			}
+  		}
+  		return options.options[0];
+	  },
+
+	  getSelectedMNC(){
+	  	let options = this.filters.masseur_notes_count;
+	  	let selected = this.selected_filters.masseur_notes_count;
+  		for(var i=0; i<options.options.length;i++){
+  			if(options.options[i].id == selected){
+  				return options.options[i]
+  			}
+  		}
+  		return options.options[0];
+	  },
+
+	  getSelectedMN(){
+	  	let options = this.filters.masseur_note;
+	  	let selected = this.selected_filters.masseur_note;
+  		for(var i=0; i<options.options.length;i++){
+  			if(options.options[i].id == selected){
+  				return options.options[i]
+  			}
+  		}
+  		return options.options[0];
 	  }
-	}
+	},
+
+	created(){
+		this.previous_filters=JSON.parse(this.s_previous_filters);
+		if(this.previous_filters.city != undefined){
+			this.selected_filters.city = this.previous_filters.city;
+		}
+		if(this.previous_filters.masseur_note != undefined){
+			this.selected_filters.masseur_note = this.previous_filters.masseur_note;
+		}
+		if(this.previous_filters.masseur_notes_count != undefined){
+			this.selected_filters.masseur_notes_count = this.previous_filters.masseur_notes_count;
+		}
+		if(this.previous_filters.masseur_opinions_count != undefined){
+			this.selected_filters.masseur_opinions_count = this.previous_filters.masseur_opinions_count;
+		}
+		if(this.previous_filters.to_client != undefined){
+			this.selected_filters.to_client = this.previous_filters.to_client;
+		}
+		if(this.previous_filters.to_masseur != undefined){
+			this.selected_filters.to_masseur = this.previous_filters.to_masseur;
+		}else{
+			// this.selected_filters.to_masseur = true;
+		}
+
+	},
+
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <div class="btn-group">
+    <div class="btn-group w-75">
         <li @click="toggleMenu()" ref="dropdownbutton" class="dropdown-toggle" v-if="selectedOption.name !== undefined" :class="{chosen: isChosen}">
           <span v-html="selectedOption.name"></span>
           <span class="caret"></span>
@@ -27,15 +27,16 @@
     </div>
 </template>
 
-<style>
+<style scoped>
 
 .btn-group {
-  min-width: 160px;
+/*  min-width: 160px;*/
   height: 40px;
   position: relative;
   margin: 10px 1px;
   display: inline-block;
   vertical-align: middle;
+
 }
 .btn-group a:hover {
   text-decoration: none;
@@ -43,7 +44,7 @@
 
 .dropdown-toggle {
   color: #636b6f;
-  min-width: 160px;
+ /* min-width: 160px;*/
   padding: 10px;
   text-transform: none;
   font-weight: 300;
@@ -74,7 +75,7 @@
   left: 0;
   z-index: 1000;
   float: left;
-  min-width: 160px;
+  /*min-width: 160px;*/
   padding: 5px 0;
   margin: 2px 0 0;
   list-style: none;
@@ -208,6 +209,9 @@ export default {
 
     mounted() {
         this.selectedOption = this.selected;
+        if(this.selectedOption.id != 0){
+          this.isChosen = true;
+        }
         if (this.placeholder)
         {
             this.placeholderText = this.placeholder;

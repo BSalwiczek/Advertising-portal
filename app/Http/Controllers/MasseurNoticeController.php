@@ -8,6 +8,7 @@ use App\MassageType;
 use Illuminate\Support\Facades\Validator;
 use Auth;
 use Cookie;
+use DB;
 
 
 class MasseurNoticeController extends Controller
@@ -22,11 +23,53 @@ class MasseurNoticeController extends Controller
             'create','getRelatedSlugs','createSlug','store' // Could add bunch of more methods too
         ]]);
     }
-    public function index(){
+    public function index(Request $request){
 
-    	$ads = MasseurPost::orderBy('created_at','desc')->paginate(15);
-        $count = count(MasseurPost::all());
-    	return view('masseurs_ads.index')->with('ads',$ads)->with('posts_count',$count);
+        $this->validate($request,[
+            'uc'=>'sometimes|numeric', //Information that user changed filters
+            'to_client'=>'sometimes|alpha',
+            'to_masseur'=>'sometimes|alpha',
+            'masseur_note'=>'sometimes|numeric|lt:6',
+            'masseur_notes_count'=>'sometimes|numeric|lt:11',
+            'masseur_opinions_count'=>'sometimes|numeric|lt:11',
+            'city'=>'sometimes|alpha',
+        ]);
+        if(!isset($request['uc'])){
+            if(!isset($request['to_client']))
+                $request['to_client'] = true;
+            if(!isset($request['to_masseur']))
+                $request['to_masseur'] = true;
+        }
+        // dd($request->all());
+        
+
+        if(isset($request['city'])){
+            $query_obj = MasseurPost::whereRaw('LOWER(`city`) LIKE ? ',strtolower($request['city']))->orderBy('created_at','desc');
+            $count = count($query_obj->get());
+            $ads = $query_obj->paginate(15);
+            // $ads = MasseurPost::where('city',strtolower($request['city']))->orderBy('created_at','desc')->paginate(15);
+            
+        }else{
+            $ads = MasseurPost::orderBy('created_at','desc')->paginate(15);
+            $count = count(MasseurPost::all());
+        }
+
+        
+
+        // if(isset($request['to_client'])){
+        $prices_arr = array();
+        foreach ($ads as $key => $ad) {
+            array_push($prices_arr,[]);
+                foreach($ad->massagetypes as $msg_type){
+                    if(sizeof($prices_arr[$key]) == 0)
+                        array_push($prices_arr[$key],$ad->id);
+                    array_push($prices_arr[$key],$msg_type->price);
+            }
+        }
+        $prices = json_encode($prices_arr);
+
+        // dd($ads[0]->massagetypes[0]->price);
+    	return view('masseurs_ads.index')->with('ads',$ads)->with('posts_count',$count)->with('filters',json_encode($request->all()))->with('prices',$prices);
     }
     public function show($slug){
     	$post = MasseurPost::where('slug',$slug)->firstOrFail();
