@@ -8,7 +8,7 @@
 	<div class="row">
 		<div class="col-sm-10 offset-sm-1">
 
-			<filter-ads s_previous_filters={{ $filters }}></filter-ads>
+			<filter-ads ref="filter" csrf="{{ csrf_token() }}" s_previous_filters="{{ $prev_data }}"></filter-ads>
 
 
 			<div class="row">
@@ -31,12 +31,19 @@
 						</div>
 					</div> --}}
 
-					@if ($posts_count % (int)strlen(strval($posts_count))<5)
-						<h3>Znaleziono <strong>{{ $posts_count }}</strong> ogłoszenia</h3>
-					@else
-						<h3>Znaleziono <strong>{{ $posts_count }}</strong> ogłoszeń</h3>
-					@endif
-					<hr style="width: 30%" class="ml-0">
+					<div class="row mb-3">
+						<div class="col-md-6">
+							@if ($posts_count % (int)strlen(strval($posts_count))<5)
+								<h3>Znaleziono <strong>{{ $posts_count }}</strong> ogłoszenia</h3>
+							@else
+								<h3>Znaleziono <strong>{{ $posts_count }}</strong> ogłoszeń</h3>
+							@endif
+							<hr style="width: 30%" class="ml-0">
+						</div>
+						<div class="col-md-6">
+							<sort-ads s_previous_sorting="{{ $prev_data }}"></sort-ads>
+						</div>
+					</div>
 
 					@foreach ($ads as $key => $ad)
 						<show-ad s_ad="{{ $ad }}" s_user="{{ $ad->user }}" offset="{{ $key }}" s_massage_prices="{{ $prices }}"></show-ad>
@@ -65,7 +72,7 @@
 	</div>
 
 	<div class="mx-auto text-center">
-		{!! $ads->links() !!}
+		{!! $ads->appends(request()->input())->links() !!}
 	</div>
 	
 </div>

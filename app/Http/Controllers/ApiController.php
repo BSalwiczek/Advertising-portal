@@ -13,12 +13,12 @@ class ApiController extends Controller
 		$this->validate($request,['input'=>'required|min:3|max:30|alpha']);
 		$userInput = $request['input'];
 
-		// $login="TestPubliczny";
-		//    $password="1234abcd";
+		$login="BSalwiczek";
+		$password="G#42Am9u7f";
 
 		$oClient = new Client();
-		// $oClient
-		//         ->setConfig($login,$password,true) // not required for connect to testing database
+		$oClient
+		        ->setConfig($login,$password,true); // not required for connect to testing database
 		//         ->setCacheInstance($oInstanceCacheRedis)
 		//         ->setLoggerInstance($oInstanceLogger);
 		$oNativeApi = NativeApi::create($oClient);

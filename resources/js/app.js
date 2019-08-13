@@ -100,6 +100,8 @@ Vue.component('alert-success', require('./components/alerts/AlertSuccessComponen
 Vue.component('massage-types-gallery', require('./components/masseur/MassageTypeGallery.vue').default);
 Vue.component('show-ad', require('./components/masseur/ShowAdComponent.vue').default);
 Vue.component('filter-ads', require('./components/FilterAdsComponent.vue').default);
+Vue.component('slider', require('./components/NoUiSliderComponent.vue').default);
+Vue.component('sort-ads', require('./components/SortAdsComponent.vue').default);
 
 // import vSelect from 'vue-select';
 // Vue.component('v-select', vSelect);

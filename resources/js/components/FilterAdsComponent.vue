@@ -1,6 +1,6 @@
 <template>
-	<form method="get" action="/masazysci">
-
+	<form method="get" action="/masazysci" ref="filterForm">
+		<input type="hidden" name="_token" v-bind:value="csrf">
 				<div class="filter-box mt-3 mb-5 dynamic-font">
 					<div class="row">
 						<input class="d-none" name="uc" value="0">
@@ -60,16 +60,42 @@
 							    </svg></span><span>U masażysty</span>
 							</label>
 						</div>
+
+						<div class="col-lg-2 col-sm-6 mt-xs-3 mt-lg-0">
+							<label>
+							    <input class="inp-cbx" id="cbx3" name="price_enabled" v-model="price_enabled" type="checkbox" style="display: none;"/>
+								<label class="cbx" for="cbx3"><span>
+								    <svg width="12px" height="10px" viewbox="0 0 12 10">
+								      <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+								    </svg></span><span>Cena</span>
+								</label>
+							</label>
+							<slider @update-data="priceUpdated" ref="priceslider" :fromprice="from_price" :toprice="to_price" :enabled="price_enabled" v-show="price_enabled"></slider>
+								<div class="row mt-3" v-show="price_enabled">
+									<div class="col p-0" style="flex-grow: 1.5">
+										<input class="form-control price-input my-auto" v-if="price_enabled" @input="userChangedPrice" type="text" v-model="from_price" name="from_price">
+									</div>
+									<div class="col p-2 text-center my-auto" style="flex-grow: 0.5">
+										 zł – 
+									</div>
+									<div class="col p-0" style="flex-grow: 1.5">
+										<input class="form-control price-input my-auto" v-if="price_enabled" @input="userChangedPrice" type="text" v-model="to_price" name="to_price">
+									</div>
+									<div class="col p-0 text-center my-auto" style="flex-grow: 0.5">
+										zł
+									</div>
+								</div>
+						</div>
 					</div>
 
-					<!-- {{ selected_filters }} -->
+					<input ref="sortInput" name="sorting" class="d-none" value="0">
+
 					<div class="row">
 						<div class="col-md-2 offset-md-10 col-sm-6 offset-sm-3 text-center">
 							<button class="btn btn-first p-3">Filtruj <i class="fas fa-filter"></i></button>
 						</div>
 					</div>
 				</div>
-<!-- 				{{ selected_filters }}	 -->
 			</form>
 </template>
 
@@ -119,6 +145,25 @@
   .dynamic-font{
 	font-size: 2.48vw;
 }
+}
+
+.price-input{
+  border:none;
+  outline: none;
+  text-align: center;
+  box-shadow: none;
+  background-image: linear-gradient(#009688, #009688), linear-gradient(#D2D2D2, #D2D2D2);
+  background-size: 0 2px, 100% 1px;
+  background-repeat: no-repeat;
+  background-position: center bottom, center calc(100% - 1px);
+  background-color: transparent;
+
+}
+.price-input:hover{
+  border:none;
+  border:none;
+  outline: none;
+  box-shadow: none;
 }
 
 
@@ -188,12 +233,15 @@ data() {
 	  		to_client: false,
 
 	  	},
-	  	previous_filters: {}
+	  	previous_filters: {},
+	  	from_price:100,
+	  	to_price:1500,
+	  	price_enabled:false,
 	  }
 	  
 	},
 
-	props: ['s_previous_filters'],
+	props: ['s_previous_filters','csrf'],
 
 	components: {
 	    'dropdown': dropdown,
@@ -245,6 +293,15 @@ data() {
   			}
   		}
   		return options.options[0];
+	  },
+
+	  priceUpdated(data){
+	  	this.from_price = data[0];
+	  	this.to_price = data[1];
+	  },
+
+	  userChangedPrice(){
+	  	this.$refs.priceslider.$el.noUiSlider.set([parseInt(this.from_price),parseInt(this.to_price)])
 	  }
 	},
 
@@ -267,6 +324,12 @@ data() {
 		}
 		if(this.previous_filters.to_masseur != undefined){
 			this.selected_filters.to_masseur = this.previous_filters.to_masseur;
+		}if(this.previous_filters.price_enabled != undefined){
+			this.price_enabled = this.previous_filters.price_enabled;
+		}if(this.previous_filters.from_price != undefined){
+			this.from_price = this.previous_filters.from_price;
+		}if(this.previous_filters.to_price != undefined){
+			this.to_price = this.previous_filters.to_price;
 		}else{
 			// this.selected_filters.to_masseur = true;
 		}

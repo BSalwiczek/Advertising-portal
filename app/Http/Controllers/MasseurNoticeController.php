@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+// use Illuminate\Pagination\LengthAwarePaginator;
+// use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use App\MasseurPost;
 use App\MassageType;
@@ -17,14 +19,13 @@ class MasseurNoticeController extends Controller
     {
         // Middleware only applied to these methods
         $this->middleware('masseur', ['only' => [
-            'create','getRelatedSlugs','createSlug','store' // Could add bunch of more methods too
+            'create','getRelatedSlugs','createSlug','store'
         ]]);
         $this->middleware('auth', ['only' => [
-            'create','getRelatedSlugs','createSlug','store' // Could add bunch of more methods too
+            'create','getRelatedSlugs','createSlug','store'
         ]]);
     }
     public function index(Request $request){
-
         $this->validate($request,[
             'uc'=>'sometimes|numeric', //Information that user changed filters
             'to_client'=>'sometimes|alpha',
@@ -34,29 +35,77 @@ class MasseurNoticeController extends Controller
             'masseur_opinions_count'=>'sometimes|numeric|lt:11',
             'city'=>'sometimes|alpha',
         ]);
-        if(!isset($request['uc'])){
-            if(!isset($request['to_client']))
-                $request['to_client'] = true;
-            if(!isset($request['to_masseur']))
-                $request['to_masseur'] = true;
+        $request_copy = $request;
+        if(!isset($request_copy['uc'])){
+            if(!isset($request_copy['to_client']))
+                $request_copy['to_client'] = true;
+            if(!isset($request_copy['to_masseur']))
+                $request_copy['to_masseur'] = true;
         }
-        // dd($request->all());
+        // dd($request_copy->all());
         
+        //=========================Create query=========================
+        if(isset($request_copy['city'])){
+            $query_obj = MasseurPost::whereRaw('LOWER(`city`) LIKE ? ',[strtolower($request_copy['city'])]);         
+        }
+        else{
+            $query_obj = MasseurPost::where('name','!=',null);
 
-        if(isset($request['city'])){
-            $query_obj = MasseurPost::whereRaw('LOWER(`city`) LIKE ? ',strtolower($request['city']))->orderBy('created_at','desc');
-            $count = count($query_obj->get());
-            $ads = $query_obj->paginate(15);
-            // $ads = MasseurPost::where('city',strtolower($request['city']))->orderBy('created_at','desc')->paginate(15);
-            
+        }
+
+        if(isset($request_copy['to_client']) and !isset($request_copy['to_masseur']))
+        {
+            $query_obj = $query_obj->where('area','!=',null);
+        }else if(isset($request_copy['to_masseur']) and !isset($request_copy['to_client'])){
+            $query_obj = $query_obj->where('city','!=',null);
+        }else if(!isset($request_copy['to_masseur']) and !isset($request_copy['to_client'])){
+            $query_obj = MasseurPost::where('id','<',0); //select none
+        }
+
+
+        if(isset($request['price_enabled']))
+        {
+            $from = $request['from_price'];
+            $to = $request['to_price'];
+            $query_obj = $query_obj->whereHas('massagetypes', function($query) use($to,$from){
+                $query->where('price','>=',$from)->where('price','<=',$to);
+            });
+            // $query_obj = $query_obj->whereHas('massagetypes')
+        }
+
+        if(isset($request['sorting']))
+        {
+            $sorting = $request['sorting'];
+            if($sorting == 0){
+                $query_obj = $query_obj->orderBy('created_at','desc');
+            }else if($sorting == 1){
+                $query_obj = $query_obj->orderBy('created_at','asc');
+            }else if($sorting == 2){
+                $query_obj = $query_obj->orderByJoin('massagetypes.price');
+            }else if($sorting == 3){
+                $query_obj = $query_obj->orderByJoin('massagetypes.price','desc');
+            }
         }else{
-            $ads = MasseurPost::orderBy('created_at','desc')->paginate(15);
-            $count = count(MasseurPost::all());
+            $query_obj = $query_obj->orderBy('created_at','desc');
         }
+        
+        $count = count($query_obj->get());
+        $ads = $query_obj->paginate(15);
+
+
+        // $currentPage = 1;
+        // if(isset($request['page'])){
+        //     $currentPage=$request['page'];
+        // }
+        // \Illuminate\Pagination\Paginator::currentPageResolver(function () use ($currentPage) {
+        //     return $currentPage;
+        // });
+        
+
 
         
 
-        // if(isset($request['to_client'])){
+        // //=========================GET PRICES=========================
         $prices_arr = array();
         foreach ($ads as $key => $ad) {
             array_push($prices_arr,[]);
@@ -68,8 +117,9 @@ class MasseurNoticeController extends Controller
         }
         $prices = json_encode($prices_arr);
 
+
         // dd($ads[0]->massagetypes[0]->price);
-    	return view('masseurs_ads.index')->with('ads',$ads)->with('posts_count',$count)->with('filters',json_encode($request->all()))->with('prices',$prices);
+    	return view('masseurs_ads.index')->with('ads',$ads)->with('posts_count',$count)->with('prev_data',json_encode($request_copy->all()))->with('prices',$prices);
     }
     public function show($slug){
     	$post = MasseurPost::where('slug',$slug)->firstOrFail();

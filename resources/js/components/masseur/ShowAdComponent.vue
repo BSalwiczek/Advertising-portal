@@ -1,6 +1,6 @@
 <template>
 	<transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-	<div class="post mt-5" v-if="show">
+	<div class="post mb-5" v-if="show">
 		<div class="row">
 			<div class="col-sm-9">
 				<h1>{{ ad.title }}</h1>
