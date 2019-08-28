@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use mrcnpdlk\Teryt\Client;
 use mrcnpdlk\Teryt\NativeApi;
 
+use App\User;
+
 class ApiController extends Controller
 {
     public function getCities(Request $request){
@@ -37,6 +39,14 @@ class ApiController extends Controller
 		// return 1;
 
     }
+    public function getUsers(Request $request){
+		$this->validate($request,['input'=>'required|min:3|max:70|alpha']);
+		$userInput = $request['input'];
+
+		$users=User::where('name','like','%' . $userInput . '%')->orWhere('surname','like','%' . $userInput . '%');
+		
+		return $users->get();
+	}
         // var_dump($oNativeApi->PobierzSlownikCechULIC());
         // var_dump($oNativeApi->WyszukajMiejscowosc('skiernie',null));
 }

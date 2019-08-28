@@ -19,6 +19,8 @@ Auth::routes(['verify'=>true]);
 
 Route::post('register', 'UsersApiController@register');
 
+Route::post('/getUsers','ApiController@getUsers');
+
 
 Route::group(['middleware' => 'auth:api'], function(){
 	Route::post('details', 'UsersApiController@details')->middleware('verified');
@@ -40,6 +42,10 @@ Route::post('masazysta/dodaj-nowe-ogloszenie','MasseurNoticeController@store');
 Route::post('/dodano-nowe-ogloszenie','MasseurNoticeController@gotoads');
 
 Route::post('/getCities','ApiController@getCities');
+
+Route::post('/zapisz-ustawienia-uzytkownika-masazysty','MasseurController@update');
+
+
 // 'MasseurController@gohome'
 
 

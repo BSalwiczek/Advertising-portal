@@ -38,7 +38,7 @@ class MasseurNoticeController extends Controller
         $request_copy = $request;
         if(!isset($request_copy['uc'])){
             if(!isset($request_copy['to_client']))
-                $request_copy['to_client'] = true;
+                $request_copy['to_client'] = true; 
             if(!isset($request_copy['to_masseur']))
                 $request_copy['to_masseur'] = true;
         }

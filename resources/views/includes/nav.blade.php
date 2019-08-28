@@ -53,8 +53,14 @@
                             </form>
                         </div>
                     </li> --}}
-                    <li class="nav-item pl-1">
+                    <li class="nav-item pl-1 pr-1">
                         <img class="rounded-circle avatar" width="50" height="50" src="/storage/avatars/{{ Auth::user()->profile_img }}">
+                    </li>
+                    <li class="nav-item d-flex px-2">
+                        <a class="my-auto"><i class="far fa-bell"></i></a>
+                    </li>
+                    <li class="nav-item d-flex px-2">
+                        <a class="my-auto"><i class="far fa-envelope"></i></a>
                     </li>
                     <li class="nav-item ml-2">
                         @if (Auth::user()->role==0)

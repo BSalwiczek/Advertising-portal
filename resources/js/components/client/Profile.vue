@@ -1,9 +1,9 @@
 <template>
 	<div class="row" style="margin-top:7rem;margin-right: 0;margin-left: 0">
-		<div class="col-md-8 offset-md-2">
+		<div class="col-lg-8 offset-lg-2">
 			<div class="box-container pt-0 pb-0">
 				<div class="row" style="margin-right: 0;margin-left: 0">
-					<div class="col-md-2 col-xs-12 left-menu">
+					<div class="col-lg-2 col-12 left-menu">
 						<ul class="navbar-nav mt-5">
 							<li class="left-menu-item" :class="{'item-active':(option==0)}" @click="ChangeOption(0)">Aktywność</li>
 							<li class="left-menu-item" :class="{'item-active':(option==1)}" @click="ChangeOption(1)">Ustawienia konta</li>
@@ -11,7 +11,7 @@
 						</ul>
 					</div>
 
-					<div class="col-md-10 col-xs-12">
+					<div class="col-lg-10 col-12">
 						<activity-component v-if="option==0"></activity-component>
 					</div>
 				</div>

@@ -62,7 +62,7 @@
 						@endif
 					@endauth
 					@if(Cookie::get('added_post'))
-						<alert-success></alert-success>
+						<alert-success message="<strong>Gratulacje!</strong> Twoje ogłoszenie zostało dodane."></alert-success>
 						{{ Cookie::queue(Cookie::forget('added_post')) }}
 					@endif
 				</div>

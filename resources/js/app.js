@@ -18,10 +18,14 @@ const dict = {
 			email: 'Podaj poprawny adres email',
 		},
 		name:{
-			required: 'Imie jest wymagane'
+			required: 'Imie jest wymagane',
+			max: 'Imie może mieć maksymalnie 30 znaków',
+			alpha: 'Imie może się składać wyłącznie z liter',
 		},
 		surname:{
-			required: 'Nazwisko jest wymagane'
+			required: 'Nazwisko jest wymagane',
+			max: 'Nazwisko może mieć maksymalnie 30 znaków',
+			alpha: 'Nazwisko może się składać wyłącznie z liter',
 		},
 		password2:{
 			is: 'Hasła muszą być identyczne',
@@ -95,6 +99,7 @@ Vue.use(VeeValidate);
 Vue.component('register-component', require('./components/RegisterComponent.vue').default);
 Vue.component('verify-component', require('./components/VerifyComponent.vue').default);
 Vue.component('client-profile', require('./components/client/Profile.vue').default);
+Vue.component('masseur-profile', require('./components/masseur/Profile/Profile.vue').default);
 Vue.component('add-m-ad', require('./components/masseur/AddAdComponent.vue').default);
 Vue.component('alert-success', require('./components/alerts/AlertSuccessComponent.vue').default);
 Vue.component('massage-types-gallery', require('./components/masseur/MassageTypeGallery.vue').default);
@@ -102,6 +107,7 @@ Vue.component('show-ad', require('./components/masseur/ShowAdComponent.vue').def
 Vue.component('filter-ads', require('./components/FilterAdsComponent.vue').default);
 Vue.component('slider', require('./components/NoUiSliderComponent.vue').default);
 Vue.component('sort-ads', require('./components/SortAdsComponent.vue').default);
+Vue.component('search-banner', require('./components/SearchBanner.vue').default);
 
 // import vSelect from 'vue-select';
 // Vue.component('v-select', vSelect);

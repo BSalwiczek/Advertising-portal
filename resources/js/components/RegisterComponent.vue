@@ -115,7 +115,7 @@
                                         <label for="name" class="col-form-label">Imię</label>
                                     </div>
                                     <div class="col-lg-4 col-md-8">
-                                        <input required type="text" id="name" v-validate="'required'" v-model="user_fields.name" name="name" :class="{'wrong': errors.has('name')}" class="form-control">
+                                        <input required type="text" id="name" v-validate="'required|max:30|alpha'" v-model="user_fields.name" name="name" :class="{'wrong': errors.has('name')}" class="form-control">
                                     </div>
                                     <div clas="col-sm-3">
                                         <span class="error">{{ errors.first('name') }}</span>
@@ -127,7 +127,7 @@
                                         <label for="surname" class="col-form-label">Nazwisko</label>
                                     </div>
                                     <div class="col-lg-4 col-md-8">
-                                        <input v-validate required type="text" name="surname" :class="{'wrong': errors.has('surname')}" class="form-control" id="surname" v-model="user_fields.surname">
+                                        <input v-validate="'required|max:30|alpha'" required type="text" name="surname" :class="{'wrong': errors.has('surname')}" class="form-control" id="surname" v-model="user_fields.surname">
                                     </div>
                                     <div clas="col-sm-3">
                                         <span class="error">{{ errors.first('surname') }}</span>

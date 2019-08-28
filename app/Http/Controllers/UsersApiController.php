@@ -27,8 +27,8 @@ class UsersApiController extends Controller
 	public function register(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'name'=>'required|string|max:30',
-    		'surname'=>'required|string|max:30',
+			'name'=>'required|string|max:30|alpha',
+    		'surname'=>'required|string|max:30|alpha',
     		'email'=>'required|email|max:50|unique:users',
     		'password'=>'required|min:8|max:30',
     		'role'=>'required',
@@ -62,4 +62,5 @@ class UsersApiController extends Controller
 		$user = Auth::user();
 		return response()->json(['success' => $user], $this->successStatus);
 	}
+
 }

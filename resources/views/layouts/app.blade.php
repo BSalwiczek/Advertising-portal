@@ -27,7 +27,7 @@
     <div id="app">
         @include('includes.nav')
         @if(!View::hasSection('no_search'))
-            @include('includes.search_section')
+            <search-banner csrf="{{ csrf_token() }}"></search-banner>
         @endif
 
         @if(View::hasSection('tree1'))
