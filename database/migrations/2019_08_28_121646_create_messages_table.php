@@ -18,8 +18,9 @@ class CreateMessagesTable extends Migration
             $table->bigInteger('sender_id')->unsigned();
             $table->bigInteger('receiver_id')->unsigned();
             $table->text('message');
-            $table->dateTime('seen_at');
-            $table->timestamps();
+            $table->dateTime('seen_at')->nullable();
+            $table->dateTime('msg_created');
+            $table->dateTime('msg_updated');
         });
     }
 

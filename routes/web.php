@@ -45,8 +45,13 @@ Route::post('/getCities','ApiController@getCities');
 
 Route::post('/zapisz-ustawienia-uzytkownika-masazysty','MasseurController@update');
 
+Route::get('/getAuthUser',function(){
+  return Auth::user()->toJson();
+});
+
+Route::post('/saveMessage','MessagesController@store');
+Route::post('/getMessages','MessagesController@index');
+Route::get('/getFriends','MessagesController@getFriends');
+
 
 // 'MasseurController@gohome'
-
-
-

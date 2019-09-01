@@ -11,7 +11,7 @@ class MassageType extends Model
 	public function masseurpost(){
 		return $this->belongsTo('App\MasseurPost');
 	}
-	public function masseur_post_with_price_beetwen($min,$max){
-
-	}
+	// public function masseur_post_with_price_beetwen($min,$max){
+	//
+	// }
 }

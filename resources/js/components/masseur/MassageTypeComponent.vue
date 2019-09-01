@@ -23,7 +23,7 @@
 					<span class="error">{{ errors.first('image') }}</span>
 
 				</div>
-				
+
 
 				<textarea required v-validate class="form-control mt-3 px-3" name="massageDesc" ref="massageDesc" id="massageDesc" :value="value.description" placeholder="Tutaj zamieść krótki opis masażu..." @input="updateData()"></textarea>
 				<span class="error">{{ errors.first('massageDesc') }}</span>
@@ -41,11 +41,11 @@
 
 				<input required v-validate ref="duration" type="text" @input="updateData()" :value="value.duration" class="form-control w-50 mx-auto mt-2" name="duration" placeholder="Czas trwania">
 				<span class="error">{{ errors.first('duration') }}</span>
-			
+
 		</div>
 
 	</div>
-		
+
 	</transition>
 </template>
 
@@ -76,7 +76,7 @@ textarea,input{
 .trash:hover{
 	color: red;
 	cursor: pointer;
-	animation: shake 0.2s; 
+	animation: shake 0.2s;
 }
 
 @keyframes shake {

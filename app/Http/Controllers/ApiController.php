@@ -8,6 +8,7 @@ use mrcnpdlk\Teryt\Client;
 use mrcnpdlk\Teryt\NativeApi;
 
 use App\User;
+use Auth;
 
 class ApiController extends Controller
 {
@@ -43,10 +44,10 @@ class ApiController extends Controller
 		$this->validate($request,['input'=>'required|min:3|max:70|alpha']);
 		$userInput = $request['input'];
 
-		$users=User::where('name','like','%' . $userInput . '%')->orWhere('surname','like','%' . $userInput . '%');
-		
-		return $users->get();
-	}
+		$users=User::where('name','like','%' . $userInput . '%')->where('id','!=',Auth::id())->orWhere('surname','like','%' . $userInput . '%');
+
+  		return $users->get();
+  	}
         // var_dump($oNativeApi->PobierzSlownikCechULIC());
         // var_dump($oNativeApi->WyszukajMiejscowosc('skiernie',null));
 }

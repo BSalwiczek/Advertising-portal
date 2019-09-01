@@ -23,8 +23,8 @@
               Nie ma takiej miejscowości
             </li>
             <li v-else v-for="option in options">
-                <a href="javascript:void(0)" 
-                @click="updateOption(option)" 
+                <a href="javascript:void(0)"
+                @click="updateOption(option)"
                 v-closable="{
                     exclude: ['dropdownbutton'],
                     handler: 'onClose'
@@ -398,9 +398,9 @@ export default {
                 console.log(response.data);
                 for(var city in response.data){
                   this.options.push({'id':city,'name':response.data[city].cityName,'province':response.data[city].provinceName.toLowerCase(),'cityId':response.data[city].cityId});
-                }  
+                }
               }
-              
+
             }).catch((error)=>{
               console.log(error);
             })
@@ -408,6 +408,6 @@ export default {
             this.noResult = false;
           }
         }
-    }
+    },
 }
 </script>

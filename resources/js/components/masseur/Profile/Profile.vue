@@ -6,7 +6,7 @@
 					<div class="col-md-3 col-xl-2 col-12 left-menu">
 						<ul class="navbar-nav mt-5" style="margin-bottom: 6rem">
 							<li class="left-menu-item" :class="{'item-active':(option==0)}" @click="ChangeOption(0)">Aktywność</li>
-							<li class="left-menu-item" :class="{'item-active':(option==1)}" @click="ChangeOption(1)">Skrzynka pocztowa</li>
+							<li class="left-menu-item" :class="{'item-active':(option==1)}" @click="ChangeOption(1)">Konwersacje</li>
 							<li class="left-menu-item" :class="{'item-active':(option==2)}" @click="ChangeOption(2)">Edycja ogłoszenia</li>
 							<li class="left-menu-item" :class="{'item-active':(option==3)}" @click="ChangeOption(3)">Ustawienia użytkownika</li>
 							<li class="left-menu-item" :class="{'item-active':(option==4)}" @click="ChangeOption(4)">Terminarz</li>
@@ -16,7 +16,7 @@
 					</div>
 
 					<div class="col-md-9 col-xl-10 col-12">
-						<message-box v-if="option==1"></message-box>
+						<message-box v-if="option==1" :user-data="user"></message-box>
 						<ad-settings v-if="option==2"></ad-settings>
 						<user-settings v-if="option==3" :user-data="user" :csrf="csrf"></user-settings>
 					</div>
@@ -24,7 +24,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 </template>
 
 <style scoped>
