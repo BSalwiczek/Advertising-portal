@@ -17,4 +17,9 @@ class MasseurPost extends Model
     {
     	return $this->hasMany('App\MassageType');
     }
+
+		public function opinions()
+		{
+			return $this->hasMany('App\Opinion');
+		}
 }

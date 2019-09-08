@@ -44,9 +44,19 @@ class ApiController extends Controller
 		$this->validate($request,['input'=>'required|min:3|max:70|alpha']);
 		$userInput = $request['input'];
 
-		$users=User::where('name','like','%' . $userInput . '%')->where('id','!=',Auth::id())->orWhere('surname','like','%' . $userInput . '%');
+		$users=User::where('name','like','%' . $userInput . '%')->where('id','!=',Auth::id())->orWhere('surname','like','%' . $userInput . '%')->get();
+    $user_data = [];
+    foreach ($users as $key => $user) {
+      array_push($user_data,[
+        'name'=>$user->name,
+        'surname'=>$user->surname,
+        'profile_img'=>$user->profile_img,
+        'role'=>$user->role,
+        'id'=>$user->id,
+      ]);
+    };
 
-  		return $users->get();
+  		return $user_data;
   	}
         // var_dump($oNativeApi->PobierzSlownikCechULIC());
         // var_dump($oNativeApi->WyszukajMiejscowosc('skiernie',null));

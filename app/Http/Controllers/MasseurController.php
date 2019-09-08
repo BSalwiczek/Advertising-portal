@@ -15,8 +15,30 @@ class MasseurController extends Controller
    	   $this->middleware('auth');
    	   $this->middleware('masseur');
     }
-    public function index(){
-    	return view('masseur.index');
+    public function index(Request $request){
+      $data = $this->validate($request,[
+        'option'=>'sometimes|numeric',
+        'friendId'=>'sometimes|numeric'
+      ]);
+      $option = 0;
+      $friend_data = array();
+      if(isset($data['option']))
+        $option = $data['option'];
+      $friendId = -1;
+      if(isset($data['friendId'])){
+        if((int)$data['friendId'] !== Auth::id()){
+          $friendId = $data['friendId'];
+          $friend = User::findOrFail((int)$friendId);
+          array_push($friend_data,[
+            'name'=>$friend->name,
+            'surname'=>$friend->surname,
+            'profile_img'=>$friend->profile_img,
+            'role'=>$friend->role,
+            'id'=>$friend->id,
+          ]);
+        }
+      }
+    	return view('masseur.index')->with('option',$option)->with('friend_id',$friendId)->with('friend_data',json_encode($friend_data));
     }
 
     public function update(Request $request){

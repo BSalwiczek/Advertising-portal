@@ -15,16 +15,21 @@
 							<img :src="getProfileImgUrl(friend.profile_img)" class="rounded-circle avatar">
 						</div>
 						<div class="col-lg-10 mt-lg-0 mt-4 p-lg-0 p-3">
-							<strong class="mx-auto" style="font-size: 1.3em">{{ friend.name }} {{ friend.surname }}</strong>
-							<p v-if="friend.author_of_last_msg=='Ty'"><b>{{ friend.author_of_last_msg }}</b>: {{ friend.last_msg }}</p>
-							<p v-else>{{ friend.last_msg }}</p>
+							<strong class="mx-auto" style="font-size: 1.3em">
+								  <i class="fas fa-circle" style="font-size: 0.9em" :class="{active:friend.active,notactive:!friend.active}"></i></strong>
+								 &nbsp; {{ friend.name }} {{ friend.surname }}
+							<p v-if="friend.author_of_last_msg=='Ty'"><b>{{ friend.author_of_last_msg }}</b>: <span v-text="shortenIfTooLong(friend.last_msg,200)"></span></p>
+							<p v-else><span :class="{bold:!friend.seen_at}" v-text="shortenIfTooLong(friend.last_msg,200)"></span></p>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="col-md-6 p-0" style="border-left:1px solid #eee;">
-			<div class="text-center header" style="line-height: 40px;vertical-align: middle;">Jan Kowalski</div>
+			<div class="text-center header" style="line-height: 40px;vertical-align: middle;">
+				<span v-text="getChosenFriendName()"></span>
+				&nbsp; <i class="fas fa-circle" :class="{active:isFriendActive(),notactive:!isFriendActive()}"></i>
+			</div>
 
 			<chat-log :user-data="user" :friend-id="chosenFriendId" :friend-typing="friend_typing" ref="chatlog"></chat-log>
 
@@ -65,6 +70,17 @@
 	position:relative;
 	z-index: 2
 }
+
+.active{
+	color: #42b883;
+}
+.notactive{
+	color: #ddd;
+}
+
+.bold{
+	font-weight: bold;
+}
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
@@ -86,13 +102,17 @@
 }
 
 .selecteduser{
-    background: #CAEFFF;
+    background: #CAEFFF !important;
+}
+.selecteduser:hover{
+	background-color: #CAEFFF !important;
 }
 
 .user:hover{
-	-webkit-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.15);
+	/* -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.15);
     -moz-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.15);
-    box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.15);
+    box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.15); */
+		background-color: #f9f9f9;
     transition: all 0.2s ease;
     cursor: pointer;
 }
@@ -108,7 +128,7 @@
 -webkit-box-shadow: 0px 11px 12px -13px rgba(0,0,0,0.20);
 -moz-box-shadow: 0px 11px 12px -13px rgba(0,0,0,0.20);
 box-shadow: 0px 11px 12px -13px rgba(0,0,0,0.20);
-    z-index: 30;
+    z-index: 8;
     position: relative;
     width: 100%;
     background-color:#f9f9f9;
@@ -134,28 +154,12 @@ box-shadow: 0px 11px 12px -13px rgba(0,0,0,0.20);
 import chatlog from './ChatLog.vue';
 import searchuser from './SearchUserComponent.vue';
 import loadingComponent from '../../others/LoadingComponent.vue';
+import EventBus from '../../EventBus.vue';
 export default{
 	data(){
 		return{
 			messageText: '',
-			friends:[
-				// {
-				// 	id: 10,
-				// 	name:'Jan',
-				// 	surname:'Kowalski',
-				// 	profile_img:'default.png',
-				// 	last_msg:'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-				// 	author_of_last_msg:'Ty'
-				// },
-				// {
-				// 	id: 11,
-				// 	name:'Jan',
-				// 	surname:'Kowalski',
-				// 	profile_img:'default.png',
-				// 	last_msg:'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-				// 	author_of_last_msg:'Ty'
-				// }
-			],
+			friends:[],
 			chosenFriendId: 11,
 			user: {},
 			Loaded: false,
@@ -168,6 +172,8 @@ export default{
 	},
 	props:{
 		userData: Object,
+		firstFriendId: Number,
+		friendData: Array,
 	},
 	components:{
 		'chat-log':chatlog,
@@ -181,11 +187,9 @@ export default{
 	methods:{
 		getFriends(){
 			axios.get('/getFriends').then((response)=>{
-				console.log(response.data);
 				response.data.forEach((el)=>{
 					let idd = 0;
 					let author = '';
-					console.log(el.sender_id);
 					if(el.sender_id == this.userData.id){
 						idd = parseInt(el.receiver_id);
 						author = 'Ty';
@@ -193,7 +197,6 @@ export default{
 						idd = parseInt(el.sender_id)
 						author = el.name + ' ' + el.surname;
 					};
-
 					this.friends.push({
 						 surname:el.surname,
 						 name:el.name,
@@ -201,7 +204,9 @@ export default{
 						 id:idd,
 						 last_msg: el.message,
 						 last_msg_time: el.msg_created,
-						 author_of_last_msg: author
+						 author_of_last_msg: author,
+						 seen_at: el.seen_at,
+						 active: false,
 					})
 				});
 
@@ -212,19 +217,18 @@ export default{
 				});
 				this.Loaded = true;
 
-				this.changeActiveConv(this.friends[0].id);
+				if(this.firstFriendId>=0){
+					this.addUser(this.friendData[0]);
+				}
+				else
+					this.changeActiveConv(this.friends[0].id);
 
 				//laravel Echo
 				this.friends.forEach((el)=>{
-					let channel = ''
-					if(el.id < this.userData.id){
-						channel = 'newmsg.'+el.id+'.'+this.userData.id;
-					}else{
-						channel = 'newmsg.'+this.userData.id+'.'+el.id
-					}
+					let channel = this.createChannelName(el.id,this.userData.id);
+
 					this.channels.push(channel);
-					console.log(channel);
-					Echo.private(channel)
+					Echo.join(channel)
 					.listen('NewMessage', (e)=>{
 						if(e.sender_id == this.chosenFriendId){
 							this.gotWebsocketMessage(e);
@@ -233,7 +237,7 @@ export default{
 					})
 
 					let timer;
-					Echo.private(channel)
+					Echo.join(channel)
 					.listenForWhisper('typing',(e)=>{
 						if(e.user_id == this.chosenFriendId){
 							this.friend_typing = true;
@@ -253,6 +257,50 @@ export default{
 							},1200);
 						}
 					})
+
+					Echo.join(channel)
+					.listenForWhisper('seen_last_msg',(e)=>{
+						if(this.chosenFriendId == e.user_id)
+							this.$refs.chatlog.seenLastMsg();
+					})
+					.joining((user)=>{
+						for(const [index,el] of this.friends.entries())
+						{
+							if(el.id === user.id)
+							{
+								this.friends[index].active = true;
+							}
+						}
+					})
+					.leaving((user)=>{
+						for(const [index,el] of this.friends.entries())
+						{
+							if(el.id === user.id)
+							{
+								this.friends[index].active = false;
+							}
+						}
+						// axios.post('/save-last-activity').then((response)=>{});
+					})
+					.here((users)=>{
+						for(const [index,el] of this.friends.entries())
+						{
+							if(users.length === 2){
+								if(el.id === users[0].id || el.id === users[1].id)
+								{
+									this.friends[index].active = true;
+								}
+							}else{
+								if(el.id === users[0].id)
+								{
+									this.friends[index].active = true;
+								}
+							}
+
+						}
+					})
+
+
 				})
 
 
@@ -271,7 +319,10 @@ export default{
 		},
 		gotWebsocketMessage(e){
 			this.friend_typing = false;
-			console.log(e.msg_created);
+			let channel_name = this.createChannelName(this.chosenFriendId,this.userData.id);
+			Echo.join(channel_name).whisper('seen_last_msg', {
+						user_id: this.userData.id
+			});
 			this.$refs.chatlog.writeMessage(e.message,e.msg_created,e.sender_id);
 		},
 		setFriendMessage(message,friend_id,sender_id = null){
@@ -295,6 +346,15 @@ export default{
 			}
 			else{
 				this.friends[0].author_of_last_msg = 'Ty';
+			}
+
+			if(this.chosenFriendId != friend_id)
+			{
+				this.friends[0].seen_at = null
+			}else{
+				let current_datetime = new Date();
+				let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes() + ":" + current_datetime.getSeconds();
+				this.friends[0].seen_at = formatted_date;
 			}
 		},
 		addUser(data){
@@ -327,6 +387,24 @@ export default{
 		changeActiveConv(id){
 			if(id!=this.chosenFriendId){
 				this.chosenFriendId = id;
+				for(const [index,el] of this.friends.entries())
+				{
+					if(el.id === this.chosenFriendId)
+					{
+						if(el.seen_at === null)
+						{
+							let current_datetime = new Date()
+							let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes() + ":" + current_datetime.getSeconds();
+							this.friends[index].seen_at = formatted_date;
+							let channel_name = this.createChannelName(this.chosenFriendId,this.userData.id);
+							Echo.join(channel_name).whisper('seen_last_msg', {
+										user_id: this.userData.id
+							});
+							EventBus.$emit('seen-message',this.chosenFriendId);
+						}
+						break;
+					}
+				}
 				this.$refs.chatlog.getMessages(id);
 			}
 		},
@@ -335,17 +413,10 @@ export default{
 				console.log('typed');
 				this.typing = true;
 
-				let channel_name = '';
-				if(this.chosenFriendId < this.userData.id)
-				{
-					channel_name = 'newmsg.'+String(this.chosenFriendId)+'.'+String(this.userData.id)
-				}else{
-					channel_name = 'newmsg.'+String(this.userData.id)+'.'+String(this.chosenFriendId)
-				}
-
+				let channel_name = this.createChannelName(this.chosenFriendId,this.userData.id);
 
 				// this.channels.forEach((el)=>{
-					let channel = Echo.private(channel_name);
+					let channel = Echo.join(channel_name);
 					setTimeout(() => {
 				    	channel.whisper('typing', {
 				      typing: true,
@@ -359,7 +430,48 @@ export default{
 			}
 
 
-		}
+		},
+		createChannelName(id1,id2){
+			let channel_name = '';
+			if(id1 < this.userData.id)
+				channel_name = 'newmsg.'+String(id1)+'.'+String(id2);
+			else
+				channel_name = 'newmsg.'+String(id2)+'.'+String(id1);
+			return channel_name
+		},
+		getChosenFriendName(){
+			if(this.friends.length>0)
+			{
+				for(const [index,el] of this.friends.entries())
+				{
+					if(el.id === this.chosenFriendId)
+					{
+						return el.name+' '+el.surname;
+					}
+				}
+			}
+		},
+		isFriendActive(friend_id = this.chosenFriendId){
+			if(this.friends.length>0)
+			{
+				for(const [index,el] of this.friends.entries())
+				{
+					if(friend_id == el.id)
+					{
+						return this.friends[index].active;
+					}
+				}
+			}
+
+		},
+		shortenIfTooLong(text,num){
+      if(text.length>num)
+      {
+        return text.substring(0,num)+"...";
+      }
+      return text;
+    }
+
 	}
 }
 </script>

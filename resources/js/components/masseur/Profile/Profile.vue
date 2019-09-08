@@ -1,5 +1,5 @@
 <template>
-	<div class="row" style="margin-top:7rem;margin-right: 0;margin-left: 0">
+	<div class="row" style="margin-top:7rem;margin-right: 0;margin-left: 0;z-index:5">
 		<div class="col-lg-10 offset-lg-1">
 			<div class="box-container pt-0 pb-0">
 				<div class="row" style="margin-right: 0;margin-left: 0">
@@ -16,7 +16,7 @@
 					</div>
 
 					<div class="col-md-9 col-xl-10 col-12">
-						<message-box v-if="option==1" :user-data="user"></message-box>
+						<message-box v-if="option==1" :first-friend-id="friendId" :user-data="user" :friend-data="friend"></message-box>
 						<ad-settings v-if="option==2"></ad-settings>
 						<user-settings v-if="option==3" :user-data="user" :csrf="csrf"></user-settings>
 					</div>
@@ -68,11 +68,15 @@ import MessageBox from './MessagesBoxComponent.vue';
     	props:{
     		s_user: String,
     		csrf: String,
+				firstOption: Number,
+				messageFriendId: Number,
+				s_friend_data: String,
 		},
 		data(){
 			return{
 				user:{},
-    			option: 1,
+  			option: 0,
+				friendId: -1
 
 			}
 		},
@@ -86,12 +90,18 @@ import MessageBox from './MessagesBoxComponent.vue';
 	 		ChangeUserToObj() {
 	 			this.user = JSON.parse(this.s_user);
 	 		},
+			ChangeFriendToObj() {
+	 			this.friend = JSON.parse(this.s_friend_data);
+	 		},
 	 		ChangeOption(new_option){
 	 			this.option = new_option;
 	 		}
 		},
 		beforeMount(){
-		   this.ChangeUserToObj();
+			this.ChangeUserToObj();
+			this.ChangeFriendToObj();
+			this.option = this.firstOption;
+			this.friendId = this.messageFriendId;
 		},
 	}
  </script>

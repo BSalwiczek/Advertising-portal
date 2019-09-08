@@ -12,7 +12,7 @@ class MessagesController extends Controller
 {
     public function store(Request $request){
       $data = $this->validate($request,[
-        'message'=>'max:255|required',
+        'message'=>'max:2000|required',
         'receiver_id'=>'required|numeric',
       ]);
 
@@ -34,6 +34,14 @@ class MessagesController extends Controller
 
       $your_messages = Message::where('sender_id',Auth::id())->where('receiver_id',$data['friend_id'])->get();
       $friend_messages = Message::where('receiver_id',Auth::id())->where('sender_id',$data['friend_id'])->get();
+
+      foreach ($friend_messages as $key => $msg) {
+        if($msg->seen_at === null)
+        {
+          $msg->seen_at = date("Y-m-d H:i:s");
+          $msg->save();
+        }
+      }
 
       $all_messages = $your_messages->merge($friend_messages);
 
@@ -65,7 +73,8 @@ class MessagesController extends Controller
             'sender_id' => $msg->sender_id,
             'message' => $msg->message,
             'msg_created' => $msg->msg_created,
-            'profile_img' =>$msg->profile_img
+            'profile_img' =>$msg->profile_img,
+            'seen_at' => $msg->seen_at,
           ]);
         }else{
           $addthismessage = true;
@@ -91,7 +100,8 @@ class MessagesController extends Controller
                   'sender_id' => $msg->sender_id,
                   'message' => $msg->message,
                   'msg_created' => $msg->msg_created,
-                  'profile_img' =>$msg->profile_img
+                  'profile_img' =>$msg->profile_img,
+                  'seen_at' => $msg->seen_at,
                 ];
                 break;
               }
@@ -107,15 +117,43 @@ class MessagesController extends Controller
               'sender_id' => $msg->sender_id,
               'message' => $msg->message,
               'msg_created' => $msg->msg_created,
-              'profile_img' =>$msg->profile_img
+              'profile_img' =>$msg->profile_img,
+              'seen_at' => $msg->seen_at,
             ]);
           }
         }
       }
 
-    // print_r($response);
-    // dd($response);
       return  $response;
 
+    }
+
+    public function seenLast(Request $request){
+      $data = $this->validate($request,[
+        'friend_id'=>'required|numeric'
+      ]);
+      $msg = Message::where('sender_id','=',$data['friend_id'])->where('receiver_id','=',Auth::id())->orderBy('msg_created','desc')->first();
+      $msg->seen_at = date("Y-m-d H:i:s");
+      $msg->save();
+
+      return 'success';
+    }
+
+    public function getUnseen(){
+      $messages = Message::join('users', 'users.id', '=', 'messages.sender_id')->where('receiver_id','=',Auth::id())->where('seen_at','=',null)->orderBy('msg_created','desc')->groupBy('sender_id')->get();
+      $response = array();
+      foreach ($messages as $key => $msg) {
+        array_push($response,[
+          'name' => $msg->name,
+          'surname' => $msg->surname,
+          'receiver_id' => $msg->receiver_id,
+          'sender_id' => $msg->sender_id,
+          'message' => $msg->message,
+          'msg_created' => $msg->msg_created->format('Y-m-d H:i:s'),
+          'profile_img' =>$msg->profile_img,
+          'seen_at' => $msg->seen_at,
+        ]);
+      }
+      return $response;
     }
 }

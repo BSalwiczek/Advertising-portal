@@ -32,7 +32,9 @@ Route::post('email/resend', 'VerificationApiController@resend')->name('verificat
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/klient/profil','ClientController@index');
+Route::post('/masazysta/profil','MasseurController@index');
 Route::get('/masazysta/profil','MasseurController@index');
+
 
 Route::get('/masazysci','MasseurNoticeController@index')->name('masazysci');
 Route::get('/masazysci/{slug}','MasseurNoticeController@show');
@@ -51,7 +53,13 @@ Route::get('/getAuthUser',function(){
 
 Route::post('/saveMessage','MessagesController@store');
 Route::post('/getMessages','MessagesController@index');
+Route::post('/seen-last-msg','MessagesController@seenLast');
+Route::post('/get-unseen-messages','MessagesController@getUnseen');
+// Route::post('/save-last-activity','MessagesController@seenLast');
 Route::get('/getFriends','MessagesController@getFriends');
+
+Route::post('/new-opinion','OpinionsController@store');
+Route::get('/get-opinions','OpinionsController@index');
 
 
 // 'MasseurController@gohome'

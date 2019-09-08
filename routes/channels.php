@@ -16,5 +16,8 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('newmsg.{id1}.{id2}',function($user,$id1,$id2){
-  return (int) $user->id === (int) $id1 or (int) $user->id === (int) $id2;
+  if((int) $user->id === (int) $id1 or (int) $user->id === (int) $id2)
+  {
+    return ['id'=>$user->id];
+  }
 });

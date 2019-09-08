@@ -39,10 +39,10 @@ class NewMessage implements ShouldBroadcast
     public function broadcastOn()
     {
       if($this->sender_id<$this->receiver_id){
-          return new PrivateChannel('newmsg.'.$this->sender_id.'.'.$this->receiver_id);
+          return new PresenceChannel('newmsg.'.$this->sender_id.'.'.$this->receiver_id);
       }
       else {
-          return new PrivateChannel('newmsg.'.$this->receiver_id.'.'.$this->sender_id);
+          return new PresenceChannel('newmsg.'.$this->receiver_id.'.'.$this->sender_id);
       }
     }
 }

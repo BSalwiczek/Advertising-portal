@@ -12,8 +12,8 @@
 						<span v-if="isAreaSet()">{{ ad.area}}</span>
 						<span v-else>{{ ad.city }}, ul. {{ ad.street }}</span>
 					</span></div>
-					
-					
+
+
 				</div>
 			</div>
 			<div class="col-sm-3">
@@ -22,9 +22,8 @@
 					</div>
 			</div>
 		</div>
-		<p class="post-description p-0 mt-3">
-						{{ ad.description }}
-					</p>
+		<p class="post-description p-0 mt-3" v-text="ad.description">
+		</p>
 		<div class="row">
 			<div class="col-sm-3 offset-9">
 				<a :href="adLink()" class="btn-slide-link"><button class="btn btn-first p-3">Dowiedz się więcej</button></a>
@@ -40,7 +39,7 @@
 	margin-top:-2rem;
 	background-color: #FFFBEA;
 	border-bottom-right-radius: 30px;
-	border-bottom-left-radius: 30px;	
+	border-bottom-left-radius: 30px;
 	-webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.07);
 	-moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.07);
 	box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.07);
@@ -88,7 +87,7 @@
 					m_prices = this.massage_prices[i];
 					break;
 				}
-			} 
+			}
 			if(m_prices.length == 2){
 				this.price = String(m_prices[1])+" zł";
 			}else if(m_prices.length > 2){
@@ -97,7 +96,7 @@
 				{
 					values.push(parseInt(m_prices[i]));
 				}
-				
+
 				var max = Math.max.apply(null,values);
 				var min = Math.min.apply(null,values);
 
@@ -107,7 +106,7 @@
 					this.price = "od "+min+" zł do "+max+" zł";
 				}
 			}
-			
+
 
 		},
 

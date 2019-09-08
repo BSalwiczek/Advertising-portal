@@ -1,7 +1,12 @@
+@import url('https://fonts.googleapis.com/css?family=Bree+Serif&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Noto+Serif&display=swap');
 body{
-	font-family: 'Rubik', sans-serif;
+	/* font-family: 'Rubik', sans-serif; */
+	font-family: 'Noto Serif', serif;
   color: #5d5d5d;
 }
+
+
 
 .vertical-center{
 	position: relative;
@@ -54,23 +59,35 @@ box-shadow: 0px 0px 26px 6px rgba(41,182,246,0.4);*/
 /*=================navigation=================*/
 
 .navbar{
-	background-color: #53C5F7;
-	font-size: 1.2em;
+	/* background-color: #09a2e5; */
+	/* background-color: #222; */
+	background-color: #53C6F7;
+	font-size: 2.2vh;
 	-webkit-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.20);
 	-moz-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.20);
 	box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.20);
 	z-index: 10;
+	padding-top: 0;
+	padding-bottom: 0;
+
 }
 
 .nav-item{
-  color: #111;
+  color: #013A52
 }
 
 .nav-link{
 	position: relative;
-	color:#111 !important;
+	font-family: 'Bree Serif', serif;
+	color: #013A52;
+	/* #013A52 */
 	letter-spacing: 0.03em;
 }
+
+.nav-link-active{
+	color:#ECF9FF !important;
+}
+
 
 .nav-link:hover{
 	color:#ECF9FF !important;
@@ -95,6 +112,153 @@ box-shadow: 0px 0px 26px 6px rgba(41,182,246,0.4);*/
 .avatar{
   border: 1px solid #DDD;
 }
+
+/* navbar {
+    padding: 15px 10px;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 40px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-btn {
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+} */
+
+
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+
+#sidebar {
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    height: 100vh;
+    z-index: 999;
+    background: #7386D5;
+    color: #fff;
+    transition: all 0.3s;
+    overflow-y: scroll;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+#sidebar.active {
+    left: 0;
+}
+
+#dismiss {
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    background: #7386D5;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+#dismiss:hover {
+    background: #fff;
+    color: #7386D5;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 998;
+    opacity: 0;
+    transition: all 0.5s ease-in-out;
+}
+.overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: #6d7fcc;
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+    border-bottom: 1px solid #47748b;
+}
+
+#sidebar ul p {
+    color: #fff;
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    padding: 10px;
+    font-size: 1.1em;
+    display: block;
+}
+
+#sidebar ul li a:hover {
+    color: #7386D5;
+    background: #fff;
+}
+
+#sidebar ul li.active>a,
+a[aria-expanded="true"] {
+    color: #fff;
+    background: #6d7fcc;
+}
+
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+.dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #6d7fcc;
+}
+
+ul.CTAs {
+    padding: 20px;
+}
+
+ul.CTAs a {
+    text-align: center;
+    font-size: 0.9em !important;
+    display: block;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+a.download {
+    background: #fff;
+    color: #7386D5;
+}
+
+a.article,
+a.article:hover {
+    background: #6d7fcc !important;
+    color: #fff !important;
+}
+
 
 /*=================post=================*/
 .post{
@@ -296,61 +460,6 @@ box-shadow: 0px 0px 26px 6px rgba(41,182,246,0.4);*/
   width: 110%;
 }
 
-
-.btn-contact{
-  background-color: #53C5F7;
-}
-.btn-contact {
-  display: block;
-  font-family: "Montserrat", "Trebuchet MS", Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  position: relative;
-  padding: 1em 1.4em;
-  padding-right: 4.7em;
-  background: #53C5F7;
-  border: none;
-  color: white;
-  line-height: 30px;
-  transition: .2s;
-}
-.btn-contact:before,
-.btn-contact:after {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  width: 2.8em;
-  content: "\00a0";
-  padding-top: inherit;
-  font-family: 'FontAwesome', sans-serif;
-  font-size: 1.2em;
-  text-align: center;
-  transition: .2s;
-}
-.btn-contact:before {
-  background: rgba(0, 0, 0, 0.09999999999999998);
-}
-.btn-contact:hover {
-  background: #53C5F7;
-  color: white;
-}
-.btn-contact:active,
-.btn-contact:focus {
-  background: #53C5F7;
-  outline: none;
-}
-.btn-contact:after {
-  content: "\F0E0";
-}
-
-.btn-contact:hover:after,.btn-contact:hover:before {
-  font-size: 1.4em;
-  /*transition: all .2s*/;
-}
-.btn-contact:hover{
-  background-color: #42b883
-}
-
 /*=================Pagination=================*/
 
 .page-link,.page-item{
@@ -458,7 +567,7 @@ box-shadow: 0px 0px 26px 6px rgba(41,182,246,0.4);*/
   position: relative;
   margin: auto;
   width: 100%;
-  max-width: 280px;
+  /* max-width: 280px; */
 }
 .inp .label {
   position: absolute;
@@ -516,3 +625,14 @@ box-shadow: 0px 0px 26px 6px rgba(41,182,246,0.4);*/
   transform: scaleX(1);
 }
 
+/* media */
+@media screen and (max-width: 992px) {
+  .navbar{
+	font-size: 2.8vw;
+}
+}
+@media screen and (max-width: 500px) {
+  .navbar{
+	font-size: 1.7vw;
+}
+}

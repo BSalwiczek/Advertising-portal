@@ -79,20 +79,35 @@
             @csrf
                 <div class="form-group mt-4 align-items-center" style="font-size: 1.1em">
                     <div class="d-flex justify-content-center" style="margin-top: 3rem;">
-                        <div class="mr-5">
+                        {{-- <div class="mr-5">
                             <label for="email" class="col-form-label">Email</label>
                         </div>
                         <div style="min-width: 40%">
                             <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+                        </div> --}}
+                        <div style="width:33%">
+                            {{-- <label for="email" class="col-fo rm-label">Hasło</label> --}}
+                            <label for="email" class="inp d-block">
+                              <input id="password" type="email" placeholder=" " class="better-input @error('email') is-invalid @enderror" value="{{ old('email') }}" name="email" required autocomplete="email">
+                                {{--  <input required type="password" id="email" class="better-input" name="email" > --}}
+                                <span class="label">Email</span>
+                                <span class="border-b"></span>
+                            </label>
                         </div>
                     </div>
                     <div class="d-flex justify-content-center" style="margin-top: 2rem;">
-                        <div class="mr-5">
-                            <label for="email" class="col-form-label">Hasło</label>
+                        <div style="width:33%">
+                            {{-- <label for="email" class="col-form-label">Hasło</label> --}}
+                            <label for="email" class="inp d-block">
+                              <input id="password" type="password" placeholder=" " class="better-input @error('email') is-invalid @enderror" name="password" required autocomplete="current-password">
+                                {{-- <input required type="password" id="email" class="better-input" name="email" > --}}
+                                <span class="label">Hasło</span>
+                                <span class="border-b"></span>
+                            </label>
                         </div>
-                        <div style="min-width: 40%">
+                        {{-- <div style="min-width: 40%">
                             <input id="password" type="password" class="form-control @error('email') is-invalid @enderror" name="password" required autocomplete="current-password">
-                        </div>
+                        </div> --}}
                     </div>
                     @error('email')
                     <br>

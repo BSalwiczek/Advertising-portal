@@ -30,7 +30,7 @@
 					<h5>3.6/5 (115 głosów)</h5>
 				</div>
 				<h3 class="text-center mt-3">{{ $post->user->name }} {{ $post->user->surname }}</h3>
-				<button class="btn btn-contact mx-auto mt-3">Kontakt</button>
+				<contact-button :user-id="{{ $post->user->id }}" csrf={{ csrf_token() }}></contact-button>
 			</div>
 
 
@@ -78,12 +78,12 @@
 								<hr style="border-color: #53C5F7; margin-top:0;margin-bottom: 0.5rem">
 							</div>
 							{{ $post->city }}, woj. {{ $post->province }}<br>
-							ul. {{ $post->street }} 
+							ul. {{ $post->street }}
 							{{ $post->number }}
 						</div>
 					</div>
 				</div>
-					
+
 				@elseif($post->area !== null)
 				<div class="mx-auto text-center mt-4">
 					<h5 style="color:#53C5F7;">Dojeżdżam do klienta</h5>
@@ -99,7 +99,7 @@
 						<hr style="border-color: #53C5F7; margin-top:0;margin-bottom: 0.5rem">
 					</div>
 					{{ $post->city }} woj. {{ $post->province }}<br>
-					ul.{{ $post->street }} 
+					ul.{{ $post->street }}
 					{{ $post->number }}
 				</div>
 				@endif
@@ -119,9 +119,14 @@
 
 			</div>
 
+			@guest
+				<opinion :login="false" :post-id="{{ $post->id }}"></opinion>
+			@else
+				<opinion :login="true" :post-id="{{ $post->id }}"></opinion>
+			@endguest
 		</div>
 
-		
+
 	</div>
 </div>
 

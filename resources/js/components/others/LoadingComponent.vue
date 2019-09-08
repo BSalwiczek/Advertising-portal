@@ -12,7 +12,7 @@
 	left:0;
 	top:0;
 	background-color: rgba(200,200,200,0.4);
-	z-index: 10;
+	z-index: 8;
 	width: 100%;
 	height: 100%;
 }
