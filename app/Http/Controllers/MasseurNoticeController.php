@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\MasseurPost;
 use App\MassageType;
+use App\Opinion;
 use Illuminate\Support\Facades\Validator;
 use Auth;
 use Cookie;
@@ -28,25 +29,25 @@ class MasseurNoticeController extends Controller
     public function index(Request $request){
         $this->validate($request,[
             'uc'=>'sometimes|numeric', //Information that user changed filters
-            'to_client'=>'sometimes|alpha',
-            'to_masseur'=>'sometimes|alpha',
+            'to_client'=>'sometimes',
+            'to_masseur'=>'sometimes',
             'masseur_note'=>'sometimes|numeric|lt:6',
             'masseur_notes_count'=>'sometimes|numeric|lt:11',
-            'masseur_opinions_count'=>'sometimes|numeric|lt:11',
+            'masseur_opinions_count'=>'sometimes|numeric',
             'city'=>'sometimes|alpha',
         ]);
         $request_copy = $request;
         if(!isset($request_copy['uc'])){
             if(!isset($request_copy['to_client']))
-                $request_copy['to_client'] = true; 
+                $request_copy['to_client'] = true;
             if(!isset($request_copy['to_masseur']))
                 $request_copy['to_masseur'] = true;
         }
         // dd($request_copy->all());
-        
+
         //=========================Create query=========================
         if(isset($request_copy['city'])){
-            $query_obj = MasseurPost::whereRaw('LOWER(`city`) LIKE ? ',[strtolower($request_copy['city'])]);         
+            $query_obj = MasseurPost::whereRaw('LOWER(`city`) LIKE ? ',[strtolower($request_copy['city'])]);
         }
         else{
             $query_obj = MasseurPost::where('name','!=',null);
@@ -73,6 +74,16 @@ class MasseurNoticeController extends Controller
             // $query_obj = $query_obj->whereHas('massagetypes')
         }
 
+        if(isset($request['masseur_note']))
+        {
+          $query_obj = $query_obj->where('avg_note','>=',$request['masseur_note']);
+        }
+
+        if(isset($request['masseur_opinions_count']))
+        {
+          $query_obj = $query_obj->withCount('opinions')->has('opinions','>=',$request['masseur_opinions_count']);
+        }
+
         if(isset($request['sorting']))
         {
             $sorting = $request['sorting'];
@@ -84,14 +95,26 @@ class MasseurNoticeController extends Controller
                 $query_obj = $query_obj->orderByJoin('massagetypes.price');
             }else if($sorting == 3){
                 $query_obj = $query_obj->orderByJoin('massagetypes.price','desc');
+            }else if($sorting == 4){
+                $query_obj = $query_obj->withCount('opinions')->orderBy('opinions_count','desc');
+            }else if($sorting == 5){
+                $query_obj = $query_obj->orderBy('avg_note','desc');
             }
         }else{
             $query_obj = $query_obj->orderBy('created_at','desc');
         }
-        
-        $count = count($query_obj->get());
-        $ads = $query_obj->paginate(15);
 
+        $count = count($query_obj->get());
+        $ads = $query_obj->withCount('opinions')->paginate(15);
+
+        //get averege notes
+        // $x = $query_obj->with('opinions')->paginate(15);
+        // $avg_note = [];
+        // foreach ($x as $key => $value) {
+        //   array_push($avg_note,round($value->opinions->avg('note')*2)/2);
+        // }
+        // dd($avg_note);
+        //todo: każdy masażysta może dodać 1 posta, dodać do migracji kolumnę średnia ocena
 
         // $currentPage = 1;
         // if(isset($request['page'])){
@@ -100,10 +123,10 @@ class MasseurNoticeController extends Controller
         // \Illuminate\Pagination\Paginator::currentPageResolver(function () use ($currentPage) {
         //     return $currentPage;
         // });
-        
 
 
-        
+
+
 
         // //=========================GET PRICES=========================
         $prices_arr = array();
@@ -123,8 +146,13 @@ class MasseurNoticeController extends Controller
     }
     public function show($slug){
     	$post = MasseurPost::where('slug',$slug)->firstOrFail();
-        $massage_types = MassageType::where('masseur_post_id',$post->id)->get();
-        return view('masseurs_ads.show')->withPost($post)->with('massage_types',$massage_types);
+      $massage_types = MassageType::where('masseur_post_id',$post->id)->get();
+      $opinion = Opinion::where('masseur_post_id','=',$post->id)->where('user_id','=',Auth::id())->first();
+
+      $opinions_count = Opinion::where('masseur_post_id','=',$post->id)->count();
+      $opinions_average = round(Opinion::where('masseur_post_id','=',$post->id)->avg('note') * 2)/2;
+
+      return view('masseurs_ads.show')->withPost($post)->with('massage_types',$massage_types)->withOpinion($opinion)->with('averageNote',$opinions_average)->with('notesCount',$opinions_count);
     }
     public function gotoads(){
         //create added_post cookie
@@ -199,7 +227,7 @@ class MasseurNoticeController extends Controller
         }
         $files_validator = Validator::make($request->files->all(),$rules);
         if ($files_validator->fails()) {
-            return 'Zdjęcie które przesałałeś jest niepoprawne. Upewnij się, że zdjęcia mają poniżej 4mb i są formatu jpeg,png,jpg,gif lub svg';
+            return 'Zdjęcia które przesałałeś są niepoprawne. Upewnij się, że zdjęcia mają poniżej 4mb i są formatu jpeg,png,jpg,gif lub svg';
         }
 
         // dd($rules);
@@ -208,6 +236,9 @@ class MasseurNoticeController extends Controller
 
         // $images_validator = Validator::make($request->images,[
         // ]);
+
+        if(MasseurPost::where('user_id','=',Auth::id())->first())
+          return 0;
 
         //post
         $masseur_post = new MasseurPost();
@@ -218,7 +249,7 @@ class MasseurNoticeController extends Controller
         $masseur_post->company = $data['company'];
 
         $masseur_post->slug = $this->createSlug($data['title']);
-        
+
         if(isset($data['area']))
         {
             $masseur_post->area = $data['area'];
@@ -244,7 +275,7 @@ class MasseurNoticeController extends Controller
         // massage type
         $mtc_data_json = $request->mtc_data;
         $mtc_data = json_decode(strval($mtc_data_json));
-        
+
 
         foreach ($mtc_data as $type) {
             $massage_type = new MassageType();
@@ -258,7 +289,7 @@ class MasseurNoticeController extends Controller
             }else{
                 $massage_type->img_name = "/public/massage_types/classic.jpg";
             }
-            
+
             $massage_type->save();
         }
 

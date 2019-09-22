@@ -10,31 +10,31 @@
 						<div class="col-lg-2 col-md-4 col-sm-6">
 							<span>Ocena masażysty</span><br>
 							<input v-if="selected_filters.masseur_note!=0" name="masseur_note" :value="selected_filters.masseur_note" class="d-none">
-							<dropdown :options="filters.masseur_note.options" 
-							  :selected="getSelectedMN()" 
+							<dropdown :options="filters.masseur_note.options"
+							  :selected="getSelectedMN()"
 							  v-on:updateOption="changeMasseurNote">
 							</dropdown>
 						</div>
-						<div class="col-lg-2 col-md-4 col-sm-6">
+						<!-- <div class="col-lg-2 col-md-4 col-sm-6">
 							<span>Ilość ocen</span><br>
 							<input v-if="selected_filters.masseur_notes_count!=0" name="masseur_notes_count" :value="selected_filters.masseur_notes_count" class="d-none">
-							<dropdown :options="filters.masseur_notes_count.options" 
-							  :selected="getSelectedMNC()" 
+							<dropdown :options="filters.masseur_notes_count.options"
+							  :selected="getSelectedMNC()"
 							  v-on:updateOption="changeMasseurNotesCount">
 							</dropdown>
-						</div>
+						</div> -->
 						<div class="col-lg-2 col-md-4 mt-md-5 col-sm-6 mt-xs-3 mt-lg-0">
 							<span>Ilość opinii</span><br>
 							<input v-if="selected_filters.masseur_opinions_count!=0" name="masseur_opinions_count" :value="selected_filters.masseur_opinions_count" class="d-none">
-							<dropdown :options="filters.masseur_opinions_count.options" 
-							  :selected="getSelectedMOC()" 
+							<dropdown :options="filters.masseur_opinions_count.options"
+							  :selected="getSelectedMOC()"
 							  v-on:updateOption="changeMasseurOpinionsCount">
 							</dropdown>
 						</div>
 						<div class="col-lg-2 col-md-4 mt-md-5 col-sm-6 mt-xs-3 mt-lg-0">
 							<input name="city" v-if="selected_filters.city!=''" :value="selected_filters.city" class="d-none">
 							<span>Miejscowość</span><br>
-							<dropdown-search 
+							<dropdown-search
 							  v-on:updateOption="changeCity"
 							  :selected="selected_filters.city">
 							</dropdown-search>
@@ -76,7 +76,7 @@
 										<input class="form-control price-input my-auto" v-if="price_enabled" @input="userChangedPrice" type="text" v-model="from_price" name="from_price">
 									</div>
 									<div class="col p-2 text-center my-auto" style="flex-grow: 0.5">
-										 zł – 
+										 zł –
 									</div>
 									<div class="col p-0" style="flex-grow: 1.5">
 										<input class="form-control price-input my-auto" v-if="price_enabled" @input="userChangedPrice" type="text" v-model="to_price" name="to_price">
@@ -211,16 +211,13 @@ data() {
 	  		masseur_opinions_count:{
 	  			options: [
 	  			{id: 0,name:'Wszystkie'},
-	  			{id: 1,name:'Wiecej niż 5'},
-	  			{id: 2,name:'Wiecej niż 10'},
-	  			{id: 3,name:'Wiecej niż 20'},
-	  			{id: 4,name:'Wiecej niż 50'},
-	  			{id: 5,name:'Wiecej niż 100'},
-	  			{id: 6,name:'Wiecej niż 150'},
-	  			{id: 7,name:'Wiecej niż 200'},
-	  			{id: 8,name:'Wiecej niż 300'},
-	  			{id: 9,name:'Wiecej niż 500'},
-	  			{id: 10,name:'Wiecej niż 1000'},
+	  			{id: 1,name:'Wiecej niż 1'},
+	  			{id: 5,name:'Wiecej niż 5'},
+	  			{id: 10,name:'Wiecej niż 10'},
+	  			{id: 20,name:'Wiecej niż 20'},
+	  			{id: 50,name:'Wiecej niż 50'},
+	  			{id: 100,name:'Wiecej niż 100'},
+	  			{id: 200,name:'Wiecej niż 200'},
 	  			]
 	  		},
 	  	},
@@ -238,7 +235,7 @@ data() {
 	  	to_price:1500,
 	  	price_enabled:false,
 	  }
-	  
+
 	},
 
 	props: ['s_previous_filters','csrf'],

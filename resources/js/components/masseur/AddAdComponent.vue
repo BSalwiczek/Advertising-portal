@@ -77,15 +77,15 @@
                         	<div class="offset-3 col-lg-8 col-md-8">
 		                        <div class="form-check">
 			                        <label class="form-check-label" for="to_client">
-									  <input 
-									  class="form-check-input" 
+									  <input
+									  class="form-check-input"
 									  :value="where.to_client.id"
-									  type="checkbox" 
-									  v-model="user_fields.where" 
-									  id="to_client" 
-									  name="where" 
+									  type="checkbox"
+									  v-model="user_fields.where"
+									  id="to_client"
+									  name="where"
 									  v-validate="'required'">
-									  
+
 									    U klienta
 									</label>
 								</div>
@@ -109,14 +109,14 @@
 							<div class="offset-3 col-lg-8 col-md-8">
 								<div class="form-check">
 									<label class="form-check-label"  for="to_masseur">
-										<input 
+										<input
 										v-validate="'required'"
 										:value="where.to_masseur.id"
-										class="form-check-input" 
-										ref="to_masseur" 
-										v-model="user_fields.where" 
+										class="form-check-input"
+										ref="to_masseur"
+										v-model="user_fields.where"
 										type="checkbox"
-										name="where"  
+										name="where"
 										id="to_masseur">
 										U mnie
 									</label>
@@ -184,14 +184,14 @@
                      	<div style="height: 10px"></div>
 
                      	<div class="row mx-auto" style="width: 97%">
-	                     	<massage-type-component 
-	                     	v-on:delete-mtc="deleteThisMTC(index)" 
-	                     	v-for="(n,index) in mtc_data" 
+	                     	<massage-type-component
+	                     	v-on:delete-mtc="deleteThisMTC(index)"
+	                     	v-for="(n,index) in mtc_data"
 	                     	v-bind:key="index"
 	                     	v-model="mtc_data[index]"
 	                     	></massage-type-component>
 	                    </div>
-  						
+
   						<div class="mx-auto text-center">
                         <button class="btn btn-first w-50" style="font-size: 1.4em;margin-top: 6rem;">
                             Dodaj nowe ogłoszenie!
@@ -225,7 +225,7 @@
 
 <script>
 import MassageTypeComponent from './MassageTypeComponent.vue'
-	
+
 export default{
 	props:{
 		s_user: String,
@@ -245,7 +245,7 @@ export default{
 			user_fields: {
 				company: "1",
 				where: [0]
-				
+
 			},
 			mtcCount:1,
 			types:['Masaż klasyczny','Masaż relaksacyjny','Masaż głowy','Masaż stóp','Masaż tajski','Inny'],
@@ -274,9 +274,9 @@ export default{
  			this.mtcCount+=1;
 	 	},
 	 	deleteThisMTC: function(ix) {
-	 		
+
 	 		this.$delete(this.mtc_data,ix);
-           	
+
         },
 		submit(){
 			this.$validator.validateAll().then(value => {
@@ -304,7 +304,7 @@ export default{
 		   //    for (var key of formData.entries()) {
 			  //   console.log(key[0] + ', ' + key[1]);
 			  // }
-		      
+
 		      axios.post('/masazysta/dodaj-nowe-ogloszenie', formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {
 		      	console.log(response.data);
                 if(response.data=='success'){

@@ -11,7 +11,6 @@
       @mousemove="hovered(...arguments,4)"></i><i :class="{[fullStar]:isFull(5),[halfStar]:isHalf(5),[emptyStar]:!isFull(5)&&!isHalf(5),star5:isHalf(5)}"
       @mousemove="hovered(...arguments,5)"></i>
     </span>
-
   </div>
 
   <!-- <label>
@@ -68,10 +67,19 @@ export default{
       halfStar: ['fas fa-star-half-alt']
     }
   },
+  props:{
+    'initialNote':String,
+  },
+  mounted(){
+    this.stars = parseFloat(this.initialNote);
+  },
   watch:{
     nobreak(n,o){
-      if(n==false && !this.saved)
+      if(!n && !this.saved){
         this.stars = 0;
+        this.$emit('note-updated',this.stars)
+      }
+
     },
     stars(n,o){
       this.saved = false;

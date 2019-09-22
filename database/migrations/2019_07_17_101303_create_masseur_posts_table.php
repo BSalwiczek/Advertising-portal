@@ -25,6 +25,7 @@ class CreateMasseurPostsTable extends Migration
             $table->text('province')->nullable();
             $table->text('street')->nullable();
             $table->integer('number')->nullable();
+            $table->integer('avg_note')->nullable();
             $table->timestamps();
         });
     }

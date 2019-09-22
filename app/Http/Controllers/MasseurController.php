@@ -58,4 +58,9 @@ class MasseurController extends Controller
 
 		return 'success';
     }
+
+    public function getAdData(){
+      // return Auth::user()->with('MasseurPost')->get();
+      return Auth::user()->masseurpost;
+    }
 }

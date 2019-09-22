@@ -114,6 +114,9 @@
                         <span class="error">Logowanie nie powiodło się! Sprawdz czy dobrze wpisałeś email i hasło.</span>
                     @enderror
                     <div class="align-items-center" style="margin-top: 3rem;">
+                      Nie masz jeszcze konta? Kliknij <a href="/register">tutaj</a> aby je założyć
+                    </div>
+                    <div class="align-items-center" style="margin-top: 3rem;">
                         <button class="btn btn-first mx-auto" style="width: 30%;font-size: 1.4em">
                             Zaloguj się!
                         </button>

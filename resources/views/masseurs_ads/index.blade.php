@@ -20,7 +20,7 @@
 							<div class="col-sm-3"><i class="far fa-clock" style="margin-right: 3%;color:#09A2E5"></i>03.07.2019</div>
 							<div class="col-sm-6"><i class="fas fa-map-marker-alt" style="margin-right: 3%;color:#09A2E5"></i>Województwo Podlaskie</span></div>
 							<p class="post-description">
-								Profesjonalny masaż, skuteczne, najnowsze techniki masażu. 
+								Profesjonalny masaż, skuteczne, najnowsze techniki masażu.
 		Rozsądne ceny. Na wszelkie pytania odpowiadam telefonicznie. Masażysta z dużym doświadczeniem .Stosujemy najnowsze ,sprawdzone i najważniejsze,skuteczne techniki masażu Pomagamy skutecznie w zespołach bólowych wszystkich odcinków kręgosłupa, barków, kończyn, dłoni, stóp. Przed każdym zabiegiem przeprowadzamy dokładny wywiad z pacjentem oraz badanie w celu dobrania najbardziej skutecznych technik masażu. Wykonujemy również masaż relaksacyjny i bańką chińską całościowy lub poszczególnych partii ciała.
 							</p>
 						</div>
@@ -48,7 +48,7 @@
 					@foreach ($ads as $key => $ad)
 						<show-ad s_ad="{{ $ad }}" s_user="{{ $ad->user }}" offset="{{ $key }}" s_massage_prices="{{ $prices }}"></show-ad>
 					@endforeach
-					
+
 				</div>
 				<div class="col-lg-2">
 					@auth
@@ -62,7 +62,7 @@
 						@endif
 					@endauth
 					@if(Cookie::get('added_post'))
-						<alert-success message="<strong>Gratulacje!</strong> Twoje ogłoszenie zostało dodane."></alert-success>
+						<alert-success :showNow="true" message="<strong>Gratulacje!</strong> Twoje ogłoszenie zostało dodane."></alert-success>
 						{{ Cookie::queue(Cookie::forget('added_post')) }}
 					@endif
 				</div>
@@ -74,6 +74,6 @@
 	<div class="mx-auto text-center">
 		{!! $ads->appends(request()->input())->links() !!}
 	</div>
-	
+
 </div>
 @endsection

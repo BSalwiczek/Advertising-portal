@@ -7,6 +7,7 @@
 
   <div class="row mx-0">
     <div class="col-lg-10">
+      <loader v-if="!Loaded"></loader>
       <transition-group enter-active-class="animated fadeIn">
         <div class="post mt-3 py-4 pl-5" v-for="(opinion,index) in opinions" :key="opinion.id">
           <div class="row">
@@ -26,7 +27,10 @@
     </div>
 
   </div>
-  <paginator :pagination-data="paginationData" @go-to-page="getOpinions"></paginator>
+
+  <alert-success :show-now="showAddedAlert" message="<b>Gratulacje!</b> Twoja opinia została dodana. Od teraz wszyscy mogą ją zobaczyć!"></alert-success>
+  <alert-success :show-now="showChangedAlert" message="<b>Gratulacje!</b> Twoja opinia została zmieniona."></alert-success>
+  <paginator ref="pag" :pagination-data="paginationData" @go-to-page="getOpinions"></paginator>
 </div>
 
 </template>
@@ -45,6 +49,8 @@
 
 <script>
 import paginator from '../../others/Paginator.vue'
+import loadingComponent from '../../others/LoadingComponent.vue';
+import alertSuccess from '../../alerts/AlertSuccessComponent.vue';
 export default{
   data(){
     return{
@@ -55,6 +61,9 @@ export default{
         from: 0,
         path: '',
       },
+      showAddedAlert: false,
+      showChangedAlert: false,
+      Loaded: false,
       opinions:[
         // {
         //   id: 0,
@@ -110,16 +119,16 @@ export default{
   },
   components:{
     'paginator':paginator,
+    'loader': loadingComponent,
+    'alert-success':alertSuccess,
   },
   mounted(){
     this.getOpinions(1);
   },
   methods:{
     getOpinions(page){
-      console.log(this.postId);
       axios.get('/get-opinions?post_id='+this.postId+'&page='+String(page)).then((response)=>{
         this.opinions = [];
-        console.log(response.data);
         this.total_opinions_count = response.data.pagination.total;
         response.data.data.data.forEach((el)=>{
           this.opinions.push({
@@ -136,7 +145,8 @@ export default{
         this.$set(this.paginationData, 'last_page', response.data.pagination.last_page);
         this.$set(this.paginationData, 'from', response.data.pagination.from);
         this.$set(this.paginationData, 'path', response.data.data.path+'?post_id='+this.postId);
-        console.log(this.paginationData);
+        this.$refs.pag.updatePaginator();
+        this.Loaded = true;
       })
     },
     getProfileImgUrl(name){
@@ -156,16 +166,46 @@ export default{
       if(note==5) return '<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>'
     },
     addOpinion(data){
-      console.log(data[0]);
-      this.opinions.unshift({
-        id: data[0].id,
-        name: data[0].user.name,
-        surname: data[0].user.surname,
-        profile_img: data[0].user.profile_img,
-        note: data[0].note,
-        created_at: data[0].created_at,
-        opinion: data[0].opinion,
-      })
+      let opinionExist = false;
+      // console.log(data);
+      this.opinions.forEach((el,index)=>{
+        if(el.id==data.id)
+        {
+          this.opinions[index].id = data.id,
+          this.opinions[index].name = data.user.name,
+          this.opinions[index].surname = data.user.surname,
+          this.opinions[index].profile_img = data.user.profile_img,
+          this.opinions[index].note = data.note,
+          this.opinions[index].created_at = data.created_at,
+          this.opinions[index].opinion = data.opinion,
+          opinionExist = true;
+          this.showChangedAlert = false;
+          this.$nextTick(() => {
+            this.showChangedAlert = true;
+          });
+        }
+
+      });
+
+
+      if(!opinionExist)
+      {
+        this.showAddedAlert = false;
+        this.$nextTick(() => {
+          this.showAddedAlert = true;
+        });
+        this.opinions.unshift({
+          id: data[0].id,
+          name: data[0].user.name,
+          surname: data[0].user.surname,
+          profile_img: data[0].user.profile_img,
+          note: data[0].note,
+          created_at: data[0].created_at,
+          opinion: data[0].opinion,
+        });
+        this.total_opinions_count++;
+      }
+
     }
   }
 }

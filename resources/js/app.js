@@ -115,6 +115,7 @@ Vue.component('listen-for-messages', require('./components/ListenForMessages.vue
 Vue.component('sidebar', require('./components/others/Sidebar.vue').default);
 Vue.component('contact-button', require('./components/others/ContactButton.vue').default);
 Vue.component('opinion', require('./components/masseur/Opinions/OpinionBox.vue').default);
+Vue.component('passive-stars', require('./components/others/PassiveStars.vue').default);
 
 let handleOutsideClick
 Vue.directive('closable', {

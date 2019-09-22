@@ -1,34 +1,56 @@
 <template>
 	<transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-	<div class="post mb-5" v-if="show">
-		<div class="row">
-			<div class="col-sm-9">
-				<h1>{{ ad.title }}</h1>
-				<div class="row">
-					<div class="col-sm-4"><span style="color:#09A2E5">Dodane przez: </span>{{ user.name }} {{ user.surname }}</div>
-					<div class="col-sm-4"><i class="far fa-clock" style="margin-right: 3%;color:#09A2E5"></i>{{ ad.created_at }}</div>
-					<div class="col-sm-4">
+	<div class="post mb-5 p-0" v-if="show">
+		<div class="row m-0">
+			<div class="col-md-3 px-0">
+				<div class="p-3 h-100" style="background-color:#F5FCFF;justify-content:center;">
+					<div class="mt-3 d-flex" style="align-self: center;justify-content:center">
+						<img :src="getProfileImgUrl(user.profile_img)" width="100" height="100" class="rounded-circle avatar">
+					</div>
+					<div class="mt-3 mb-3 text-center">
+						<h5>{{ user.name }} {{ user.surname }}</h5>
+						<div class="mb-2" style="font-size:0.9rem" v-if="!ad.avg_note"><i>Brak Opinii</i></div>
+						<div v-else>
+							<passive-stars :stars="parseFloat(ad.avg_note)"></passive-stars>
+							{{ ad.avg_note }}/5 (Opinie: {{ ad.opinions_count }})
+						</div>
+
+						<!-- <div class="stars">
+							<i class="fas fa-star-half-alt"></i>
+							<i class="far fa-star"></i>
+							<i class="far fa-star"></i>
+							<i class="far fa-star"></i>
+							<i class="far fa-star"></i>
+						</div> -->
+
 						<i class="fas fa-map-marker-alt" style="margin-right: 1%;color:#09A2E5"></i>
 						<span v-if="isAreaSet()">{{ ad.area}}</span>
 						<span v-else>{{ ad.city }}, ul. {{ ad.street }}</span>
-					</span></div>
+					</div>
+				</div>
 
-
+			</div>
+			<div class="col-md-9">
+				<div class="row">
+					<div class="col-md-8 mt-5" style="align-self: center;">
+						<h1 class="text-center">{{ ad.title }}</h1>
+					</div>
+					<div class="col-md-4">
+						<div class="col-sm-12 price-box">
+								Cena: {{ price }}
+							</div>
+					</div>
+				</div>
+				<p class="post-description  mt-3" v-text="ad.description"></p>
+				<div class="row mb-3">
+					<div class="col-sm-3 offset-9">
+						<a :href="adLink()" class="btn-slide-link"><button class="btn btn-first p-3">Dowiedz się więcej</button></a>
+					</div>
 				</div>
 			</div>
-			<div class="col-sm-3">
-				<div class="col-sm-12 price-box">
-						Cena: {{ price }}
-					</div>
-			</div>
 		</div>
-		<p class="post-description p-0 mt-3" v-text="ad.description">
-		</p>
-		<div class="row">
-			<div class="col-sm-3 offset-9">
-				<a :href="adLink()" class="btn-slide-link"><button class="btn btn-first p-3">Dowiedz się więcej</button></a>
-			</div>
-		</div>
+
+		<!--  -->
 	</div>
 	</transition>
 </template>
@@ -36,7 +58,6 @@
 <style scoped>
 .price-box{
 	font-size: 1.5em;
-	margin-top:-2rem;
 	background-color: #FFFBEA;
 	border-bottom-right-radius: 30px;
 	border-bottom-left-radius: 30px;
@@ -72,6 +93,9 @@
 			},
 			adLink(){
 				return /masazysci/ +  this.ad.slug;
+			},
+			getProfileImgUrl(name){
+				return '/storage/avatars/'+name;
 			},
 
 		},

@@ -4,7 +4,7 @@
   <div class="box-container mt-5 text-center" style="background-color:#fafcfe;">
     <div class="text-center">
       <h3 class="mb-3 mt-3">Podziel się swoją opinią na temat tego masażysty</h3>
-      <stars @note-updated="updateNote"></stars>
+      <stars :initial-note="yourOpinion ? yourOpinion.note : '0'" @note-updated="updateNote"></stars>
       <div class="mx-auto w-75 mt-3">
         <h5>Napisz co sprawiło że skorzystałeś z jej/jego usług. Jakie są Twoje wrażenia, czy masaż spełnij Twoje oczekiwania? Czy poleciłbyś ją/go znajomym? Twoja opinia może wpłynąć na decyzję wielu osób!</h5>
         <textarea v-validate="'max:3000'" name="opinion" v-model="opinion_text" v-if="login" class="form-control"></textarea>
@@ -15,7 +15,6 @@
         </div>
         <button class="btn btn-first mx-auto mt-4" @click="submitOpinion" v-if="login" style="width: 30%;font-size: 1.4em;padding-top:2%;padding-bottom:2%">
             Wyślij opinię
-
         </button>
       </div>
 
@@ -77,11 +76,19 @@ export default{
   },
   props:{
     'login':Boolean,
-    'postId':Number
+    'postId':Number,
+    'yourOpinion':Object
   },
   components:{
     'stars':Stars,
     'opinions':Opinions,
+  },
+  mounted(){
+    if(this.yourOpinion !== undefined && Object.keys(this.yourOpinion).length>0)
+    {
+      this.opinion_text = this.yourOpinion.opinion;
+      this.note = this.yourOpinion.note;
+    }
   },
   methods:{
     submitOpinion(){

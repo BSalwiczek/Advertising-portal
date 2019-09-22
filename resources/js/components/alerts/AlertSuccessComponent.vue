@@ -19,14 +19,16 @@
 		right: 5%;
 		max-width: 40%
 	}
-	
+
 </style>
 
 <script>
 	export default{
 		data(){
 			return{
-				show: false
+				show: false,
+				startTimer: null,
+				endTimer: null,
 			}
 		},
 		methods:{
@@ -39,12 +41,28 @@
 				if(new_v == false){
 					this.$emit('alert-closed');
 				}
+			},
+			showNow(new_v){
+				if(new_v)
+				{
+					clearTimeout(this.startTimer);
+					clearTimeout(this.endTimer);
+
+					this.startTimer = setTimeout(() => this.show = true, 300);
+					this.endTimer = setTimeout(() => this.show = false, 15000);
+				}
 			}
 		},
-		props:['message'],
+		props:{
+			'message': String,
+			'showNow': Boolean,
+		},
 		mounted(){
-			setTimeout(() => this.show = true, 300);
-			setTimeout(() => this.show = false, 15000);
+			if(this.showNow){
+				this.startTimer = setTimeout(() => this.show = true, 300);
+				this.endTimer = setTimeout(() => this.show = false, 15000);
+			}
+
 		}
 	}
 </script>

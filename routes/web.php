@@ -34,6 +34,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/klient/profil','ClientController@index');
 Route::post('/masazysta/profil','MasseurController@index');
 Route::get('/masazysta/profil','MasseurController@index');
+Route::get('/get-ad-data','MasseurController@getAdData');
 
 
 Route::get('/masazysci','MasseurNoticeController@index')->name('masazysci');
@@ -60,6 +61,7 @@ Route::get('/getFriends','MessagesController@getFriends');
 
 Route::post('/new-opinion','OpinionsController@store');
 Route::get('/get-opinions','OpinionsController@index');
+Route::post('/get-your-opinion','OpinionsController@getYourOpinion');
 
 
 // 'MasseurController@gohome'

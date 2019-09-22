@@ -1,9 +1,16 @@
-<style scoped>
+<!-- /* <style scoped>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css"
-</style>
+</style> */ -->
 <template>
-    <div class="container auth-container mt-5">
+    <div class="container auth-container py-0 mt-5">
+
         <div class="row justify-content-center">
+
+          <transition leave-active-class="animated fadeOut fast">
+            <div class="col-12 mt-5" v-if="show_user_types">
+              <h2 class="pb-4 text-center">Określ rodzaj konta</h2>
+            </div>
+          </transition>
 
             <transition leave-active-class="animated fadeOut fast" v-on:after-leave="after_user_types_leave">
                 <div class="col-lg-5 col-md-6" v-if="show_user_types">
@@ -13,7 +20,7 @@
                 </div>
             </transition>
             <transition leave-active-class="animated fadeOut fast">
-                <div class="col-lg-5 col-md-6 mt-sm-5 mt-xs-5 mt-md-0" v-if="show_user_types">
+                  <div class="col-lg-5 col-md-6 mt-5 mt-md-0 mb-5" v-if="show_user_types">
                     <div class="reg-option" @click="usertype_checked(1)">
                         Klient <i class="fas fa-user ml-4"></i>
                     </div>
@@ -21,14 +28,15 @@
             </transition>
 
             <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut fast" v-on:after-leave="after_registration_leave">
-                <div class="col-sm-12 text-center mt-4" v-if="show_registration">
+                <div class="col-sm-12 text-center" v-if="show_registration">
+                  <loader v-if="loading"></loader>
                     <div v-if="user_type==0">
-                        <h1 class="pb-4">Rejestracja masażysty</h1>
+                        <h1 class="pb-4 mt-5">Rejestracja masażysty</h1>
                         <hr>
-                        <form @submit.prevent="submit" method="post">
+                        <form @submit.prevent="submit" method="post" class="pb-4">
                             <input type="hidden" name="_token" v-bind:value="csrf">
                             <div class="form-group mt-4 align-items-center" style="font-size: 1.1em">
-                                <div class="row" style="margin-top: 3rem;">
+                                <!-- <div class="row" style="margin-top: 3rem;">
                                     <div class="col-sm-2 offset-lg-3 offset-md-1">
                                         <label for="name" class="col-form-label">Imię</label>
                                     </div>
@@ -39,7 +47,7 @@
                                         <span class="error">{{ errors.first('name') }}</span>
                                     </div>
                                 </div>
-                                
+
                                 <div class="row mt-4">
                                     <div class="col-sm-2 offset-lg-3 offset-md-1">
                                         <label for="surname" class="col-form-label">Nazwisko</label>
@@ -86,6 +94,107 @@
                                     <div clas="col-sm-3">
                                         <span class="error">{{ errors.first('password2') }}</span>
                                     </div>
+                                </div> -->
+                                <div class="row align-items-center" style="margin-top: 3rem;">
+                                  <div style="width:33%" class="mx-auto">
+                                      <label for="name" class="inp d-block">
+                                        <input v-model="user_fields.name" name="name" :class="{'wrong': errors.has('name')}" v-validate="'required|max:30|alpha'"  type="text" placeholder=" " class="better-input" required>
+                                          <span class="label">Imię</span>
+                                          <span class="border-b"></span>
+                                      </label>
+                                  </div>
+                                  <div class="col-12">
+                                      <span class="error">{{ errors.first('name') }}</span>
+                                  </div>
+                                </div>
+
+                                <div class="row mt-4 align-items-center" style="margin-top: 3rem;">
+                                  <div style="width:33%" class="mx-auto">
+                                      <label for="surname" class="inp d-block">
+                                        <input v-model="user_fields.surname" name="surname" :class="{'wrong': errors.has('surname')}" v-validate="'required|max:30|alpha'"  type="text" placeholder=" " class="better-input" required>
+                                          <span class="label">Nazwisko</span>
+                                          <span class="border-b"></span>
+                                      </label>
+                                  </div>
+                                  <div class="col-12">
+                                      <span class="error">{{ errors.first('surname') }}</span>
+                                  </div>
+                                </div>
+
+                                <!-- <div class="row mt-4">
+                                    <div class="col-sm-2 offset-lg-3 offset-md-1">
+                                        <label for="surname" class="col-form-label">Nazwisko</label>
+                                    </div>
+                                    <div class="col-lg-4 col-md-8">
+                                        <input v-validate="'required|max:30|alpha'" required type="text" name="surname" :class="{'wrong': errors.has('surname')}" class="form-control" id="surname" v-model="user_fields.surname">
+                                    </div>
+                                    <div clas="col-sm-3">
+                                        <span class="error">{{ errors.first('surname') }}</span>
+                                    </div>
+                                </div> -->
+
+                                <div class="row mt-4 align-items-center" style="margin-top: 3rem;">
+                                  <div style="width:33%" class="mx-auto">
+                                      <label for="email" class="inp d-block">
+                                        <input v-model="user_fields.email" name="email" :class="{'wrong': errors.has('email')}" v-validate="'required|email'"  type="text" placeholder=" " class="better-input" required>
+                                          <span class="label">Email</span>
+                                          <span class="border-b"></span>
+                                      </label>
+                                  </div>
+                                  <div class="col-12">
+                                      <span class="error">{{ errors.first('email') }}</span>
+                                  </div>
+                                </div>
+
+                                <!-- <div class="row mt-4">
+                                    <div class="col-sm-2 offset-lg-3 offset-md-1">
+                                        <label for="email" class="col-form-label">Email</label>
+                                    </div>
+                                    <div class="col-lg-4 col-md-8">
+                                        <input v-validate="'email'" required type="text" id="email" name="email" v-model="user_fields.email" :class="{'wrong': errors.has('email')}" class="form-control">
+                                    </div>
+                                    <div clas="col-sm-3">
+                                        <span class="error">{{ errors.first('email') }}</span>
+                                    </div>
+                                </div> -->
+
+                                <div class="row mt-4 align-items-center" style="margin-top: 3rem;">
+                                  <div style="width:33%" class="mx-auto">
+                                      <label for="password" class="inp d-block">
+                                        <input v-model="user_fields.password" name="password" :class="{'wrong': errors.has('password')}" v-validate="'min:8'"  type="password" placeholder=" " class="better-input" required>
+                                          <span class="label">Hasło</span>
+                                          <span class="border-b"></span>
+                                      </label>
+                                  </div>
+                                  <div class="col-12">
+                                      <span class="error">{{ errors.first('password') }}</span>
+                                  </div>
+                                </div>
+
+                                <!-- <div class="row mt-4">
+                                    <div class="col-sm-2 offset-lg-3 offset-md-1">
+                                        <label for="password" class="col-form-label">Hasło</label>
+                                    </div>
+                                    <div class="col-lg-4 col-md-8">
+                                        <input v-validate="'min:8'" required type="password" id="password" v-model="user_fields.password" name="password" :class="{'wrong': errors.has('password')}" class="form-control">
+                                    </div>
+                                    <div clas="col-sm-3">
+                                        <span class="error">{{ errors.first('password') }}</span>
+                                    </div>
+                                </div> -->
+
+
+                                <div class="row mt-4 align-items-center" style="margin-top: 3rem;">
+                                  <div style="width:33%" class="mx-auto">
+                                      <label for="password2" class="inp d-block">
+                                        <input v-model="user_fields.password2" name="password2" :class="{'wrong': errors.has('password2')}" v-validate="{is: user_fields.password}"  type="password" placeholder=" " class="better-input" required>
+                                          <span class="label">Powtórz hasło</span>
+                                          <span class="border-b"></span>
+                                      </label>
+                                  </div>
+                                  <div class="col-12">
+                                      <span class="error">{{ errors.first('password2') }}</span>
+                                  </div>
                                 </div>
                                 <div class="form-check mt-4">
                                     <input v-validate required v-model="user_fields.accept_terms" type="checkbox" class="form-check-input" name="accept_terms" id="accept_terms">
@@ -99,30 +208,44 @@
                                 </div>
 
                             </div>
-                            
+
                         </form>
                     </div>
 
 
                     <div v-if="user_type==1">
-                        <h1>Rejestracja klienta</h1>
+                        <h1 class="mt-5">Rejestracja klienta</h1>
                         <hr>
-                        <form @submit.prevent="submit" method="post">
+                        <form @submit.prevent="submit" method="post" class="pb-4">
                             <input type="hidden" name="_token" v-bind:value="csrf">
                             <div class="form-group mt-4 align-items-center" style="font-size: 1.1em">
-                                <div class="row" style="margin-top: 3rem;">
-                                    <div class="col-sm-2 offset-lg-3 offset-md-1">
-                                        <label for="name" class="col-form-label">Imię</label>
-                                    </div>
-                                    <div class="col-lg-4 col-md-8">
-                                        <input required type="text" id="name" v-validate="'required|max:30|alpha'" v-model="user_fields.name" name="name" :class="{'wrong': errors.has('name')}" class="form-control">
-                                    </div>
-                                    <div clas="col-sm-3">
-                                        <span class="error">{{ errors.first('name') }}</span>
-                                    </div>
+                                <div class="row align-items-center" style="margin-top: 3rem;">
+                                  <div style="width:33%" class="mx-auto">
+                                      <label for="name" class="inp d-block">
+                                        <input v-model="user_fields.name" name="name" :class="{'wrong': errors.has('name')}" v-validate="'required|max:30|alpha'"  type="text" placeholder=" " class="better-input" required>
+                                          <span class="label">Imię</span>
+                                          <span class="border-b"></span>
+                                      </label>
+                                  </div>
+                                  <div class="col-12">
+                                      <span class="error">{{ errors.first('name') }}</span>
+                                  </div>
                                 </div>
-                                
-                                <div class="row mt-4">
+
+                                <div class="row mt-4 align-items-center" style="margin-top: 3rem;">
+                                  <div style="width:33%" class="mx-auto">
+                                      <label for="surname" class="inp d-block">
+                                        <input v-model="user_fields.surname" name="surname" :class="{'wrong': errors.has('surname')}" v-validate="'required|max:30|alpha'"  type="text" placeholder=" " class="better-input" required>
+                                          <span class="label">Nazwisko</span>
+                                          <span class="border-b"></span>
+                                      </label>
+                                  </div>
+                                  <div class="col-12">
+                                      <span class="error">{{ errors.first('surname') }}</span>
+                                  </div>
+                                </div>
+
+                                <!-- <div class="row mt-4">
                                     <div class="col-sm-2 offset-lg-3 offset-md-1">
                                         <label for="surname" class="col-form-label">Nazwisko</label>
                                     </div>
@@ -132,9 +255,22 @@
                                     <div clas="col-sm-3">
                                         <span class="error">{{ errors.first('surname') }}</span>
                                     </div>
+                                </div> -->
+
+                                <div class="row mt-4 align-items-center" style="margin-top: 3rem;">
+                                  <div style="width:33%" class="mx-auto">
+                                      <label for="email" class="inp d-block">
+                                        <input v-model="user_fields.email" name="email" :class="{'wrong': errors.has('email')}" v-validate="'required|email'"  type="text" placeholder=" " class="better-input" required>
+                                          <span class="label">Email</span>
+                                          <span class="border-b"></span>
+                                      </label>
+                                  </div>
+                                  <div class="col-12">
+                                      <span class="error">{{ errors.first('email') }}</span>
+                                  </div>
                                 </div>
 
-                                <div class="row mt-4">
+                                <!-- <div class="row mt-4">
                                     <div class="col-sm-2 offset-lg-3 offset-md-1">
                                         <label for="email" class="col-form-label">Email</label>
                                     </div>
@@ -144,9 +280,22 @@
                                     <div clas="col-sm-3">
                                         <span class="error">{{ errors.first('email') }}</span>
                                     </div>
+                                </div> -->
+
+                                <div class="row mt-4 align-items-center" style="margin-top: 3rem;">
+                                  <div style="width:33%" class="mx-auto">
+                                      <label for="password" class="inp d-block">
+                                        <input v-model="user_fields.password" name="password" :class="{'wrong': errors.has('password')}" v-validate="'min:8'"  type="password" placeholder=" " class="better-input" required>
+                                          <span class="label">Hasło</span>
+                                          <span class="border-b"></span>
+                                      </label>
+                                  </div>
+                                  <div class="col-12">
+                                      <span class="error">{{ errors.first('password') }}</span>
+                                  </div>
                                 </div>
 
-                                <div class="row mt-4">
+                                <!-- <div class="row mt-4">
                                     <div class="col-sm-2 offset-lg-3 offset-md-1">
                                         <label for="password" class="col-form-label">Hasło</label>
                                     </div>
@@ -156,9 +305,23 @@
                                     <div clas="col-sm-3">
                                         <span class="error">{{ errors.first('password') }}</span>
                                     </div>
+                                </div> -->
+
+
+                                <div class="row mt-4 align-items-center" style="margin-top: 3rem;">
+                                  <div style="width:33%" class="mx-auto">
+                                      <label for="password2" class="inp d-block">
+                                        <input v-model="user_fields.password2" name="password2" :class="{'wrong': errors.has('password2')}" v-validate="{is: user_fields.password}"  type="password" placeholder=" " class="better-input" required>
+                                          <span class="label">Powtórz hasło</span>
+                                          <span class="border-b"></span>
+                                      </label>
+                                  </div>
+                                  <div class="col-12">
+                                      <span class="error">{{ errors.first('password2') }}</span>
+                                  </div>
                                 </div>
 
-                                <div class="row mt-4">
+                                <!-- <div class="row mt-4">
                                     <div class="col-sm-2 offset-lg-3 offset-md-1">
                                         <label for="password-repeat" class="col-form-label">Powtórz hasło</label>
                                     </div>
@@ -168,7 +331,7 @@
                                     <div clas="col-sm-3">
                                         <span class="error">{{ errors.first('password2') }}</span>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="form-check mt-4">
                                     <input v-validate required v-model="user_fields.accept_terms" type="checkbox" class="form-check-input" name="accept_terms" id="accept_terms">
                                     <label class="form-check-label" for="accept_terms">Akceptuję <a href="#">regulamin</a></label>
@@ -181,7 +344,7 @@
                                 </div>
 
                             </div>
-                            
+
                         </form>
                     </div>
                 </div>
@@ -189,7 +352,7 @@
 
 
             <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut fast">
-                <div v-if="registered" class="justify-content-center text-center">
+                <div v-if="registered" class="justify-content-center text-center py-5">
                     <h1>Rejestracja przebiegła pomyślnie!</h1>
                     <h5 class="mt-4 pl-5 pr-5">Na twój email <b>({{ user_fields.email }})</b> wysłaliśmy link z potwierdzeniem rejestracji.</h5>
                     <h5 class="mt-2 pl-5 pr-5">Po potwierdzeniu będziesz mógł w pełni korzystać z naszego serwisu!</h5>
@@ -223,6 +386,7 @@
 </style>
 
 <script>
+import loaderComp from './others/LoadingComponent.vue';
     export default {
         data() {
             return {
@@ -233,8 +397,12 @@
                 user_fields: {},
                 registered:false,
                 send_again:false,
+                loading: false,
 
             }
+        },
+        components:{
+          'loader': loaderComp,
         },
         props:['csrf'],
         methods: {
@@ -246,11 +414,13 @@
                 this.show_registration = true;
             },
             submit(el) {
+              this.loading= true;
               this.$validator.validateAll().then((result) => {
                 if (result) {
                     this.user_fields.role = this.user_type;
                     axios.post('/register', this.user_fields).then(response => {
                         this.show_registration=false;
+                        this.loading = false;
 
                     }).catch(error => {
                         console.log(error);
@@ -276,5 +446,3 @@
         }
     }
 </script>
-
-

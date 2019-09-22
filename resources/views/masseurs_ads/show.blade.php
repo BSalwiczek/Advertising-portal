@@ -19,16 +19,19 @@
 						<img src="/storage/avatars/{{ $post->user->profile_img }}" class="avatar rounded-circle img-fluid 	mx-auto">
 					</div>
 				</div>
-				<div class="text-center mt-3 stars">
-					<i class="fas fa-star"></i>
-					<i class="fas fa-star"></i>
-					<i class="fas fa-star"></i>
-					<i class="fas fa-star-half-alt"></i>
-					<i class="far fa-star"></i>
+			@if($notesCount==0)
+				<div class="text-center mt-3">
+					<h5>Brak opinii</h5>
 				</div>
+			@else
+				<passive-stars class="text-center" :stars="{{$averageNote}}"></passive-stars>
 				<div class="text-center">
-					<h5>3.6/5 (115 głosów)</h5>
+					<h5>{{ $averageNote }}/5 ({{ $notesCount }} głosów)</h5>
 				</div>
+			@endif
+
+
+
 				<h3 class="text-center mt-3">{{ $post->user->name }} {{ $post->user->surname }}</h3>
 				<contact-button :user-id="{{ $post->user->id }}" csrf={{ csrf_token() }}></contact-button>
 			</div>
@@ -118,11 +121,10 @@
 
 
 			</div>
-
 			@guest
 				<opinion :login="false" :post-id="{{ $post->id }}"></opinion>
 			@else
-				<opinion :login="true" :post-id="{{ $post->id }}"></opinion>
+				<opinion :your-opinion="{{ $opinion ? $opinion : '{}' }}" :login="true" :post-id="{{ $post->id }}"></opinion>
 			@endguest
 		</div>
 

@@ -43,9 +43,9 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->notify(new VerifyApiEmail); // my notification
     }
 
-    public function masseurposts()
+    public function masseurpost()
     {
-        return $this->hasMany('App\MasseurPost');
+        return $this->hasOne('App\MasseurPost');
     }
 
     public function opinions()
