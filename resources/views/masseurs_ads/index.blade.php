@@ -52,11 +52,11 @@
 				</div>
 				<div class="col-lg-2">
 					@auth
-						@if(Auth::user()->role==0)
+						@if(Auth::user()->role==0 and !Auth::user()->masseurpost)
 							<a href="masazysta/dodaj-nowe-ogloszenie" style="color:inherit;">
 								<div class="d-flex add-notice">
 									<button class="plus-button my-auto"></button>
-									<span class="my-auto ml-2">Dodaj nowe ogłoszenie</span>
+									<span class="my-auto ml-2">Dodaj ogłoszenie</span>
 								</div>
 							</a>
 						@endif

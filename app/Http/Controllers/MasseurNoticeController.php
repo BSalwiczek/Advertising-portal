@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\MasseurPost;
 use App\MassageType;
 use App\Opinion;
+use App\Educoexp;
 use Illuminate\Support\Facades\Validator;
 use Auth;
 use Cookie;
@@ -152,7 +153,11 @@ class MasseurNoticeController extends Controller
       $opinions_count = Opinion::where('masseur_post_id','=',$post->id)->count();
       $opinions_average = round(Opinion::where('masseur_post_id','=',$post->id)->avg('note') * 2)/2;
 
-      return view('masseurs_ads.show')->withPost($post)->with('massage_types',$massage_types)->withOpinion($opinion)->with('averageNote',$opinions_average)->with('notesCount',$opinions_count);
+      $educoexp = Educoexp::where('user_id','=',$post->user_id)->get();
+
+      return view('masseurs_ads.show')->withPost($post)->with('massage_types',$massage_types)
+      ->withOpinion($opinion)->with('averageNote',$opinions_average)->with('notesCount',$opinions_count)
+      ->with('educoexp',$educoexp);
     }
     public function gotoads(){
         //create added_post cookie
@@ -160,7 +165,12 @@ class MasseurNoticeController extends Controller
         return redirect()->route('masazysci');
     }
     public function create(){
+      if(!Auth::user()->masseurpost){
         return view('masseurs_ads.create');
+      }
+      else{
+        return redirect()->route('masazysci');
+      }
     }
 
     protected function getRelatedSlugs($slug, $id = 0)
@@ -193,6 +203,46 @@ class MasseurNoticeController extends Controller
         }
 
         throw new \Exception('Can not create a unique slug');
+    }
+
+    public function update(Request $request){
+      $data = $this->validate($request,[
+          'title'=>'required|max:100',
+          'description'=>'required',
+          'where'=>'required',
+          'area'=>'sometimes',
+          'city'=>'sometimes',
+          'province'=>'sometimes',
+          'street'=>'sometimes',
+          'number'=>'sometimes',
+      ]);
+
+      $masseur_post = MasseurPost::findOrFail(Auth::id());
+      $masseur_post->title = $data['title'];
+      $masseur_post->description = $data['description'];
+
+      $masseur_post->slug = $this->createSlug($data['title']);
+      if(gettype(array_search(0,$data['where'])) != 'boolean')
+      {
+          $masseur_post->area = $data['area'];
+      }else{
+          $masseur_post->area = null;
+      }
+      if(gettype(array_search(1,$data['where'])) != 'boolean')
+      {
+          $masseur_post->city = $data['city'];
+          $masseur_post->province = $data['province'];
+          $masseur_post->street = $data['street'];
+          $masseur_post->number = $data['number'];
+      }else{
+        $masseur_post->city = null;
+        $masseur_post->province = null;
+        $masseur_post->street = null;
+        $masseur_post->number = null;
+      }
+
+      $masseur_post->save();
+      return $request;
     }
 
     public function store(Request $request){

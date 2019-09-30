@@ -417,11 +417,8 @@ a.article:hover {
 
 /*=================AD=================*/
 
-@media (min-width: 576px){
-.ad-description {
-    margin-left: 2%;
-    max-width: 73%;
-}
+h5{
+	font-size: 1.255rem;
 }
 
 .stars{

@@ -1,7 +1,8 @@
 <template>
 <div class="text-center p-3 pt-5">
     <h1>Ustawienia użytkownika</h1>
-    <form method="post" enctype="multipart/form-data" v-on:submit.prevent="submit">
+    <hr class="w-50 mt-4"/>
+    <form method="post" v-on:submit.prevent="">
         <input type="hidden" name="_token" v-bind:value="csrf">
         <label style="max-width:25%" for="name" class="inp mt-5 d-block">
             <input required v-validate="'required|max:30|alpha'" type="text" id="name" v-model="user.name" class="better-input" placeholder=" " name="name" :class="{'wrong': errors.has('name')}">
@@ -17,8 +18,10 @@
         </label>
         <span class="error">{{ errors.first('surname') }}</span>
 
+        <experience-and-rest @all-validated="postData()" ref="educoexp" :eduCoExp = "eduCoExp"></experience-and-rest>
+
         <div class="text-center">
-            <button class="btn btn-first p-3 mt-5">Zapisz zmiany</button>
+            <button @click="submit" class="btn btn-first p-3 my-3">Zapisz zmiany</button>
         </div>
 
         <transition leave-active-class="animated fadeOut fast">
@@ -26,19 +29,27 @@
         </transition>
 
     </form>
-    <alert-success v-on:alert-closed="changed=false" message="Ustawienia użytkownika zostały zmienione" v-if="changed"></alert-success>
+
+
+    <alert-success :showNow="false" ref="alertS" message="<b>Gratulacje!</b> Zmiany zostały zapisane."></alert-success>
 </div>
 </template>
 
 <script type="text/javascript">
 import alertsuccess from '../../alerts/AlertSuccessComponent.vue';
 import loadingComponent from '../../others/LoadingComponent.vue';
+import experienceAndRest from './ExperienceAndRest.vue';
 export default {
     data() {
         return {
             user: {},
             changed: false,
-            loading: false,
+            loading: true,
+            eduCoExp: {
+              education:[],
+              courses:[],
+              experience:[]
+            }
         }
     },
     props: {
@@ -52,28 +63,62 @@ export default {
     components: {
         'alert-success': alertsuccess,
         'loader': loadingComponent,
+        'experience-and-rest':experienceAndRest
     },
     methods: {
         setUserData() {
-        	axios.get('/getAuthUser').then((result)=>{
-						this.user = result.data;
+        	axios.get('/get-user-and-educoexp').then((result)=>{
+            console.log(result);
+            this.user.name = result.data.name;
+            this.user.surname = result.data.surname;
+						this.user.id = result.data.id;
+            var educoexps = result.data.educoexps;
+            for(var i=0;i<educoexps.length;i++)
+            {
+              if(educoexps[i].category == "education")
+              {
+                this.eduCoExp.education.push({});
+                this.$set(this.eduCoExp.education[this.eduCoExp.education.length-1],'id',educoexps[i].id);
+                this.$set(this.eduCoExp.education[this.eduCoExp.education.length-1],'since',educoexps[i].since);
+                this.$set(this.eduCoExp.education[this.eduCoExp.education.length-1],'to',educoexps[i].to === null ? '' : educoexps[i].to);
+                this.$set(this.eduCoExp.education[this.eduCoExp.education.length-1],'description',educoexps[i].description);
+              }
+              if(educoexps[i].category == "courses")
+              {
+                this.eduCoExp.courses.push({});
+                this.$set(this.eduCoExp.courses[this.eduCoExp.courses.length-1],'id',educoexps[i].id);
+                this.$set(this.eduCoExp.courses[this.eduCoExp.courses.length-1],'since',educoexps[i].since);
+                this.$set(this.eduCoExp.courses[this.eduCoExp.courses.length-1],'to',educoexps[i].to === null ? '' : educoexps[i].to);
+                this.$set(this.eduCoExp.courses[this.eduCoExp.courses.length-1],'description',educoexps[i].description);
+              }
+              if(educoexps[i].category == "experience")
+              {
+                this.eduCoExp.experience.push({});
+                this.$set(this.eduCoExp.experience[this.eduCoExp.experience.length-1],'id',educoexps[i].id);
+                this.$set(this.eduCoExp.experience[this.eduCoExp.experience.length-1],'since',educoexps[i].since);
+                this.$set(this.eduCoExp.experience[this.eduCoExp.experience.length-1],'to',educoexps[i].to === null ? '' : educoexps[i].to);
+                this.$set(this.eduCoExp.experience[this.eduCoExp.experience.length-1],'description',educoexps[i].description);
+              }
+            }
+            this.loading = false;
 					});
         },
         submit() {
-            if (this.user.name != this.userData.name || this.user.surname != this.userData.surname) {
-                this.$validator.validateAll().then((result) => {
-                    if (result) {
-                        var component = this;
-                        this.loading = true;
-                        axios.post('/zapisz-ustawienia-uzytkownika-masazysty', this.user).then(function(response) {
-                            component.loading = false;
-                            if (response.status == 200) {
-                                component.changed = true;
-                            }
-                        })
-                    }
-                });
+          this.$validator.validateAll().then((result) => {
+            if(result){
+              this.$refs.educoexp.validate();
             }
+          });
+        },
+
+        postData(){
+          this.loading = true;
+          axios.post('/zapisz-ustawienia-uzytkownika-masazysty', {...this.user,...this.eduCoExp}).then((response) => {
+              this.loading = false;
+              if (response.status == 200) {
+                  this.$refs.alertS.show = true;
+              }
+          })
         }
     }
 }

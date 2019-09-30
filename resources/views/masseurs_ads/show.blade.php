@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 <div class="container mx-auto" style="padding:2rem 0;min-width:80%;margin:0">
 	<div class="row">
-		<div class="col-sm-3">
+		<div class="col-md-3">
 			<div class="box-container">
 				<div class="row">
 					<div class="col-md-6 offset-md-3">
@@ -36,12 +36,76 @@
 				<contact-button :user-id="{{ $post->user->id }}" csrf={{ csrf_token() }}></contact-button>
 			</div>
 
+			<div class="box-container mt-2 px-3 pl-lg-5 pl-2">
+				<h5><i style="margin-right: 1%; color: rgb(9, 162, 229);" class="fas fa-user-graduate"></i> Wykształcenie</h5>
+				@php
+				$catExist = false
+				@endphp
+				@foreach ($educoexp as $key => $value)
+					@if($value->category=='education')
+						@php
+						$catExist = true
+						@endphp
+						@if($value->to !== null and $value->to != '')
+							<span><b>{{ $value->since }} - {{ $value->to }}</b>&nbsp;&nbsp;{{ $value->description }}</span><br />
+						@else
+							<span><b>{{ $value->since }}</b>&nbsp;&nbsp;{{ $value->description }}</span><br />
+						@endif
+					@endif
+				@endforeach
+				@if(!$catExist)
+					<span style="opacity:0.7">Nie dodano</span>
+				@endif
+
+				<h5 class="mt-3"><i style="margin-right: 1%; color: rgb(9, 162, 229);" class="fas fa-chalkboard-teacher"></i> Kursy i szkolenia</h5>
+
+				@php
+				$coExist = false
+				@endphp
+				@foreach ($educoexp as $key => $value)
+					@if($value->category=='courses')
+						@php
+						$coExist = true
+						@endphp
+						@if($value->to !== null and $value->to != '')
+							<span><b>{{ $value->since }} - {{ $value->to }}</b>&nbsp;&nbsp;{{ $value->description }}</span><br />
+						@else
+							<span><b>{{ $value->since }}</b>&nbsp;&nbsp;{{ $value->description }}</span><br />
+						@endif
+					@endif
+				@endforeach
+				@if(!$coExist)
+					<span style="opacity:0.7">Nie dodano</span>
+				@endif
+
+				<h5 class="mt-3"><i style="margin-right: 1%; color: rgb(9, 162, 229);" class="fas fa-medal"></i> Doświadczenie</h5>
+				@php
+				$expExist = false
+				@endphp
+				@foreach ($educoexp as $key => $value)
+					@if($value->category=='experience')
+						@php
+						$expExist = true
+						@endphp
+						@if($value->to !== null and $value->to != '')
+							<span><b>{{ $value->since }} - {{ $value->to }}</b>&nbsp;&nbsp;{{ $value->description }}</span><br />
+						@else
+							<span><b>{{ $value->since }}</b>&nbsp;&nbsp;{{ $value->description }}</span><br />
+						@endif
+					@endif
+				@endforeach
+				@if(!$expExist)
+					<span style="opacity:0.7">Nie dodano</span>
+				@endif
+
+			</div>
+
 
 
 		{{-- {{ $post->user->name }}
 		{{ $post->created_at }} --}}
 		</div>
-		<div class="col-sm-9 ad-description">
+		<div class="col-md-9 ad-description mt-3 mt-md-0">
 
 			<div class="text-center box-container px-5 pt-4">
 				<div class="text-right mb-4">

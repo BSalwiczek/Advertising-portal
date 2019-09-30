@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\VerifyApiEmail;
+use Illuminate\Support\Facades\Redis;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -52,4 +53,15 @@ class User extends Authenticatable implements MustVerifyEmail
 		{
 			return $this->hasMany('App\Opinion');
 		}
+
+    public function educoexps()
+    {
+      return $this->hasMany('App\Educoexp');
+    }
+
+    public function lastSeen()
+    {
+       $redis = Redis::connection();
+       return $redis->get('last_seen_' . $this->id);
+    }
 }

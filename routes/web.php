@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -42,15 +41,14 @@ Route::get('/masazysci/{slug}','MasseurNoticeController@show');
 
 Route::get('masazysta/dodaj-nowe-ogloszenie','MasseurNoticeController@create');
 Route::post('masazysta/dodaj-nowe-ogloszenie','MasseurNoticeController@store');
+Route::post('masazysta/zmien-ogloszenie','MasseurNoticeController@update');
 Route::post('/dodano-nowe-ogloszenie','MasseurNoticeController@gotoads');
 
 Route::post('/getCities','ApiController@getCities');
 
-Route::post('/zapisz-ustawienia-uzytkownika-masazysty','MasseurController@update');
+Route::post('/zapisz-ustawienia-uzytkownika-masazysty','EducoexpController@update');
 
-Route::get('/getAuthUser',function(){
-  return Auth::user()->toJson();
-});
+Route::get('/get-user-and-educoexp','EducoexpController@index');
 
 Route::post('/saveMessage','MessagesController@store');
 Route::post('/getMessages','MessagesController@index');

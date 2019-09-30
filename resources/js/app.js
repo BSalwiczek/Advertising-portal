@@ -80,8 +80,24 @@ const dict = {
 		},
     opinion:{
       max: 'Twoja opinia jest za długa. Możesz wykorzystać maksymalnie 3000 znaków'
-    }
-	}
+    },
+    since:{
+      required: 'To pole jest wymagane',
+      max: 'Nie można przekroczyć 16 znaków'
+    },
+    to:{
+      max: 'Nie można przekroczyć 16 znaków'
+    },
+    shortDescription:{
+      required:'To pole jest wymagane',
+      max: 'Nie można przekroczyć 255 znaków',
+    },
+
+	},
+  messages:{
+    max: (field, { length }) => `Przekroczyłeś maksymalną liczbę znaków`,
+    required: 'To pole jest wymagane'
+  }
 };
 
 Validator.localize('en', dict);

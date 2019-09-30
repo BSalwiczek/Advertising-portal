@@ -41,24 +41,6 @@ class MasseurController extends Controller
     	return view('masseur.index')->with('option',$option)->with('friend_id',$friendId)->with('friend_data',json_encode($friend_data));
     }
 
-    public function update(Request $request){
-    	$validator = Validator::make($request->all(), [
-			'name'=>'required|string|max:30|alpha',
-    		'surname'=>'required|string|max:30|alpha',
-		]);
-
-		if ($validator->fails()) {
-			return response()->json(['error'=>$validator->errors()], 401);
-		}
-
-		$user = User::find(Auth::id());
-		$user->name=$request['name'];
-		$user->surname=$request['surname'];
-		$user->save();
-
-		return 'success';
-    }
-
     public function getAdData(){
       // return Auth::user()->with('MasseurPost')->get();
       return Auth::user()->masseurpost;

@@ -17,7 +17,7 @@
 
 					<div class="col-md-9 col-xl-10 col-12">
 						<message-box v-if="option==1" :first-friend-id="friendId" :user-data="user" :friend-data="friend"></message-box>
-						<ad-settings v-if="option==2"></ad-settings>
+						<ad-settings v-if="option==2" :csrf="csrf"></ad-settings>
 						<user-settings v-if="option==3" :user-data="user" :csrf="csrf"></user-settings>
 					</div>
 				</div>
@@ -75,7 +75,7 @@ import MessageBox from './MessagesBoxComponent.vue';
 		data(){
 			return{
 				user:{},
-  			option: 0,
+  			option: 3,
 				friendId: -1
 
 			}
@@ -101,6 +101,7 @@ import MessageBox from './MessagesBoxComponent.vue';
 			this.ChangeUserToObj();
 			this.ChangeFriendToObj();
 			this.option = this.firstOption;
+			this.option = 3;
 			this.friendId = this.messageFriendId;
 		},
 	}
