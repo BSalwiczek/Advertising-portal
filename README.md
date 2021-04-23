@@ -2,7 +2,12 @@
 
 As a side project in 2019 vacation, I created a functional advertising portal that can be used by clients to find masseurs and vice versa. Why masseurs? Because It was the first profession I found that had not had this kind of portal.
 
-![alt text](https://github.com/BSalwiczek/Advertising-portal/blob/master/preview.jpg?raw=true)
+![stack Overflow](https://user-images.githubusercontent.com/23345906/115855241-531eab80-a42b-11eb-830e-4f7cfefee8b0.jpg)
+
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/BSalwiczek/Advertising-portal/master/preview.jpg" width="350" title="hover text">
+</p>
 
 ## Walkthrough
 
